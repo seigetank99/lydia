@@ -1,0 +1,59 @@
+import { Footer, Header } from '../../components/site-core.jsx'
+import { PageHero, RelatedLinksSection } from '../shared-sections.jsx'
+
+function Breadcrumbs({ items = [] }) {
+  if (!items.length) return null
+  return (
+      <nav className="mx-auto max-w-7xl px-8 pt-4 text-xs text-slate-500" aria-label="Breadcrumb">
+        <ol className="flex flex-wrap items-center gap-2">
+          <li><a href="/" className="transition hover:text-emerald-700">Home</a></li>
+          {items.map((item, index) => (
+              <li key={`${item.label}-${index}`} className="flex items-center gap-2">
+                <span>/</span>
+                {item.href ? <a href={item.href} className="transition hover:text-emerald-700">{item.label}</a> : <span className="text-slate-700">{item.label}</span>}
+              </li>
+          ))}
+        </ol>
+      </nav>
+  )
+}
+
+export default function TaxCalendarPage() {
+  const sections = [
+    { title: 'Individual Tax Reminders', items: [['January–February', 'Gather income forms, mortgage statements, investment forms, student loan information, and tax documents.'], ['April', 'Federal individual income tax returns and first-quarter estimated tax payments are commonly due around this period.'], ['June / September', 'Estimated tax payments may be due for individuals with self-employment or other non-withheld income.'], ['December', 'Review withholding, charitable giving, retirement contributions, capital gains, and planning opportunities before year-end.']] },
+    { title: 'Business Tax Reminders', items: [['Monthly', 'Reconcile books, review payroll, categorize expenses, and update cash flow reports.'], ['Quarterly', 'Review estimated taxes, profitability, payroll tax deadlines, and sales tax responsibilities.'], ['Year-End', 'Review owner compensation, equipment purchases, receivables, payables, deductions, and tax planning items.'], ['Before Filing', 'Clean up books, gather support documents, review notices, and confirm filing deadlines with your advisor.']] },
+    { title: 'Payroll & Sales Tax Reminders', items: [['Each Payroll', 'Review wages, reimbursements, deductions, tax withholdings, and employee changes.'], ['Monthly / Quarterly', 'Payroll tax and sales tax deadlines vary by business and jurisdiction. Track them carefully.'], ['New Hires', 'Collect required forms, direct deposit details, payroll setup information, and onboarding records.'], ['Year-End Payroll', 'Review W-2s, 1099s, payroll reports, benefits, and contractor records.']] },
+  ]
+  return (
+      <main id="main-content" className="min-h-screen bg-[#f7f3eb] text-slate-900">
+        <Header active="resources" />
+        <Breadcrumbs items={[{ label: 'Resources', href: '/resources' }, { label: 'Tax Calendar' }]} />
+        <PageHero eyebrow="Tax Calendar" title="A practical reminder calendar for tax, payroll, and business deadlines." description="Use this page as a planning guide. Actual deadlines vary by entity type, location, filing status, payroll setup, and tax situation.">
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a href="/tax-advice" className="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">View Tax Advice Center</a>
+            <a href="/contact" className="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">Book a Consultation</a>
+          </div>
+        </PageHero>
+        <section className="border-t border-stone-200 px-8 py-10"><div className="mx-auto max-w-6xl rounded-xl border border-amber-200 bg-amber-50/70 p-5 text-sm leading-7 text-amber-950"><strong>Important:</strong> This is a general planning calendar, not a complete tax deadline list. Always confirm exact due dates with a qualified tax professional and the relevant tax authority.</div></section>
+        <section className="border-t border-stone-200 px-8 py-12">
+          <div className="mx-auto grid max-w-6xl gap-5">
+            {sections.map((section) => (
+                <article key={section.title} className="rounded-2xl border border-stone-200 bg-white/60 p-8 shadow-sm">
+                  <h2 className="font-serif text-4xl leading-tight text-slate-900">{section.title}</h2>
+                  <div className="mt-6 grid gap-4 md:grid-cols-2">
+                    {section.items.map(([period, description]) => (
+                        <div key={`${section.title}-${period}`} className="rounded-xl border border-stone-200 bg-[#f7f3eb] p-5">
+                          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">{period}</p>
+                          <p className="mt-3 text-sm leading-7 text-slate-700">{description}</p>
+                        </div>
+                    ))}
+                  </div>
+                </article>
+            ))}
+          </div>
+        </section>
+        <RelatedLinksSection title="Related Tax Pages" links={[['Tax Advice Center', '/tax-advice'], ['Tax Services', '/services/tax'], ['Tax Season Organizer', '/tools/tax-season-organizer'], ['Bookkeeping', '/services/bookkeeping'], ['Book a Consultation', '/contact']]} />
+        <Footer />
+      </main>
+  )
+}

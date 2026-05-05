@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+}
+
+@keyframes fidara-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fidara-scroll-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.fidara-marquee-left {
+  animation: fidara-scroll-left 32s linear infinite;
+}
+
+.fidara-marquee-right {
+  animation: fidara-scroll-right 32s linear infinite;
+}
+
+.fidara-marquee-left:hover,
+.fidara-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .fidara-marquee-left,
+  .fidara-marquee-right {
+    animation: none !important;
+    transform: translateX(0) !important;
+  }
+}
+
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
