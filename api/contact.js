@@ -178,7 +178,19 @@ export default async function handler(req, res) {
     }
 
     return json(res, 200, { ok: true })
-  } catch {
+  } catch (error) {
+    console.error('[contact-email-failed]', {
+      message: error?.message,
+      code: error?.code,
+      command: error?.command,
+      response: error?.response,
+      responseCode: error?.responseCode,
+      host,
+      port,
+      secure: port === 465,
+      from,
+      to,
+    })
     return json(res, 500, { error: 'Failed to send. Please try again later.' })
   }
 }
