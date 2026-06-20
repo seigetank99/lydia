@@ -12,6 +12,8 @@ const {
 
 const jsonLdBlocks = Array.isArray(jsonLd) ? jsonLd : [jsonLd]
 const ga4Id = import.meta.env.PUBLIC_GA4_ID || ''
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || ''
+const bingSiteVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION || ''
 const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING === 'true'
 ---
 
@@ -26,6 +28,8 @@ const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={robots} />
+    {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
+    {bingSiteVerification && <meta name="msvalidate.01" content={bingSiteVerification} />}
     <meta property="og:site_name" content="Fidara Financial Services" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />

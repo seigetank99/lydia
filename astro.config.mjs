@@ -2,15 +2,17 @@ import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 
+const site = (process.env.PUBLIC_SITE_URL || 'https://www.fidaragroup.com').replace(/\/$/, '')
+
 export default defineConfig({
-  site: 'https://www.fidaragroup.com',
+  site,
   output: 'static',
   integrations: [
     react(),
     sitemap({
       filter: (page) => ![
-        'https://www.fidaragroup.com/compliance-language/',
-        'https://www.fidaragroup.com/launch-readiness/',
+        `${site}/compliance-language/`,
+        `${site}/launch-readiness/`,
       ].includes(page),
     }),
   ],

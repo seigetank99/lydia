@@ -355,6 +355,8 @@ export function getStructuredData(path) {
     sameAs: [],
   }
 
+  if (siteConfig.phone) organization.telephone = siteConfig.phone
+
   const website = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
