@@ -10,6 +10,7 @@ export const resourceArticles = [
       ['Clean the chart of accounts', 'Remove duplicate categories, separate owner activity, and create categories that support useful reporting.'],
       ['Review problem transactions', 'Flag uncategorized expenses, transfers, loans, payroll entries, sales deposits, and vendor payments that need context.'],
       ['Create a monthly close rhythm', 'A clean month-end process helps tax planning, lending, cash flow, and better decision-making.'],
+      ['Separate cleanup from ongoing work', 'Catch-up bookkeeping and monthly bookkeeping are different scopes. Define what needs repair first, then create the rhythm that keeps it from happening again.'],
     ],
   },
   {
@@ -23,6 +24,7 @@ export const resourceArticles = [
       ['Cash flow feels unclear', 'CFO support helps forecast what is coming, not just report what already happened.'],
       ['Reports are not decision-ready', 'Better dashboards, KPIs, and variance explanations help owners understand what matters.'],
       ['You need a financial partner', 'A fractional CFO relationship gives leadership without building a full internal finance department.'],
+      ['Growth is creating new risk', 'Hiring, debt, new locations, new services, and expansion plans all become easier to evaluate when the numbers are organized around decisions.'],
     ],
   },
   {
@@ -36,6 +38,7 @@ export const resourceArticles = [
       ['Collect onboarding records', 'Maintain tax forms, direct deposit details, wage information, and benefit elections in one organized process.'],
       ['Review payroll tax deadlines', 'Payroll tax deposits, filings, and state requirements should be tracked before the first pay run.'],
       ['Create approval workflows', 'Payroll changes, bonuses, reimbursements, and time tracking need review points as the team grows.'],
+      ['Protect employee data', 'Payroll records contain sensitive information. Limit access, document storage rules, and keep onboarding and offboarding procedures consistent.'],
     ],
   },
   {
@@ -49,6 +52,7 @@ export const resourceArticles = [
       ['Secure devices and accounts', 'Use multi-factor authentication, password management, device policies, and routine access reviews.'],
       ['Back up critical data', 'Accounting files, payroll records, contracts, and business documents need reliable backup and recovery planning.'],
       ['Create a support workflow', 'Teams need a clear place to report issues, track vendors, and resolve system problems.'],
+      ['Review access regularly', 'A quarterly access review helps catch old employees, outdated vendors, shared passwords, and systems that no longer match the business.'],
     ],
   },
 ]

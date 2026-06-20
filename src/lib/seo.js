@@ -185,6 +185,11 @@ export function getPageMeta(path) {
       description:
         'Contact Fidara Financial Services to discuss accounting, tax, advisory, payroll, managed IT, or U.S. expansion support.',
     },
+    '/thank-you': {
+      title: 'Thank You | Fidara Financial Services',
+      description:
+        'Thank you for contacting Fidara Financial Services. Your inquiry has been received and will be reviewed for the next appropriate step.',
+    },
     '/pricing': {
       title: 'Pricing & Engagements | Fidara Financial Services',
       description:

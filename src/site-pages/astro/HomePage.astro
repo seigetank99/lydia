@@ -1,38 +1,99 @@
 ---
-import { businessStages, lifeMoments, services } from '../../components/site-core/data/index.jsx'
-import MarqueeIconSection from '../../components/astro/MarqueeIconSection.astro'
+import { services } from '../../components/site-core/data/index.jsx'
 import PageShell from '../../components/astro/PageShell.astro'
 import ServiceCard from '../../components/astro/ServiceCard.astro'
+
+const supportAreas = [
+  ['For owners', 'Accounting, tax, payroll, and advisory support for businesses ready to move from reactive bookkeeping to better financial structure.'],
+  ['For families', 'Practical tax and planning conversations for people who want their financial life to feel more organized and understandable.'],
+  ['For founders', 'U.S. setup, accounting systems, compliance workflows, and managed technology support as the business grows.'],
+]
+
+const operatingShift = [
+  ['Before Fidara', 'Fragmented systems, unclear deadlines, reactive reports, and financial questions that linger too long.'],
+  ['With Fidara', 'Cleaner records, calmer communication, connected workflows, and a clearer view of what needs attention next.'],
+  ['Moving forward', 'A trusted financial and operational partner helping you make decisions with more confidence and less noise.'],
+]
+
+const trustPoints = [
+  ['Rooted in trust', 'Fidara draws from Fides, a root associated with trust, faith, and reliability. That idea guides how we communicate, organize work, and protect client confidence.'],
+  ['Built for clarity', 'We translate records, deadlines, systems, and financial questions into practical next steps owners can actually use.'],
+  ['Modern by design', 'We pair steady professional judgment with cloud tools, clean workflows, and responsive communication.'],
+]
 ---
 
 <PageShell>
-  <section id="about" class="relative mx-auto min-h-[calc(100vh-156px)] max-w-7xl overflow-hidden px-8 pb-10 pt-0">
-    <img src="/images/hero-mountain.png" alt="Ink mountain landscape" class="absolute inset-x-0 top-[-8%] h-full w-full object-contain object-center opacity-90 mix-blend-multiply grayscale brightness-[0.9] contrast-[0.96] md:top-[-10%] md:object-right" />
+  <section id="about" class="relative mx-auto min-h-[560px] max-w-7xl overflow-hidden px-5 pb-10 pt-0 md:min-h-[calc(100vh-156px)] md:px-8">
+    <img src="/images/hero-mountain.png" alt="Ink mountain landscape" class="absolute inset-x-0 top-0 h-full w-full object-cover object-center opacity-55 mix-blend-multiply grayscale brightness-[0.9] contrast-[0.96] md:top-[-10%] md:object-contain md:object-right md:opacity-90" />
     <div class="absolute inset-0 bg-[#f7f3eb]/30"></div>
-    <div class="relative z-10 flex min-h-[calc(100vh-230px)] flex-col justify-center md:max-w-3xl">
-      <p class="mb-8 max-w-lg text-xs font-semibold uppercase tracking-[0.35em] text-emerald-800">Secure today with trust,<br />pursue tomorrow with peace.</p>
-      <h1 class="max-w-4xl font-serif text-4xl leading-[1.08] text-slate-950 md:text-6xl">Calm financial guidance for every stage of life and business.</h1>
-      <p class="mt-6 max-w-2xl text-base leading-8 text-slate-700 md:text-lg">Accounting, tax, advisory, payroll, U.S. expansion, and managed technology support for people who want their finances to feel organized enough to move forward.</p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a href="#services" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">Explore Services</a>
-        <a href="/contact" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">Schedule a Call</a>
+    <div class="relative z-10 flex min-h-[440px] flex-col justify-center md:min-h-[calc(100vh-230px)] md:max-w-3xl">
+      <p class="mb-5 max-w-lg text-xs font-semibold uppercase tracking-[0.22em] text-emerald-800 md:mb-8 md:tracking-[0.35em]">Secure today with trust,<br />pursue tomorrow with peace.</p>
+      <h1 class="max-w-4xl font-serif text-4xl leading-[1.08] text-slate-950 sm:text-5xl md:text-6xl">Financial clarity. Operational calm.</h1>
+      <p class="mt-5 max-w-2xl text-base leading-7 text-slate-700 md:mt-6 md:text-lg md:leading-8">Fidara provides modern accounting, tax, advisory, payroll, U.S. expansion, and managed IT support for people and businesses who want the financial side to feel organized, reliable, and clear.</p>
+      <div class="mt-7 flex flex-wrap gap-3 md:mt-8 md:gap-4">
+        <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">Schedule a Consultation</a>
+        <a href="#services" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">Explore Services</a>
       </div>
     </div>
   </section>
-  <MarqueeIconSection id="life-moments" title="WITH YOU FOR ALL OF LIFE’S BIG MOMENTS" items={lifeMoments} direction="left" />
-  <MarqueeIconSection id="business-cycle" title="THERE FOR EVERY STEP OF YOUR GROWTH" items={businessStages} direction="right" />
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">Who we support</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-slate-900">Financial clarity for life, business, and the moments where they overlap.</h2>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        {supportAreas.map(([title, description]) => (
+          <article class="border-t border-stone-200 pt-5">
+            <h3 class="font-serif text-2xl leading-tight text-slate-900">{title}</h3>
+            <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 bg-white/35 px-8 py-14">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">Before and after Fidara</p>
+      <h2 class="mt-5 max-w-3xl font-serif text-4xl leading-tight text-slate-900">A clearer operating rhythm for the work behind the business.</h2>
+      <div class="mt-6 grid gap-5 md:grid-cols-3">
+        {operatingShift.map(([title, description]) => (
+          <article class="rounded-xl border border-stone-200 bg-[#f7f3eb] p-6 shadow-sm">
+            <h3 class="font-serif text-3xl leading-tight text-slate-900">{title}</h3>
+            <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section id="services" class="border-t border-stone-200 px-8 py-12">
-    <h2 class="mx-auto max-w-6xl font-serif text-3xl leading-tight text-slate-900">Core Services</h2>
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">Built for the modern business ecosystem</p>
+      <h2 class="mt-5 max-w-3xl font-serif text-4xl leading-tight text-slate-900">Finance, compliance, payroll, advisory, and technology under one organized relationship.</h2>
+      <p class="mt-5 max-w-3xl text-base leading-8 text-slate-700">Managing a growing business should not mean drowning in operational complexity. Fidara helps unify critical back-office pillars so owners can spend more time on the work they are building.</p>
+    </div>
     <div class="mx-auto mt-6 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
       {services.map((service) => <ServiceCard {...service} />)}
+    </div>
+  </section>
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
+      {trustPoints.map(([title, description]) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <h2 class="font-serif text-3xl leading-tight text-slate-900">{title}</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+        </article>
+      ))}
     </div>
   </section>
   <section id="contact" class="border-t border-stone-200 px-8 py-16">
     <div class="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-emerald-900/10 bg-emerald-900 shadow-sm">
       <div class="grid gap-8 p-8 md:grid-cols-[1fr_auto] md:items-center md:p-12">
         <div>
-          <h2 class="max-w-3xl font-serif text-4xl leading-tight text-white md:text-5xl">Bring us the questions, the records, and the uncertainty.</h2>
-          <p class="mt-5 max-w-2xl text-base leading-8 text-emerald-50/85">We help turn scattered financial details into a clearer path forward.</p>
+          <h2 class="max-w-3xl font-serif text-4xl leading-tight text-white md:text-5xl">Ready to experience true operational calm?</h2>
+          <p class="mt-5 max-w-2xl text-base leading-8 text-emerald-50/85">Let’s discuss how Fidara can streamline your finances, compliance, payroll, and technology.</p>
         </div>
         <div class="flex flex-col gap-3 md:items-end">
           <a href="/contact" class="inline-flex justify-center rounded-md bg-white px-10 py-4 text-sm font-medium text-emerald-900 transition hover:bg-emerald-50">Book a Consultation</a>

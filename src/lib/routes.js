@@ -45,6 +45,7 @@ import TaxCalendarPage from '../site-pages/astro/TaxCalendarPage.astro'
 import TaxResourceDetailPage from '../site-pages/astro/TaxResourceDetailPage.astro'
 import TaxResourcesPage from '../site-pages/astro/TaxResourcesPage.astro'
 import TechnologyPage from '../site-pages/astro/TechnologyPage.astro'
+import ThankYouPage from '../site-pages/astro/ThankYouPage.astro'
 import ToolDetailPage from '../site-pages/astro/ToolDetailPage.astro'
 import ToolsPage from '../site-pages/astro/ToolsPage.astro'
 import USExpansionDetailPage from '../site-pages/astro/USExpansionDetailPage.astro'
@@ -83,6 +84,7 @@ const staticRouteEntries = [
   ['/business-health-check', BusinessHealthCheckPage],
   ['/tax-calendar', TaxCalendarPage],
   ['/tax-advice', TaxAdvicePage],
+  ['/thank-you', ThankYouPage],
   ['/tax-resources', TaxResourcesPage],
   ['/client-document-checklist', ClientDocumentChecklistPage],
   ['/compliance-language', ComplianceLanguagePage],

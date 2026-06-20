@@ -89,6 +89,7 @@ export default async function handler(req, res) {
 
   const name = String(data?.name || '').trim()
   const email = String(data?.email || '').trim()
+  const phone = String(data?.phone || '').trim()
   const service = String(data?.service || '').trim()
   const message = String(data?.message || '').trim()
   const company = String(data?.company || '').trim() // honeypot
@@ -98,20 +99,16 @@ export default async function handler(req, res) {
   // Honeypot: if filled, pretend success.
   if (company) return json(res, 200, { ok: true })
 
-  if (!name || !email || !service || !message) {
+  if (!name || !email || !phone || !service || !message) {
     return json(res, 400, { error: 'Missing required fields.' })
   }
 
-  if (name.length > 120 || email.length > 200 || service.length > 200 || message.length > 5000) {
-    return json(res, 400, { error: 'Message is too long.' })
+  if (name.length > 120 || email.length > 200 || phone.length > 80 || service.length > 200) {
+    return json(res, 400, { error: 'Please shorten your contact details.' })
   }
 
   if (!isEmail(email)) {
     return json(res, 400, { error: 'Please provide a valid email address.' })
-  }
-
-  if (message.length < 20) {
-    return json(res, 400, { error: 'Please include more detail in your message.' })
   }
 
   if (hasSuspiciousContent(name) || hasSuspiciousContent(message)) {
@@ -152,10 +149,27 @@ export default async function handler(req, res) {
   const text =
     `Name: ${name}\n` +
     `Email: ${email}\n` +
+    `Phone: ${phone}\n` +
     `Service: ${service}\n` +
     `IP: ${ip}\n` +
     `\n` +
     `${message}\n`
+
+  const autoReplySubject = 'We received your Fidara inquiry'
+  const autoReplyText =
+    `Hi ${name},\n` +
+    `\n` +
+    `Thank you for contacting Fidara Financial Services. We received your request and will review it carefully.\n` +
+    `\n` +
+    `Here is what you submitted:\n` +
+    `Service interest: ${service}\n` +
+    `Phone: ${phone}\n` +
+    `\n` +
+    `${message}\n` +
+    `\n` +
+    `If anything urgent changes, you can reply directly to this email.\n` +
+    `\n` +
+    `Fidara Financial Services\n`
 
   try {
     await transporter.sendMail({
@@ -164,6 +178,22 @@ export default async function handler(req, res) {
       replyTo: email,
       subject,
       text,
+    })
+
+    transporter.sendMail({
+      to: email,
+      from,
+      replyTo: to,
+      subject: autoReplySubject,
+      text: autoReplyText,
+    }).catch((error) => {
+      console.error('[contact-auto-reply-failed]', {
+        message: error?.message,
+        code: error?.code,
+        command: error?.command,
+        response: error?.response,
+        responseCode: error?.responseCode,
+      })
     })
 
     if (process.env.CONTACT_ALERT_WEBHOOK) {

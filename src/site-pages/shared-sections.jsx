@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react'
 function PageHero({ eyebrow, title, description, children, backgroundImage }) {
   if (backgroundImage) {
     return (
-      <section className="relative mx-auto max-w-7xl overflow-hidden px-8 pb-12 pt-8">
+      <section className="relative mx-auto max-w-7xl overflow-hidden px-5 pb-10 pt-6 md:px-8 md:pb-12 md:pt-8">
         <img
           src={backgroundImage}
           alt=""
@@ -11,10 +11,10 @@ function PageHero({ eyebrow, title, description, children, backgroundImage }) {
         />
         <div className="absolute inset-0 bg-[#f7f3eb]/35" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_35%,rgba(247,243,235,0.10),rgba(247,243,235,0.55)_58%,rgba(247,243,235,0.9)_100%)]" />
-        <div className="relative z-10 max-w-4xl py-8">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-800">{eyebrow}</p>
-          <h1 className="font-serif text-5xl leading-[1.05] text-slate-900 md:text-7xl">{title}</h1>
-          {description && <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-800">{description}</p>}
+        <div className="relative z-10 max-w-4xl py-6 md:py-8">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-800 md:mb-6 md:tracking-[0.35em]">{eyebrow}</p>
+          <h1 className="font-serif text-4xl leading-[1.08] text-slate-900 sm:text-5xl md:text-7xl">{title}</h1>
+          {description && <p className="mt-5 max-w-2xl text-base leading-7 text-slate-800 md:mt-6 md:text-lg md:leading-8">{description}</p>}
           {children}
         </div>
       </section>
@@ -22,18 +22,18 @@ function PageHero({ eyebrow, title, description, children, backgroundImage }) {
   }
 
   return (
-      <section className="mx-auto max-w-7xl px-8 pb-12 pt-8">
+      <section className="mx-auto max-w-7xl px-5 pb-10 pt-6 md:px-8 md:pb-12 md:pt-8">
         <div className="max-w-4xl">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700 md:mb-6 md:tracking-[0.35em]">
             {eyebrow}
           </p>
 
-          <h1 className="font-serif text-5xl leading-[1.05] text-slate-900 md:text-7xl">
+          <h1 className="font-serif text-4xl leading-[1.08] text-slate-900 sm:text-5xl md:text-7xl">
             {title}
           </h1>
 
           {description && (
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-700">
+              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-700 md:mt-6 md:text-lg md:leading-8">
                 {description}
               </p>
           )}

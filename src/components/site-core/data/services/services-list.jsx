@@ -15,10 +15,10 @@ export const services = [
   {
     title: 'Bookkeeping',
     slug: 'bookkeeping',
-    description: 'Clean, organized books that make tax time and decision-making less stressful.',
+    description: 'Clean, organized books that support tax readiness, cash flow clarity, and better decisions.',
     image: '/images/service-bookkeeping.png',
     intro:
-        'Bookkeeping is the foundation. Fidara helps turn scattered transactions, receipts, and statements into records you can trust.',
+        'Bookkeeping is the foundation for a calmer business. Fidara helps turn transactions, receipts, statements, and documents into records you can trust.',
     outcomes: [
       'Monthly transaction review and reconciliation support',
       'Organized records for taxes, planning, lending, and reporting',
@@ -28,10 +28,10 @@ export const services = [
   {
     title: 'Tax',
     slug: 'tax',
-    description: 'Year-round tax clarity so planning does not wait until filing season.',
+    description: 'Year-round tax clarity designed to reduce surprises and support better planning.',
     image: '/images/service-tax.png',
     intro:
-        'Tax should not feel like a surprise at the end of the year. Fidara helps clients prepare earlier, organize better, and make more informed decisions before deadlines arrive.',
+        'Tax should not feel like a surprise at the end of the year. Fidara helps clients prepare earlier, organize better, and understand the planning choices in front of them.',
     outcomes: [
       'Tax-ready books and document organization',
       'Estimated tax and planning conversations',
@@ -41,7 +41,7 @@ export const services = [
   {
     title: 'CFO Services',
     slug: 'cfo-services',
-    description: 'Strategic financial guidance for owners who need more than reports.',
+    description: 'Strategic financial guidance for owners who need more than backward-looking reports.',
     image: '/images/service-cfo-services.png',
     intro:
         'CFO support helps owners move from “what happened?” to “what should we do next?” through forecasting, planning, KPIs, and clearer financial conversations.',
@@ -54,7 +54,7 @@ export const services = [
   {
     title: 'HR & Payroll',
     slug: 'hr-payroll',
-    description: 'Payroll and people workflows that keep growing teams organized.',
+    description: 'Payroll and people workflows that keep growing teams organized and deadline-ready.',
     image: '/images/service-hr-payroll.png',
     intro:
         'As teams grow, payroll becomes more than a pay run. Fidara helps organize the records, approvals, deadlines, and workflows around your people.',
@@ -93,7 +93,7 @@ export const services = [
   {
     title: 'U.S. Expansion',
     slug: 'us-expansion',
-    description: 'Accounting, payroll, tax-readiness, and systems support for U.S. growth.',
+    description: 'Accounting, payroll, tax-readiness, and systems support for entering or growing in the U.S.',
     image: '/images/service-us-expansion.png',
     intro:
         'Entering or expanding in the U.S. requires more than opening accounts. Fidara helps organize the financial, payroll, reporting, and document workflows behind the move.',
@@ -119,10 +119,10 @@ export const services = [
   {
     title: 'Managed IT Services',
     slug: 'managed-it-services',
-    description: 'Reliable technology workflows for businesses that need secure, organized systems.',
+    description: 'Reliable technology workflows for businesses that need secure, organized operations.',
     image: '/images/service-managed-it-services.png',
     intro:
-        'Managed IT support helps protect the systems behind your accounting, payroll, documents, users, devices, and daily operations.',
+        'Managed IT support helps protect the systems behind your accounting, payroll, documents, users, devices, and daily operations so technology becomes less of a distraction.',
     outcomes: [
       'User, device, and access-control workflows',
       'Cybersecurity basics, backup planning, and vendor coordination',
