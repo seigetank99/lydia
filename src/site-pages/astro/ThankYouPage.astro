@@ -1,0 +1,47 @@
+---
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+---
+
+<PageShell active="contact">
+  <PageHero
+    eyebrow="Request received"
+    title="Thank you. We value the opportunity to earn your business."
+    description="Your request has been received by Fidara. One of our team members will review your message and get back to you shortly."
+  />
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      <div class="rounded-xl border border-stone-200 bg-white/70 p-8 shadow-sm md:p-10">
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">We received your inquiry</p>
+        <h2 class="mt-5 font-serif text-4xl leading-tight text-slate-900 md:text-5xl">A thoughtful response is on the way.</h2>
+        <p class="mt-6 max-w-2xl text-base leading-8 text-slate-700">
+          We appreciate you reaching out to Fidara Financial Services. Your message is important to us, and our team will review the details so we can respond with the right next step.
+        </p>
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          {[
+            ['01', 'Review', 'We read through your request, timing, and service needs.'],
+            ['02', 'Match', 'We identify the right team member or next conversation.'],
+            ['03', 'Reply', 'We follow up with questions, scheduling, or recommended next steps.'],
+          ].map(([number, title, description]) => (
+            <div class="border-t border-stone-200 pt-4">
+              <p class="text-xs font-semibold tracking-[0.25em] text-emerald-700">{number}</p>
+              <h3 class="mt-3 font-serif text-2xl text-slate-900">{title}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-700">{description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <aside class="rounded-xl border border-emerald-900 bg-emerald-950 p-8 text-white shadow-sm md:p-10">
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-100">Confirmation sent</p>
+        <h2 class="mt-5 font-serif text-3xl leading-tight">Please check your inbox.</h2>
+        <p class="mt-5 text-sm leading-7 text-emerald-50">
+          We sent an automatic confirmation email with a copy of your request. If you do not see it, check your spam folder or send another note.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="/contact" class="inline-flex rounded-md bg-white px-5 py-3 text-sm font-medium text-emerald-950 transition hover:bg-emerald-50">Add details</a>
+          <a href="/" class="inline-flex rounded-md border border-emerald-200 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10">Return home</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</PageShell>
