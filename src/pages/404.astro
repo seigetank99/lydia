@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import NotFoundPage from '../site-pages/astro/NotFoundPage.astro'
+import { getCanonical, getOgImageUrl, getPageMeta, getStructuredData } from '../lib/seo.js'
+
+const path = '/404'
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl('/')}
+  robots="noindex,nofollow"
+  jsonLd={getStructuredData(path)}
+>
+  <NotFoundPage />
+</BaseLayout>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getAllRoutes, INTERACTIVE_ROUTES, resolveRoute } from '../lib/routes.js'
+import { getCanonical, getOgImageUrl, getPageMeta, getRobotsPolicy, getStructuredData } from '../lib/seo.js'
+
+export function getStaticPaths() {
+  return getAllRoutes()
+    .filter((route) => route !== '/' && !INTERACTIVE_ROUTES.has(route))
+    .map((route) => ({
+      params: { slug: route.slice(1) },
+      props: { path: route },
+    }))
+}
+
+const { path } = Astro.props
+const { component: Component, props } = resolveRoute(path)
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  robots={getRobotsPolicy(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <Component {...props} />
+</BaseLayout>

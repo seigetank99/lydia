@@ -1,0 +1,35 @@
+---
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+
+const groups = [
+  ['Individuals & Families', 'For life transitions, planning conversations, tax clarity, and long-term financial confidence.'],
+  ['Small Business Owners', 'For owners who need clean books, tax support, payroll, reporting, and structure.'],
+  ['Growing Teams', 'For businesses adding employees, locations, vendors, systems, and more operational complexity.'],
+  ['U.S. Expansion Clients', 'For founders and businesses entering or growing in the U.S. market.'],
+  ['Owners With Messy Books', 'For clients who need cleanup, organization, and a reliable monthly rhythm.'],
+  ['Advisory-Ready Operators', 'For businesses ready for CFO support, forecasting, KPIs, and better decision-making.'],
+]
+---
+
+<PageShell active="about">
+  <PageHero eyebrow="Who We Help" title="Support for families, founders, operators, and growing teams." description="Fidara connects life moments and business growth with the financial structure needed to move forward with confidence." />
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {groups.map(([title, description]) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <h3 class="font-serif text-3xl leading-tight text-slate-900">{title}</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-8 rounded-xl border border-stone-200 bg-white/60 p-8 shadow-sm md:grid-cols-[1fr_auto] md:items-center">
+      <h2 class="font-serif text-4xl leading-tight text-slate-900">Not sure where you fit?</h2>
+      <a href="/contact" class="inline-flex rounded-md bg-emerald-600 px-10 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">Start the Conversation</a>
+    </div>
+  </section>
+</PageShell>

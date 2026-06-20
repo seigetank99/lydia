@@ -1,0 +1,36 @@
+---
+import SectionTitle from './SectionTitle.astro'
+
+const {
+  id,
+  title,
+  items = [],
+  direction = 'left',
+} = Astro.props
+
+const repeatedItems = [...items, ...items]
+const marqueeClass = direction === 'left' ? 'fidara-marquee-left' : 'fidara-marquee-right'
+---
+
+<section id={id} class="scroll-mt-24 border-t border-stone-200 px-8 py-10">
+  <SectionTitle>{title}</SectionTitle>
+
+  <div class="relative mx-auto max-w-7xl overflow-hidden border-y border-stone-200 py-6">
+    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-[#f7f3eb] to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-[#f7f3eb] to-transparent"></div>
+
+    <div class:list={[marqueeClass, 'flex w-max gap-4']}>
+      {repeatedItems.map(([label, image], index) => (
+        <div class="flex min-w-[190px] flex-col items-center justify-center rounded-xl border border-stone-200 bg-white/50 px-6 py-5 text-center shadow-sm">
+          <img
+            src={image}
+            alt={label}
+            class="mb-3 h-20 w-20 object-contain mix-blend-multiply"
+            style={`animation-delay:${(index % items.length) * 0.12}s;`}
+          />
+          <p class="text-sm leading-5 text-slate-800">{label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

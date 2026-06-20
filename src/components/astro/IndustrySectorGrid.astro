@@ -1,0 +1,35 @@
+---
+import { industrySectors } from '../site-core/data/industry/index.jsx'
+---
+
+<div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
+  {industrySectors.map((sector) => (
+    <article
+      id={`sector-${sector.slug}`}
+      class="scroll-mt-24 rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm"
+    >
+      <div class="flex items-center gap-4">
+        <img
+          src={sector.industries[0][1]}
+          alt=""
+          class="h-14 w-14 flex-none object-contain mix-blend-multiply"
+        />
+        <div>
+          <h3 class="font-serif text-2xl leading-tight text-slate-900">
+            {sector.title}
+          </h3>
+        </div>
+      </div>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        {sector.industries.map(([label]) => (
+          <span
+            class="rounded-md border border-stone-200 bg-[#f7f3eb] px-3 py-1.5 text-xs leading-5 text-slate-700"
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+    </article>
+  ))}
+</div>

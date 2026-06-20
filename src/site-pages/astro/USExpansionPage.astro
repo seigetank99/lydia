@@ -1,0 +1,36 @@
+---
+import { usExpansionPages } from '../../components/site-core/data/index.jsx'
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+---
+
+<PageShell active="services">
+  <PageHero
+    eyebrow="U.S. Expansion"
+    title="A financial and systems foundation for entering or growing in the U.S."
+    description="Fidara helps founders and businesses create the accounting, payroll, tax-readiness, and system workflows needed to operate with confidence."
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Talk About Expansion
+      </a>
+      <a href="/us-expansion/accounting-setup" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+        Explore Setup
+      </a>
+    </div>
+  </PageHero>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-4">
+      {usExpansionPages.map((page) => (
+        <a
+          href={`/us-expansion/${page.slug}`}
+          class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
+        >
+          <h3 class="font-serif text-2xl leading-tight text-slate-900">{page.title}</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{page.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</PageShell>

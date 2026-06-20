@@ -1,0 +1,102 @@
+---
+import { mailto } from '../../components/site-core/data/index.jsx'
+import PageShell from '../../components/astro/PageShell.astro'
+import RelatedLinksSection from '../../components/astro/RelatedLinksSection.astro'
+import SectionTitle from '../../components/astro/SectionTitle.astro'
+import ServiceDetailsSection from '../../components/astro/ServiceDetailsSection.astro'
+
+const { service } = Astro.props
+---
+
+<PageShell active="services">
+  <section class="mx-auto grid max-w-7xl items-center gap-12 px-8 pb-16 pt-8 md:grid-cols-[1fr_0.85fr]">
+    <div>
+      <a
+        href="/#services"
+        class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-emerald-700 transition hover:text-emerald-900"
+      >
+        <span aria-hidden="true">←</span>
+        All services
+      </a>
+
+      <p class="mb-6 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">
+        Fidara Core Service
+      </p>
+
+      <h1 class="font-serif text-5xl leading-[1.05] text-slate-900 md:text-7xl">
+        {service.title}
+      </h1>
+
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-700">
+        {service.intro}
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+          Start the Conversation
+        </a>
+        <a href="/" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+          Return Home
+        </a>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-stone-200 bg-white/70 p-10 text-center shadow-sm">
+      <img
+        src={service.image}
+        alt={service.title}
+        class="mx-auto h-40 w-40 object-contain mix-blend-multiply"
+      />
+      <p class="mx-auto mt-6 max-w-sm text-sm leading-6 text-slate-700">
+        {service.description}
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <SectionTitle>WHAT WE FOCUS ON</SectionTitle>
+        <p class="text-base leading-8 text-slate-700">
+          Fidara builds the financial structure behind the work, keeping the details clear enough to support day-to-day decisions and long-term planning.
+        </p>
+      </div>
+
+      <div class="grid gap-4">
+        {service.outcomes.map((outcome) => (
+          <div class="flex items-start gap-4 border-b border-stone-200 pb-4 last:border-b-0">
+            <span class="mt-1 h-5 w-5 flex-none text-emerald-600">✓</span>
+            <p class="text-base leading-7 text-slate-800">{outcome}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ServiceDetailsSection service={service} />
+
+  <RelatedLinksSection
+    title="Related Service Pages"
+    links={[
+      ['All Services', '/services'],
+      ['Bookkeeping', '/services/bookkeeping'],
+      ['Tax', '/services/tax'],
+      ['CFO Services', '/services/cfo-services'],
+      ['Managed IT Services', '/services/managed-it-services'],
+      ['Pricing', '/pricing'],
+      ['Book a Consultation', '/contact'],
+    ]}
+  />
+
+  <section id="contact" class="mx-auto max-w-6xl px-8 py-8">
+    <div class="grid items-center gap-8 rounded-xl border border-stone-200 bg-white/60 p-8 shadow-sm md:grid-cols-[1fr_auto]">
+      <h2 class="font-serif text-4xl leading-tight text-slate-900">
+        Need clarity around {service.title.toLowerCase()}?
+      </h2>
+
+      <a href={mailto()} class="inline-flex rounded-md bg-emerald-600 px-10 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Contact Fidara
+      </a>
+    </div>
+  </section>
+</PageShell>

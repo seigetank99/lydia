@@ -1,14 +1,10 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
-import { industrySectors, isInternalRoute, services } from '../../data/index.jsx'
+import { industrySectors, services } from '../../data/index.jsx'
 import { NavDropdown } from './nav-dropdown.jsx'
 import { AnnouncementStrip } from './announcement-strip.jsx'
 import { CookieBanner } from './cookie-banner.jsx'
 
 function Header({ active = 'home' }) {
-  const [mobileOpen, setMobileOpen] = useState(false)
-
   const navMenus = [
     {
       label: 'Home',
@@ -124,13 +120,13 @@ function Header({ active = 'home' }) {
         </a>
         <AnnouncementStrip />
         <header className="relative z-40 mx-auto flex max-w-7xl items-center justify-between px-8 py-3">
-          <Link to="/" className="block" aria-label="Fidara Financial Services home">
+          <a href="/" className="block" aria-label="Fidara Financial Services home">
             <img
                 src="/images/logo.png"
                 alt="Fidara Financial Services"
                 className="h-32 w-auto mix-blend-multiply md:h-36"
             />
-          </Link>
+          </a>
 
           <nav className="hidden items-center gap-8 text-sm text-slate-900 md:flex" aria-label="Primary navigation">
             {navMenus.map((menu) => (
@@ -147,83 +143,53 @@ function Header({ active = 'home' }) {
           </nav>
 
           <div className="hidden md:block">
-            <Link
-                to="/contact"
+            <a
+                href="/contact"
                 className="rounded-md border border-emerald-600 px-7 py-3 text-sm text-slate-900 transition hover:bg-emerald-700 hover:text-white"
             >
               Book a Consultation
-            </Link>
+            </a>
           </div>
 
-          <button
-              type="button"
-              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              aria-expanded={mobileOpen}
-              onClick={() => setMobileOpen((open) => !open)}
-              className="inline-flex rounded-md border border-stone-300 bg-white/60 p-3 text-slate-900 shadow-sm md:hidden"
-          >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-
-          {mobileOpen && (
-              <div className="absolute left-4 right-4 top-full z-50 rounded-2xl border border-stone-200 bg-[#f7f3eb]/98 p-5 shadow-2xl backdrop-blur md:hidden">
+          <details className="relative md:hidden">
+            <summary className="inline-flex list-none rounded-md border border-stone-300 bg-white/60 p-3 text-slate-900 shadow-sm marker:content-none">
+              <Menu className="details-open:hidden h-5 w-5" />
+              <X className="hidden h-5 w-5 details-open:block" />
+            </summary>
+              <div className="absolute right-0 top-full z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-2xl border border-stone-200 bg-[#f7f3eb]/98 p-5 shadow-2xl backdrop-blur">
                 <nav className="grid gap-5" aria-label="Mobile navigation">
                   {navMenus.map((menu) => (
                       <div key={menu.label} className="border-b border-stone-200 pb-4 last:border-b-0 last:pb-0">
-                        {isInternalRoute(menu.href) ? (
-                            <Link
-                                to={menu.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="font-serif text-2xl text-slate-900"
-                            >
-                              {menu.label}
-                            </Link>
-                        ) : (
-                            <a
-                                href={menu.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="font-serif text-2xl text-slate-900"
-                            >
-                              {menu.label}
-                            </a>
-                        )}
+                        <a
+                            href={menu.href}
+                            className="font-serif text-2xl text-slate-900"
+                        >
+                          {menu.label}
+                        </a>
 
                         <div className="mt-3 grid gap-2">
                           {menu.items.map((item) => (
-                              isInternalRoute(item.href) ? (
-                                  <Link
-                                      key={`${menu.label}-${item.label}`}
-                                      to={item.href}
-                                      onClick={() => setMobileOpen(false)}
-                                      className="rounded-md px-2 py-1.5 text-sm leading-5 text-slate-700 transition hover:bg-white/70 hover:text-emerald-800"
-                                  >
-                                    {item.label}
-                                  </Link>
-                              ) : (
-                                  <a
-                                      key={`${menu.label}-${item.label}`}
-                                      href={item.href}
-                                      onClick={() => setMobileOpen(false)}
-                                      className="rounded-md px-2 py-1.5 text-sm leading-5 text-slate-700 transition hover:bg-white/70 hover:text-emerald-800"
-                                  >
-                                    {item.label}
-                                  </a>
-                              )
+                              <a
+                                  key={`${menu.label}-${item.label}`}
+                                  href={item.href}
+                                  className="rounded-md px-2 py-1.5 text-sm leading-5 text-slate-700 transition hover:bg-white/70 hover:text-emerald-800"
+                              >
+                                {item.label}
+                              </a>
                           ))}
                         </div>
                       </div>
                   ))}
 
-                  <Link
-                      to="/contact"
-                      onClick={() => setMobileOpen(false)}
+                  <a
+                      href="/contact"
                       className="rounded-md bg-emerald-600 px-7 py-3 text-center text-sm font-medium text-white transition hover:bg-emerald-700"
                   >
                     Book a Consultation
-                  </Link>
+                  </a>
                 </nav>
               </div>
-          )}
+          </details>
         </header>
         <CookieBanner />
       </>

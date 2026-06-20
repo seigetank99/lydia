@@ -1,0 +1,47 @@
+---
+const faqs = [
+  {
+    q: 'What does Fidara actually do?',
+    a: 'Fidara provides accounting, bookkeeping, tax support, payroll coordination, advisory, U.S. expansion support, and managed IT services for growing businesses and individuals.',
+  },
+  {
+    q: 'Who is Fidara best for?',
+    a: 'Fidara is designed for founders, operators, families, and business owners who want clearer financial structure, cleaner records, and practical support that grows with them.',
+  },
+  {
+    q: 'Can I hire Fidara for one service only?',
+    a: 'Yes. Many clients start with one need (for example bookkeeping cleanup or tax support) and expand into a broader relationship over time.',
+  },
+  {
+    q: 'Do you support clients remotely?',
+    a: 'Yes. Fidara can support clients remotely and locally across its primary service areas.',
+  },
+  {
+    q: 'Do you provide legal or investment advice?',
+    a: 'No. Fidara does not provide legal or investment advice unless separately licensed and engaged for specific services.',
+  },
+  {
+    q: 'How fast can we get started?',
+    a: 'Timing depends on urgency, service scope, and document readiness. The first step is a consultation to understand priorities and define next steps.',
+  },
+]
+import SectionTitle from './SectionTitle.astro'
+---
+
+<section id="faq" class="scroll-mt-24 border-t border-stone-200 px-8 py-12">
+  <SectionTitle>FREQUENTLY ASKED QUESTIONS</SectionTitle>
+  <div class="mx-auto grid max-w-5xl gap-3">
+    {faqs.map((item) => (
+      <details class="group rounded-xl border border-stone-200 bg-white/60 p-5 shadow-sm">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
+          <h3 class="font-serif text-2xl leading-tight text-slate-900">
+            {item.q}
+          </h3>
+          <span class="h-5 w-5 flex-none text-emerald-700 transition group-open:rotate-180">⌄</span>
+        </summary>
+
+        <p class="mt-4 text-sm leading-7 text-slate-700">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

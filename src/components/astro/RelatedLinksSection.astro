@@ -1,0 +1,22 @@
+---
+const { title = 'Related Pages', links = [] } = Astro.props
+---
+
+<section class="border-t border-stone-200 px-8 py-10">
+  <div class="mx-auto max-w-6xl rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700">
+      {title}
+    </p>
+
+    <div class="mt-4 flex flex-wrap gap-3">
+      {links.map(([label, href]) => (
+        <a
+          href={href}
+          class="rounded-md border border-stone-200 bg-[#f7f3eb] px-4 py-2 text-xs font-medium text-slate-700 transition hover:border-emerald-600 hover:text-emerald-700"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

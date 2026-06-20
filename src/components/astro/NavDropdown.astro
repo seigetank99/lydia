@@ -1,0 +1,52 @@
+---
+const { label, href, active = false, items = [], width = 'w-64' } = Astro.props
+---
+
+<div class="group relative">
+  <div class="flex items-center gap-1.5">
+    <a
+      class:list={[
+        'inline-flex items-center pb-2 transition hover:text-emerald-700',
+        active && 'border-b border-emerald-500',
+      ]}
+      href={href}
+    >
+      {label}
+    </a>
+
+    <span
+      aria-hidden="true"
+      class="mb-2 inline-flex rounded-sm p-1 text-slate-700 transition group-hover:text-emerald-700 group-focus-within:text-emerald-700"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-3.5 w-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180"
+      >
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </span>
+  </div>
+
+  <div class:list={[
+    'pointer-events-none absolute left-1/2 top-full z-30 -translate-x-1/2 pt-2 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100',
+    width,
+  ]}>
+    <div class="rounded-lg border border-stone-200 bg-white/95 p-3 text-left shadow-xl backdrop-blur">
+      <div class="grid gap-1.5">
+        {items.map((item) => (
+          <a
+            href={item.href}
+            class="rounded-md px-3 py-2 text-sm leading-5 text-slate-700 transition hover:bg-[#f7f3eb] hover:text-emerald-800 focus:bg-[#f7f3eb] focus:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

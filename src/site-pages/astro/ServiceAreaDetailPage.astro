@@ -1,0 +1,27 @@
+---
+import { services } from '../../components/site-core/data/index.jsx'
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+import ServiceCard from '../../components/astro/ServiceCard.astro'
+
+const { area } = Astro.props
+---
+
+<PageShell active="contact">
+  <PageHero eyebrow="Service Area" title={area.title} description={area.description}>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Contact Fidara
+      </a>
+      <a href="/service-areas" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+        All Service Areas
+      </a>
+    </div>
+  </PageHero>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-4">
+      {services.slice(0, 4).map((service) => <ServiceCard {...service} />)}
+    </div>
+  </section>
+</PageShell>

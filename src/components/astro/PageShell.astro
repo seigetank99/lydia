@@ -1,0 +1,12 @@
+---
+import Header from './Header.astro'
+import Footer from './Footer.astro'
+
+const { active = 'home' } = Astro.props
+---
+
+<main id="main-content" class="min-h-screen bg-[#f7f3eb] text-slate-900">
+  <Header active={active} />
+  <slot />
+  <Footer />
+</main>

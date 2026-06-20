@@ -1,0 +1,30 @@
+---
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+
+const pillars = [
+  ['Clarity', 'We translate financial details into decisions people can use.'],
+  ['Trust', 'We build consistent systems, communication, and long-term relationships.'],
+  ['Growth', 'We help clients prepare for each next stage, not react to deadlines.'],
+]
+---
+
+<PageShell active="about">
+  <PageHero eyebrow="About Fidara" title="Built on trust, clarity, and calm financial structure." description="Fidara exists for people and businesses who want their financial lives to feel more organized, intentional, and understandable." backgroundImage="/images/about.png" />
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+      {pillars.map(([title, description]) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <h2 class="font-serif text-3xl text-slate-900">{title}</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto max-w-6xl rounded-xl border border-stone-200 bg-white/60 p-8 shadow-sm">
+      <h2 class="font-serif text-4xl leading-tight text-slate-900">Secure today with trust. Pursue tomorrow with peace.</h2>
+      <p class="mt-4 text-base leading-8 text-slate-700">Fidara brings accounting, tax, payroll, advisory, and systems support into one relationship so decisions feel clearer and less stressful.</p>
+    </div>
+  </section>
+</PageShell>

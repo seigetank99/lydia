@@ -1,0 +1,92 @@
+---
+import '../index.css'
+
+const {
+  title,
+  description,
+  canonical,
+  robots = 'index,follow',
+  ogImage = '/images/hero-mountain.png',
+  jsonLd = [],
+} = Astro.props
+
+const jsonLdBlocks = Array.isArray(jsonLd) ? jsonLd : [jsonLd]
+const ga4Id = import.meta.env.PUBLIC_GA4_ID || ''
+const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING === 'true'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#f7f3eb" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <meta property="og:site_name" content="Fidara Financial Services" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Fidara Financial Services" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {jsonLdBlocks.filter(Boolean).map((entry) => (
+      <script type="application/ld+json" set:html={JSON.stringify(entry)} />
+    ))}
+  </head>
+  <body>
+    <slot />
+    <script is:inline define:vars={{ ga4Id, enableClientErrorReporting }}>
+      if (ga4Id && !document.querySelector(`script[data-ga4="${ga4Id}"]`)) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${ga4Id}`;
+        script.setAttribute('data-ga4', ga4Id);
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function gtag() {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag('js', new Date());
+        window.gtag('config', ga4Id, { page_path: window.location.pathname + window.location.search });
+      }
+
+      if (enableClientErrorReporting) {
+        const report = async (payload) => {
+          try {
+            await fetch('/api/client-error', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+          } catch {}
+        };
+
+        window.addEventListener('error', (event) => {
+          report({
+            type: 'error',
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+          });
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+          report({
+            type: 'unhandledrejection',
+            message: String(event.reason?.message || event.reason || ''),
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

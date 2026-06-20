@@ -1,0 +1,47 @@
+---
+import PageShell from '../../components/astro/PageShell.astro'
+import PageHero from '../../components/astro/PageHero.astro'
+import RelatedLinksSection from '../../components/astro/RelatedLinksSection.astro'
+
+const { article } = Astro.props
+---
+
+<PageShell active="resources">
+  <PageHero eyebrow={article.category} title={article.title} description={article.description} />
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-5xl gap-5">
+      {article.sections.map(([title, body], index) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700">
+            {String(index + 1).padStart(2, '0')}
+          </p>
+          <h2 class="mt-4 font-serif text-3xl leading-tight text-slate-900">{title}</h2>
+          <p class="mt-4 text-base leading-8 text-slate-700">{body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-10">
+    <div class="mx-auto flex max-w-5xl flex-wrap gap-4">
+      <a href="/resources" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+        All Resources
+      </a>
+      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Discuss with Fidara
+      </a>
+    </div>
+  </section>
+
+  <RelatedLinksSection
+    title="More Resources"
+    links={[
+      ['All Resources', '/resources'],
+      ['Tools & Checklists', '/tools'],
+      ['Monthly Close Checklist', '/tools/monthly-close-checklist'],
+      ['Tax Season Organizer', '/tools/tax-season-organizer'],
+      ['Book a Consultation', '/contact'],
+    ]}
+  />
+</PageShell>

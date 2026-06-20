@@ -1,0 +1,19 @@
+---
+const { items = [], columns = 'md:grid-cols-6' } = Astro.props
+---
+
+<div class:list={['mx-auto grid max-w-6xl grid-cols-2 gap-y-8', columns]}>
+  {items.map(([label, image], index) => (
+    <div class:list={[
+      'flex flex-col items-center px-6 text-center',
+      index % 6 !== 0 && 'md:border-l md:border-stone-200',
+    ]}>
+      <img
+        src={image}
+        alt={label}
+        class="mb-3 h-20 w-20 object-contain mix-blend-multiply"
+      />
+      <p class="text-sm leading-5 text-slate-800">{label}</p>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,24 @@
+---
+import { serviceAreas } from '../../components/site-core/data/index.jsx'
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+---
+
+<PageShell active="contact">
+  <PageHero
+    eyebrow="Service Areas"
+    title="Financial clarity for businesses across the region."
+    description="Fidara can support clients locally and remotely across New York, New Jersey, Connecticut, and beyond."
+  />
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
+      {serviceAreas.map((area) => (
+        <a href={`/service-areas/${area.slug}`} class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm transition hover:-translate-y-1 hover:bg-white hover:shadow-md">
+          <h3 class="font-serif text-3xl text-slate-900">{area.title}</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{area.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</PageShell>

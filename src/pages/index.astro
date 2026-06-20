@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { resolveRoute } from '../lib/routes.js'
+import { getCanonical, getOgImageUrl, getPageMeta, getRobotsPolicy, getStructuredData } from '../lib/seo.js'
+
+const path = '/'
+const { component: Component, props } = resolveRoute(path)
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  robots={getRobotsPolicy(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <Component {...props} />
+</BaseLayout>

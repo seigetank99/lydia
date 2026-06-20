@@ -1,0 +1,205 @@
+---
+import { industrySectors, services } from '../site-core/data/index.jsx'
+import AnnouncementStrip from './AnnouncementStrip.astro'
+import CookieBanner from './CookieBanner.astro'
+import NavDropdown from './NavDropdown.astro'
+
+const { active = 'home' } = Astro.props
+
+const navMenus = [
+  {
+    label: 'Home',
+    href: '/',
+    active: active === 'home',
+    items: [
+      { label: 'Overview', href: '/' },
+      { label: 'Start Here', href: '/start' },
+      { label: 'Life’s Big Moments', href: '/#life-moments' },
+      { label: 'Every Step of Growth', href: '/#business-cycle' },
+      { label: 'Core Services', href: '/#services' },
+      { label: 'Sectors We Support', href: '/#sectors' },
+      { label: 'FAQ', href: '/#faq' },
+    ],
+  },
+  {
+    label: 'About',
+    href: '/about',
+    active: active === 'about',
+    width: 'w-72',
+    items: [
+      { label: 'About Fidara', href: '/about' },
+      { label: 'Who We Help', href: '/who-we-help' },
+      { label: 'Start Here', href: '/start' },
+      { label: 'Case Studies', href: '/case-studies' },
+      { label: 'Technology', href: '/technology' },
+      { label: 'Client Portal', href: '/client-portal' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Careers', href: '/careers' },
+      { label: 'Partners', href: '/partners' },
+    ],
+  },
+  {
+    label: 'Services',
+    href: '/services',
+    active: active === 'services',
+    width: 'w-72',
+    items: [
+      { label: 'All Services', href: '/services' },
+      { label: 'Tax Advice Center', href: '/tax-advice' },
+      { label: 'Tax Resource Library', href: '/tax-resources' },
+      { label: 'U.S. Expansion Hub', href: '/us-expansion' },
+      ...services.map((service) => ({
+        label: service.title,
+        href: `/services/${service.slug}`,
+      })),
+    ],
+  },
+  {
+    label: 'Sectors',
+    href: '/sectors',
+    active: active === 'sectors',
+    width: 'w-72',
+    items: [
+      { label: 'All Sectors', href: '/sectors' },
+      { label: 'Industry Pages', href: '/industries' },
+      ...industrySectors.map((sector) => ({
+        label: sector.title,
+        href: `/sectors/${sector.slug}`,
+      })),
+    ],
+  },
+  {
+    label: 'Resources',
+    href: '/resources',
+    active: active === 'resources',
+    width: 'w-80',
+    items: [
+      { label: 'All Resources', href: '/resources' },
+      { label: 'Tax Advice Center', href: '/tax-advice' },
+      { label: 'Tools & Checklists', href: '/tools' },
+      { label: 'Business Health Check', href: '/business-health-check' },
+      { label: 'Tax Calendar', href: '/tax-calendar' },
+      { label: 'Client Document Checklist', href: '/client-document-checklist' },
+      { label: 'Newsletter', href: '/newsletter' },
+      { label: 'Launch Readiness', href: '/launch-readiness' },
+      { label: 'Compliance Language', href: '/compliance-language' },
+      { label: 'Clean Up Messy Books', href: '/resources/clean-up-messy-books' },
+      { label: 'When You Need CFO Services', href: '/resources/when-you-need-cfo-services' },
+      { label: 'Payroll Checklist', href: '/resources/payroll-checklist' },
+      { label: 'Managed IT Basics', href: '/resources/managed-it-basics' },
+      { label: 'Onboarding', href: '/onboarding' },
+      { label: 'Pricing / Engagements', href: '/pricing' },
+    ],
+  },
+  {
+    label: 'Contact',
+    href: '/contact',
+    active: active === 'contact',
+    width: 'w-72',
+    items: [
+      { label: 'Book a Consultation', href: '/contact' },
+      { label: 'Referrals', href: '/referrals' },
+      { label: 'Service Areas', href: '/service-areas' },
+      { label: 'Client Portal', href: '/client-portal' },
+      { label: 'Pricing / Engagements', href: '/pricing' },
+      { label: 'Onboarding Process', href: '/onboarding' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Use', href: '/terms' },
+      { label: 'Disclaimer', href: '/disclaimer' },
+    ],
+  },
+]
+---
+
+<a
+  href="#main-content"
+  class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:text-slate-900 focus:shadow-lg"
+>
+  Skip to main content
+</a>
+<AnnouncementStrip />
+<header class="relative z-40 mx-auto flex max-w-7xl items-center justify-between px-8 py-3">
+  <a href="/" class="block" aria-label="Fidara Financial Services home">
+    <img
+      src="/images/logo.png"
+      alt="Fidara Financial Services"
+      class="h-32 w-auto mix-blend-multiply md:h-36"
+    />
+  </a>
+
+  <nav class="hidden items-center gap-8 text-sm text-slate-900 md:flex" aria-label="Primary navigation">
+    {navMenus.map((menu) => (
+      <NavDropdown {...menu} />
+    ))}
+  </nav>
+
+  <div class="hidden md:block">
+    <a
+      href="/contact"
+      class="rounded-md border border-emerald-600 px-7 py-3 text-sm text-slate-900 transition hover:bg-emerald-700 hover:text-white"
+    >
+      Book a Consultation
+    </a>
+  </div>
+
+  <details class="relative md:hidden">
+    <summary class="inline-flex list-none rounded-md border border-stone-300 bg-white/60 p-3 text-slate-900 shadow-sm marker:content-none">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="block h-5 w-5 details-open:hidden"
+      >
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
+      </svg>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="hidden h-5 w-5 details-open:block"
+      >
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </summary>
+
+    <div class="absolute right-0 top-full z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-2xl border border-stone-200 bg-[#f7f3eb]/98 p-5 shadow-2xl backdrop-blur">
+      <nav class="grid gap-5" aria-label="Mobile navigation">
+        {navMenus.map((menu) => (
+          <div class="border-b border-stone-200 pb-4 last:border-b-0 last:pb-0">
+            <a href={menu.href} class="font-serif text-2xl text-slate-900">
+              {menu.label}
+            </a>
+
+            <div class="mt-3 grid gap-2">
+              {menu.items.map((item) => (
+                <a
+                  href={item.href}
+                  class="rounded-md px-2 py-1.5 text-sm leading-5 text-slate-700 transition hover:bg-white/70 hover:text-emerald-800"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <a
+          href="/contact"
+          class="rounded-md bg-emerald-600 px-7 py-3 text-center text-sm font-medium text-white transition hover:bg-emerald-700"
+        >
+          Book a Consultation
+        </a>
+      </nav>
+    </div>
+  </details>
+</header>
+<CookieBanner />

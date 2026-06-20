@@ -4,35 +4,34 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build:client": "vite build",
-    "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
-    "build": "npm run build:client && npm run build:server && node scripts/prerender.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "astro preview",
+    "check:api": "node scripts/check-api-handlers.mjs",
     "check:launch-gates": "node scripts/check-launch-gates.mjs",
-    "ci": "npm run lint && npm run build && npm run check:launch-gates"
+    "ci": "npm run lint && npm run check:api && npm run build && npm run check:launch-gates"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.4",
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^6.4.8",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
     "nodemailer": "^8.0.7",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.2",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/postcss": "^4.3.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^10.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
-    "sharp": "^0.34.5",
-    "vite": "^8.0.10"
+    "sharp": "^0.34.5"
   }
 }

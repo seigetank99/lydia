@@ -1,0 +1,30 @@
+---
+const { eyebrow, title, description, backgroundImage } = Astro.props
+---
+
+{backgroundImage ? (
+  <section class="relative mx-auto max-w-7xl overflow-hidden px-8 pb-12 pt-8">
+    <img
+      src={backgroundImage}
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-multiply brightness-[0.94] contrast-[0.9] sepia-[0.06]"
+    />
+    <div class="absolute inset-0 bg-[#f7f3eb]/35"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_68%_35%,rgba(247,243,235,0.10),rgba(247,243,235,0.55)_58%,rgba(247,243,235,0.9)_100%)]"></div>
+    <div class="relative z-10 max-w-4xl py-8">
+      <p class="mb-6 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-800">{eyebrow}</p>
+      <h1 class="font-serif text-5xl leading-[1.05] text-slate-900 md:text-7xl">{title}</h1>
+      {description && <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-800">{description}</p>}
+      <slot />
+    </div>
+  </section>
+) : (
+  <section class="mx-auto max-w-7xl px-8 pb-12 pt-8">
+    <div class="max-w-4xl">
+      <p class="mb-6 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">{eyebrow}</p>
+      <h1 class="font-serif text-5xl leading-[1.05] text-slate-900 md:text-7xl">{title}</h1>
+      {description && <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-700">{description}</p>}
+      <slot />
+    </div>
+  </section>
+)}

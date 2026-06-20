@@ -1,0 +1,19 @@
+---
+import ContactPage from '../site-pages/routes/ContactPage.jsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getPageMeta, getRobotsPolicy, getStructuredData } from '../lib/seo.js'
+
+const path = '/contact'
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  robots={getRobotsPolicy(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <ContactPage client:load />
+</BaseLayout>

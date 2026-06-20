@@ -1,0 +1,28 @@
+---
+const { items = [] } = Astro.props
+---
+
+{items.length > 0 && (
+  <nav class="mx-auto max-w-7xl px-8 pt-4 text-xs text-slate-500" aria-label="Breadcrumb">
+    <ol class="flex flex-wrap items-center gap-2">
+      <li>
+        <a href="/" class="transition hover:text-emerald-700">
+          Home
+        </a>
+      </li>
+
+      {items.map((item) => (
+        <li class="flex items-center gap-2">
+          <span>/</span>
+          {item.href ? (
+            <a href={item.href} class="transition hover:text-emerald-700">
+              {item.label}
+            </a>
+          ) : (
+            <span class="text-slate-700">{item.label}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

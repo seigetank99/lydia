@@ -1,0 +1,19 @@
+---
+import TaxAdvicePage from '../site-pages/routes/TaxAdvicePage.jsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getPageMeta, getRobotsPolicy, getStructuredData } from '../lib/seo.js'
+
+const path = '/tax-advice'
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  robots={getRobotsPolicy(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <TaxAdvicePage client:load />
+</BaseLayout>

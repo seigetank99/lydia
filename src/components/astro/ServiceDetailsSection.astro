@@ -1,0 +1,37 @@
+---
+import { serviceContent } from '../site-core/data/services/index.jsx'
+
+const { service } = Astro.props
+const details = serviceContent[service.slug]
+const columns = details
+  ? [
+      ['Who it is for', details.whoFor],
+      ['Common problems solved', details.problems],
+      ['What is included', details.included],
+      ['What is not included', details.notIncluded],
+    ]
+  : []
+---
+
+{details && (
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-4">
+      {columns.map(([title, items]) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <h2 class="font-serif text-2xl leading-tight text-slate-900">
+            {title}
+          </h2>
+
+          <div class="mt-5 grid gap-3">
+            {items.map((item) => (
+              <div class="flex items-start gap-3">
+                <span class="mt-0.5 h-5 w-5 flex-none text-emerald-600">✓</span>
+                <p class="text-sm leading-6 text-slate-700">{item}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+)}

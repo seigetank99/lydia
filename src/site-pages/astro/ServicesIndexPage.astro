@@ -1,0 +1,45 @@
+---
+import { services } from '../../components/site-core/data/index.jsx'
+import PageShell from '../../components/astro/PageShell.astro'
+import PageHero from '../../components/astro/PageHero.astro'
+import ServiceCard from '../../components/astro/ServiceCard.astro'
+---
+
+<PageShell active="services">
+  <PageHero
+    eyebrow="Fidara Core Services"
+    title="Support for the financial, operational, and technology backbone of your business."
+    description="Start with one service or build a relationship that grows with you. Each service page explains what we focus on and how Fidara helps create structure."
+    backgroundImage="/images/service.png"
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Book a Consultation
+      </a>
+      <a href="/sectors" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+        View Sectors
+      </a>
+    </div>
+  </PageHero>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <div class="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {services.map((service) => <ServiceCard {...service} />)}
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+      {[
+        ['Foundation', 'Bookkeeping, tax readiness, clean records, and reliable reporting.'],
+        ['Growth', 'Payroll, AP, spend management, advisory, and ongoing financial support.'],
+        ['Strategic', 'CFO services, U.S. expansion, wealth coordination, and managed IT services.'],
+      ].map(([title, description]) => (
+        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
+          <h3 class="font-serif text-3xl text-slate-900">{title}</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</PageShell>

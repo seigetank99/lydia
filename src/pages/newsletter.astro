@@ -1,0 +1,19 @@
+---
+import NewsletterPage from '../site-pages/routes/NewsletterPage.jsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getPageMeta, getRobotsPolicy, getStructuredData } from '../lib/seo.js'
+
+const path = '/newsletter'
+const meta = getPageMeta(path)
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  robots={getRobotsPolicy(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <NewsletterPage client:load />
+</BaseLayout>

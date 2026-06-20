@@ -2,8 +2,8 @@ export const siteConfig = {
   companyName: 'Fidara Financial Services',
   legalName: 'Fidara Financial Services, LLC',
   email: 'hello@fidara.com',
-  phone: 'Add phone number',
-  domain: 'https://www.fidarafinancial.com',
+  phone: '',
+  domain: 'https://www.fidaragroup.com',
   serviceArea: 'New York, New Jersey, Connecticut, and remote clients where appropriate',
   responseTime: '1–2 business days',
 }

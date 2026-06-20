@@ -1,0 +1,70 @@
+---
+import { services } from '../../components/site-core/data/index.jsx'
+import IconGrid from '../../components/astro/IconGrid.astro'
+import PageHero from '../../components/astro/PageHero.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+import SectionTitle from '../../components/astro/SectionTitle.astro'
+import ServiceCard from '../../components/astro/ServiceCard.astro'
+
+const { sector } = Astro.props
+const recommended = services.slice(0, 5)
+---
+
+<PageShell active="sectors">
+  <PageHero
+    eyebrow="Sector Support"
+    title={sector.title}
+    description="Fidara helps businesses in this sector create cleaner books, stronger workflows, better reporting, and more confidence around decisions."
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
+        Start the Conversation
+      </a>
+      <a href="/sectors" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
+        All Sectors
+      </a>
+    </div>
+  </PageHero>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <SectionTitle>BUSINESSES IN THIS SECTOR</SectionTitle>
+    <IconGrid items={sector.industries} columns="md:grid-cols-4 lg:grid-cols-7" />
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.85fr_1.15fr]">
+      <div>
+        <p class="mb-5 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">
+          Common priorities
+        </p>
+        <h2 class="font-serif text-4xl leading-tight text-slate-900">
+          Practical support for real operating needs.
+        </h2>
+        <p class="mt-5 text-base leading-8 text-slate-700">
+          We focus on the recurring financial and operational details that help owners understand performance, protect cash flow, and plan ahead.
+        </p>
+      </div>
+
+      <div class="grid gap-4">
+        {[
+          'Clean monthly books and reconciliations',
+          'Payroll, tax deadlines, and compliance checkpoints',
+          'Cash flow visibility and vendor payment control',
+          'Better systems, records, reporting, and advisory conversations',
+        ].map((item) => (
+          <div class="flex items-start gap-4 border-b border-stone-200 pb-4 last:border-b-0">
+            <span class="mt-1 h-5 w-5 flex-none text-emerald-600">✓</span>
+            <p class="text-base leading-7 text-slate-800">{item}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-stone-200 px-8 py-12">
+    <SectionTitle>RECOMMENDED SERVICES</SectionTitle>
+    <div class="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {recommended.map((service) => <ServiceCard {...service} />)}
+    </div>
+  </section>
+</PageShell>

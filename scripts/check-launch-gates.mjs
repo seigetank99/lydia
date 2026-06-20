@@ -4,6 +4,7 @@ import path from 'node:path'
 const DIST_DIR = path.resolve('dist')
 const MAX_JS_KB = Number(process.env.MAX_JS_KB || 380)
 const MAX_CSS_KB = Number(process.env.MAX_CSS_KB || 80)
+const SITE_URL = 'https://www.fidaragroup.com'
 
 async function listFiles(dir) {
   const out = []
@@ -59,16 +60,93 @@ async function main() {
     assertIncludes(html, /<link rel="canonical" href="[^"]+"/i, `${rel}: missing canonical link.`, errors)
     assertIncludes(html, /<meta property="og:title" content="[^"]+"/i, `${rel}: missing og:title.`, errors)
     assertIncludes(html, /<meta property="og:description" content="[^"]+"/i, `${rel}: missing og:description.`, errors)
+    assertIncludes(html, /<meta property="og:site_name" content="[^"]+"/i, `${rel}: missing og:site_name.`, errors)
     assertIncludes(html, /<meta name="twitter:card" content="summary_large_image"/i, `${rel}: missing twitter:card.`, errors)
     assertIncludes(html, /<meta name="robots" content="[^"]+"/i, `${rel}: missing robots meta.`, errors)
     assertIncludes(html, /<script type="application\/ld\+json">/i, `${rel}: missing structured data script.`, errors)
     assertIncludes(html, /id="main-content"/i, `${rel}: missing #main-content landmark.`, errors)
     assertIncludes(html, /<h1[\s>]/i, `${rel}: missing H1.`, errors)
+
+    if (/TODO|FIXME|Add phone number|example\.com/i.test(html)) {
+      errors.push(`${rel}: contains placeholder or development copy.`)
+    }
+
+    const title = html.match(/<title>([^<]+)<\/title>/i)?.[1] || ''
+    const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] || ''
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/i)?.[1] || ''
+    const robots = html.match(/<meta name="robots" content="([^"]+)"/i)?.[1] || ''
+
+    if (title.length < 20 || title.length > 75) {
+      errors.push(`${rel}: title length should be 20–75 chars, got ${title.length}.`)
+    }
+
+    if (description.length < 70 || description.length > 180) {
+      errors.push(`${rel}: meta description length should be 70–180 chars, got ${description.length}.`)
+    }
+
+    if (!canonical.startsWith(`${SITE_URL}/`)) {
+      errors.push(`${rel}: canonical must use ${SITE_URL}/.`)
+    }
+
+    if (!canonical.endsWith('/')) {
+      errors.push(`${rel}: canonical should use trailing slash.`)
+    }
+
+    if (/noindex/i.test(robots) && !/nofollow/i.test(robots)) {
+      errors.push(`${rel}: noindex pages should also specify nofollow.`)
+    }
   }
 
   const sitemapPath = path.join(DIST_DIR, 'sitemap.xml')
+  const sitemapIndexPath = path.join(DIST_DIR, 'sitemap-index.xml')
   const robotsPath = path.join(DIST_DIR, 'robots.txt')
-  try { await fs.access(sitemapPath) } catch { errors.push('Missing dist/sitemap.xml') }
+
+  let sitemapContent = ''
+  try {
+    sitemapContent = await fs.readFile(sitemapPath, 'utf8')
+  } catch {
+    try {
+      sitemapContent = await fs.readFile(sitemapIndexPath, 'utf8')
+      const sitemapRefs = [...sitemapContent.matchAll(/<loc>[^<]*\/([^/]+\.xml)<\/loc>/g)]
+        .map((match) => match[1])
+
+      if (!sitemapRefs.length) {
+        errors.push('dist/sitemap-index.xml does not reference any sitemap files.')
+      }
+
+      for (const sitemapRef of sitemapRefs) {
+        try {
+          await fs.access(path.join(DIST_DIR, sitemapRef))
+        } catch {
+          errors.push(`Missing sitemap referenced by sitemap-index.xml: dist/${sitemapRef}`)
+        }
+      }
+    } catch {
+      errors.push('Missing dist/sitemap.xml or dist/sitemap-index.xml')
+    }
+  }
+
+  if (sitemapContent && !/<(?:urlset|sitemapindex)\b/i.test(sitemapContent)) {
+    errors.push('Generated sitemap is not a valid sitemap document.')
+  }
+
+  const noindexUrls = new Set()
+  for (const file of htmlFiles) {
+    const html = await fs.readFile(file, 'utf8')
+    if (!/<meta name="robots" content="[^"]*noindex/i.test(html)) continue
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/i)?.[1]
+    if (canonical) noindexUrls.add(canonical)
+  }
+
+  for (const file of files.filter((f) => f.endsWith('.xml') && f.includes('sitemap'))) {
+    const xml = await fs.readFile(file, 'utf8')
+    for (const noindexUrl of noindexUrls) {
+      if (xml.includes(noindexUrl)) {
+        errors.push(`Sitemap includes noindex URL: ${noindexUrl}`)
+      }
+    }
+  }
+
   try { await fs.access(robotsPath) } catch { errors.push('Missing dist/robots.txt') }
 
   if (errors.length) fail(errors)

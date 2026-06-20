@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
-import { isInternalRoute, mailto } from '../../data/index.jsx'
+import { mailto } from '../../data/index.jsx'
 
 function Footer() {
   const footerGroups = [
@@ -103,23 +102,13 @@ function Footer() {
 
                     <div className="mt-4 grid gap-2">
                       {group.links.map(([label, href]) => (
-                          isInternalRoute(href) ? (
-                              <Link
-                                  key={`${group.title}-${label}`}
-                                  to={href}
-                                  className="text-sm leading-6 text-slate-600 transition hover:text-emerald-800"
-                              >
-                                {label}
-                              </Link>
-                          ) : (
-                              <a
-                                  key={`${group.title}-${label}`}
-                                  href={href}
-                                  className="text-sm leading-6 text-slate-600 transition hover:text-emerald-800"
-                              >
-                                {label}
-                              </a>
-                          )
+                          <a
+                              key={`${group.title}-${label}`}
+                              href={href}
+                              className="text-sm leading-6 text-slate-600 transition hover:text-emerald-800"
+                          >
+                            {label}
+                          </a>
                       ))}
                     </div>
                   </div>

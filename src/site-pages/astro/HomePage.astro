@@ -1,0 +1,44 @@
+---
+import { businessStages, lifeMoments, services } from '../../components/site-core/data/index.jsx'
+import MarqueeIconSection from '../../components/astro/MarqueeIconSection.astro'
+import PageShell from '../../components/astro/PageShell.astro'
+import ServiceCard from '../../components/astro/ServiceCard.astro'
+---
+
+<PageShell>
+  <section id="about" class="relative mx-auto min-h-[calc(100vh-156px)] max-w-7xl overflow-hidden px-8 pb-10 pt-0">
+    <img src="/images/hero-mountain.png" alt="Ink mountain landscape" class="absolute inset-x-0 top-[-8%] h-full w-full object-contain object-center opacity-90 mix-blend-multiply grayscale brightness-[0.9] contrast-[0.96] md:top-[-10%] md:object-right" />
+    <div class="absolute inset-0 bg-[#f7f3eb]/30"></div>
+    <div class="relative z-10 flex min-h-[calc(100vh-230px)] flex-col justify-center md:max-w-3xl">
+      <p class="mb-8 max-w-lg text-xs font-semibold uppercase tracking-[0.35em] text-emerald-800">Secure today with trust,<br />pursue tomorrow with peace.</p>
+      <h1 class="max-w-4xl font-serif text-4xl leading-[1.08] text-slate-950 md:text-6xl">Calm financial guidance for every stage of life and business.</h1>
+      <p class="mt-6 max-w-2xl text-base leading-8 text-slate-700 md:text-lg">Accounting, tax, advisory, payroll, U.S. expansion, and managed technology support for people who want their finances to feel organized enough to move forward.</p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#services" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">Explore Services</a>
+        <a href="/contact" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">Schedule a Call</a>
+      </div>
+    </div>
+  </section>
+  <MarqueeIconSection id="life-moments" title="WITH YOU FOR ALL OF LIFE’S BIG MOMENTS" items={lifeMoments} direction="left" />
+  <MarqueeIconSection id="business-cycle" title="THERE FOR EVERY STEP OF YOUR GROWTH" items={businessStages} direction="right" />
+  <section id="services" class="border-t border-stone-200 px-8 py-12">
+    <h2 class="mx-auto max-w-6xl font-serif text-3xl leading-tight text-slate-900">Core Services</h2>
+    <div class="mx-auto mt-6 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {services.map((service) => <ServiceCard {...service} />)}
+    </div>
+  </section>
+  <section id="contact" class="border-t border-stone-200 px-8 py-16">
+    <div class="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-emerald-900/10 bg-emerald-900 shadow-sm">
+      <div class="grid gap-8 p-8 md:grid-cols-[1fr_auto] md:items-center md:p-12">
+        <div>
+          <h2 class="max-w-3xl font-serif text-4xl leading-tight text-white md:text-5xl">Bring us the questions, the records, and the uncertainty.</h2>
+          <p class="mt-5 max-w-2xl text-base leading-8 text-emerald-50/85">We help turn scattered financial details into a clearer path forward.</p>
+        </div>
+        <div class="flex flex-col gap-3 md:items-end">
+          <a href="/contact" class="inline-flex justify-center rounded-md bg-white px-10 py-4 text-sm font-medium text-emerald-900 transition hover:bg-emerald-50">Book a Consultation</a>
+          <a href="/start" class="inline-flex justify-center rounded-md border border-white/40 px-10 py-4 text-sm font-medium text-white transition hover:bg-white/10">Start Here</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageShell>
