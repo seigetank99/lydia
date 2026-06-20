@@ -10,6 +10,8 @@
     "preview": "astro preview",
     "check:api": "node scripts/check-api-handlers.mjs",
     "check:launch-gates": "node scripts/check-launch-gates.mjs",
+    "test:e2e": "npm run build && playwright test",
+    "test:e2e:ui": "npm run build && playwright test --ui",
     "ci": "npm run lint && npm run check:api && npm run build && npm run check:launch-gates"
   },
   "dependencies": {
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4.3.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

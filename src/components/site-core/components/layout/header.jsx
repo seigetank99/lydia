@@ -31,7 +31,6 @@ function Header({ active = 'home' }) {
         { label: 'Start Here', href: '/start' },
         { label: 'Case Studies', href: '/case-studies' },
         { label: 'Technology', href: '/technology' },
-        { label: 'Client Portal', href: '/client-portal' },
         { label: 'FAQ', href: '/faq' },
         { label: 'Careers', href: '/careers' },
         { label: 'Partners', href: '/partners' },
@@ -100,7 +99,6 @@ function Header({ active = 'home' }) {
         { label: 'Book a Consultation', href: '/contact' },
         { label: 'Referrals', href: '/referrals' },
         { label: 'Service Areas', href: '/service-areas' },
-        { label: 'Client Portal', href: '/client-portal' },
         { label: 'Pricing / Engagements', href: '/pricing' },
         { label: 'Onboarding Process', href: '/onboarding' },
         { label: 'Privacy Policy', href: '/privacy' },
@@ -142,7 +140,13 @@ function Header({ active = 'home' }) {
             ))}
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-3 md:flex">
+            <a
+                href="/client-portal"
+                className="rounded-md border border-stone-300 px-6 py-3 text-sm text-slate-900 transition hover:border-emerald-600 hover:bg-white"
+            >
+              Client Login
+            </a>
             <a
                 href="/contact"
                 className="rounded-md border border-emerald-600 px-7 py-3 text-sm text-slate-900 transition hover:bg-emerald-700 hover:text-white"
@@ -180,6 +184,13 @@ function Header({ active = 'home' }) {
                         </div>
                       </div>
                   ))}
+
+                  <a
+                      href="/client-portal"
+                      className="rounded-md border border-stone-300 px-7 py-3 text-center text-sm font-medium text-slate-900 transition hover:bg-white"
+                  >
+                    Client Login
+                  </a>
 
                   <a
                       href="/contact"

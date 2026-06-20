@@ -155,22 +155,6 @@ export default async function handler(req, res) {
     `\n` +
     `${message}\n`
 
-  const autoReplySubject = 'We received your Fidara inquiry'
-  const autoReplyText =
-    `Hi ${name},\n` +
-    `\n` +
-    `Thank you for contacting Fidara Financial Services. We received your request and will review it carefully.\n` +
-    `\n` +
-    `Here is what you submitted:\n` +
-    `Service interest: ${service}\n` +
-    `Phone: ${phone}\n` +
-    `\n` +
-    `${message}\n` +
-    `\n` +
-    `If anything urgent changes, you can reply directly to this email.\n` +
-    `\n` +
-    `Fidara Financial Services\n`
-
   try {
     await transporter.sendMail({
       to,
@@ -178,22 +162,6 @@ export default async function handler(req, res) {
       replyTo: email,
       subject,
       text,
-    })
-
-    transporter.sendMail({
-      to: email,
-      from,
-      replyTo: to,
-      subject: autoReplySubject,
-      text: autoReplyText,
-    }).catch((error) => {
-      console.error('[contact-auto-reply-failed]', {
-        message: error?.message,
-        code: error?.code,
-        command: error?.command,
-        response: error?.response,
-        responseCode: error?.responseCode,
-      })
     })
 
     if (process.env.CONTACT_ALERT_WEBHOOK) {
