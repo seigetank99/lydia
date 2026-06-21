@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import process from 'node:process'
 import { getCurrentUser } from './_auth.js'
+import { getStorageBucket, json, recordAuditEvent } from './_portal.js'
 import { getSupabaseAdmin } from '../src/lib/supabaseAdmin.js'
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024
@@ -11,14 +11,6 @@ const ALLOWED_FILE_TYPES = new Set([
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ])
-const DEFAULT_STORAGE_BUCKET = 'fidara-client-documents'
-
-function json(res, status, body) {
-  res.statusCode = status
-  res.setHeader('content-type', 'application/json; charset=utf-8')
-  res.end(JSON.stringify(body))
-}
-
 function parseBody(body) {
   if (!body) return {}
   if (typeof body === 'string') return JSON.parse(body)
@@ -27,10 +19,6 @@ function parseBody(body) {
 
 function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/-+/g, '-')
-}
-
-function getStorageBucket() {
-  return process.env.SUPABASE_STORAGE_BUCKET || DEFAULT_STORAGE_BUCKET
 }
 
 async function userHasClientAccess(userId, clientId) {
@@ -111,6 +99,19 @@ export default async function handler(req, res) {
       .single()
 
     if (insertError) throw insertError
+
+    void recordAuditEvent({
+      clientId,
+      eventType: 'document_uploaded',
+      description: `Uploaded ${fileName}`,
+      actorUserId: user.id,
+      metadata: {
+        document_id: document.id,
+        category,
+        file_type: fileType,
+        file_size: fileSize,
+      },
+    })
 
     return json(res, 200, {
       upload: {

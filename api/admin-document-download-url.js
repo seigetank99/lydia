@@ -1,24 +1,11 @@
 import { getCurrentUser } from './_auth.js'
-import { getStorageBucket, json, recordAuditEvent } from './_portal.js'
+import { getStorageBucket, json, recordAuditEvent, requireAdmin } from './_portal.js'
 import { getSupabaseAdmin } from '../src/lib/supabaseAdmin.js'
 
 function parseBody(body) {
   if (!body) return {}
   if (typeof body === 'string') return JSON.parse(body)
   return body
-}
-
-async function userHasClientAccess(userId, clientId) {
-  const supabaseAdmin = getSupabaseAdmin()
-  const { data, error } = await supabaseAdmin
-    .from('client_users')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('client_id', clientId)
-    .limit(1)
-
-  if (error) throw error
-  return Boolean(data?.length)
 }
 
 export default async function handler(req, res) {
@@ -38,6 +25,8 @@ export default async function handler(req, res) {
   if (!documentId) return json(res, 400, { error: 'documentId is required.' })
 
   try {
+    await requireAdmin(user.id)
+
     const supabaseAdmin = getSupabaseAdmin()
     const bucketName = getStorageBucket()
     const { data: document, error } = await supabaseAdmin
@@ -47,9 +36,6 @@ export default async function handler(req, res) {
       .single()
 
     if (error || !document) return json(res, 404, { error: 'Document not found.' })
-
-    const hasAccess = await userHasClientAccess(user.id, document.client_id)
-    if (!hasAccess) return json(res, 403, { error: 'You do not have access to this document.' })
 
     const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
       .from(bucketName)
@@ -61,8 +47,8 @@ export default async function handler(req, res) {
 
     void recordAuditEvent({
       clientId: document.client_id,
-      eventType: 'document_download_requested',
-      description: `Requested download for document ${document.id}`,
+      eventType: 'admin_document_download_requested',
+      description: `Admin requested download for document ${document.id}`,
       actorUserId: user.id,
       metadata: {
         document_id: document.id,
@@ -71,7 +57,11 @@ export default async function handler(req, res) {
 
     return json(res, 200, { downloadUrl: signedUrlData.signedUrl })
   } catch (error) {
-    console.error('[documents-download-url]', error)
-    return json(res, 500, { error: 'Failed to create download URL.' })
+    if (error.code === 'FORBIDDEN') {
+      return json(res, 403, { error: 'Forbidden' })
+    }
+
+    console.error('[admin-document-download-url]', error)
+    return json(res, 500, { error: 'Failed to create admin download URL.' })
   }
 }

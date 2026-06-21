@@ -62,32 +62,21 @@ function statusBadgeClass(status) {
   return 'border border-slate-200 bg-slate-100 text-slate-700'
 }
 
-function parseErrorMessage(payload, fallback) {
-  return payload?.error || fallback
+function activityLabel(eventType) {
+  const normalized = String(eventType || '').toLowerCase()
+  if (normalized === 'document_uploaded') return 'Document uploaded'
+  if (normalized === 'document_download_requested') return 'Document download requested'
+  if (normalized === 'admin_document_download_requested') return 'Admin download requested'
+  return statusLabel(normalized)
 }
 
 async function fetchJson(url, options) {
   const response = await fetch(url, options)
-  if (response.status === 401) {
-    return { unauthorized: true }
-  }
+  if (response.status === 401) return { unauthorized: true }
+  if (response.status === 403) return { forbidden: true, data: await response.json().catch(() => ({})) }
 
   const data = await response.json().catch(() => ({}))
-  return {
-    unauthorized: false,
-    ok: response.ok,
-    data,
-  }
-}
-
-function StatCard({ label, value, detail, loading }) {
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-      <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">{label}</div>
-      <div className="mt-3 text-3xl font-semibold text-slate-900">{loading ? '...' : value}</div>
-      <div className="mt-2 text-sm text-slate-600">{loading ? 'Loading data...' : detail}</div>
-    </div>
-  )
+  return { unauthorized: false, forbidden: false, ok: response.ok, data }
 }
 
 function SectionCard({ title, subtitle, actions, children }) {
@@ -105,22 +94,43 @@ function SectionCard({ title, subtitle, actions, children }) {
   )
 }
 
+function StatCard({ label, value, detail, loading }) {
+  return (
+    <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+      <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">{label}</div>
+      <div className="mt-3 text-3xl font-semibold text-slate-900">{loading ? '...' : value}</div>
+      <div className="mt-2 text-sm text-slate-600">{loading ? 'Loading data...' : detail}</div>
+    </div>
+  )
+}
+
+function EmptyState({ title, body }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-stone-300 bg-slate-50 px-5 py-8 text-center">
+      <p className="text-sm font-medium text-slate-900">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{body}</p>
+    </div>
+  )
+}
+
 export default function ClientPortalDashboard() {
   const [clientId, setClientId] = useState('')
+  const [summary, setSummary] = useState(null)
   const [documents, setDocuments] = useState([])
   const [billingItems, setBillingItems] = useState([])
   const [requests, setRequests] = useState([])
   const [messages, setMessages] = useState([])
-  const [summary, setSummary] = useState(null)
-  const [category, setCategory] = useState('general')
-  const [file, setFile] = useState(null)
-  const [uploading, setUploading] = useState(false)
+  const [auditEvents, setAuditEvents] = useState([])
   const [summaryLoading, setSummaryLoading] = useState(true)
   const [documentsLoading, setDocumentsLoading] = useState(true)
   const [billingLoading, setBillingLoading] = useState(true)
   const [requestsLoading, setRequestsLoading] = useState(true)
   const [messagesLoading, setMessagesLoading] = useState(true)
+  const [auditLoading, setAuditLoading] = useState(true)
   const [pageError, setPageError] = useState('')
+  const [category, setCategory] = useState('general')
+  const [file, setFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
   const [uploadSuccess, setUploadSuccess] = useState('')
 
@@ -128,6 +138,7 @@ export default function ClientPortalDashboard() {
   const hasBilling = useMemo(() => billingItems.length > 0, [billingItems])
   const hasRequests = useMemo(() => requests.length > 0, [requests])
   const hasMessages = useMemo(() => messages.length > 0, [messages])
+  const hasAuditEvents = useMemo(() => auditEvents.length > 0, [auditEvents])
 
   function redirectToLogin() {
     window.location.assign('/login')
@@ -139,137 +150,144 @@ export default function ClientPortalDashboard() {
 
   async function loadSummary() {
     setSummaryLoading(true)
+    const result = await fetchJson('/api/portal-summary', { headers: { accept: 'application/json' } })
 
-    try {
-      const result = await fetchJson('/api/portal-summary', {
-        headers: { accept: 'application/json' },
-      })
-
-      if (result?.unauthorized) {
-        redirectToLogin()
-        return
-      }
-
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to load portal summary.'))
-      }
-
-      assignClientId(result.data.clientId)
-      setSummary(result.data.stats || null)
-    } catch (error) {
-      setPageError(error.message || 'Failed to load portal summary.')
-    } finally {
-      setSummaryLoading(false)
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
     }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load your portal summary right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setSummary(result.data.stats || null)
+    setSummaryLoading(false)
   }
 
   async function loadDocuments({ showLoading = false } = {}) {
     if (showLoading) setDocumentsLoading(true)
+    const result = await fetchJson('/api/documents-list', { headers: { accept: 'application/json' } })
 
-    try {
-      const result = await fetchJson('/api/documents-list', {
-        headers: { accept: 'application/json' },
-      })
-
-      if (result?.unauthorized) {
-        redirectToLogin()
-        return
-      }
-
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to load documents.'))
-      }
-
-      assignClientId(result.data.clientId)
-      setDocuments(Array.isArray(result.data.documents) ? result.data.documents : [])
-    } catch (error) {
-      setPageError(error.message || 'Failed to load documents.')
-    } finally {
-      setDocumentsLoading(false)
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
     }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load your documents right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setDocuments(Array.isArray(result.data.documents) ? result.data.documents : [])
+    setDocumentsLoading(false)
   }
 
   async function loadBilling() {
     setBillingLoading(true)
+    const result = await fetchJson('/api/billing-list', { headers: { accept: 'application/json' } })
 
-    try {
-      const result = await fetchJson('/api/billing-list', {
-        headers: { accept: 'application/json' },
-      })
-
-      if (result?.unauthorized) {
-        redirectToLogin()
-        return
-      }
-
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to load billing records.'))
-      }
-
-      assignClientId(result.data.clientId)
-      setBillingItems(Array.isArray(result.data.billingItems) ? result.data.billingItems : [])
-    } catch (error) {
-      setPageError(error.message || 'Failed to load billing records.')
-    } finally {
-      setBillingLoading(false)
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
     }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load billing information right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setBillingItems(Array.isArray(result.data.billingItems) ? result.data.billingItems : [])
+    setBillingLoading(false)
   }
 
   async function loadRequests() {
     setRequestsLoading(true)
+    const result = await fetchJson('/api/requests-list', { headers: { accept: 'application/json' } })
 
-    try {
-      const result = await fetchJson('/api/requests-list', {
-        headers: { accept: 'application/json' },
-      })
-
-      if (result?.unauthorized) {
-        redirectToLogin()
-        return
-      }
-
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to load requested items.'))
-      }
-
-      assignClientId(result.data.clientId)
-      setRequests(Array.isArray(result.data.requests) ? result.data.requests : [])
-    } catch (error) {
-      setPageError(error.message || 'Failed to load requested items.')
-    } finally {
-      setRequestsLoading(false)
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
     }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load requested items right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setRequests(Array.isArray(result.data.requests) ? result.data.requests : [])
+    setRequestsLoading(false)
   }
 
   async function loadMessages() {
     setMessagesLoading(true)
+    const result = await fetchJson('/api/messages-list', { headers: { accept: 'application/json' } })
 
-    try {
-      const result = await fetchJson('/api/messages-list', {
-        headers: { accept: 'application/json' },
-      })
-
-      if (result?.unauthorized) {
-        redirectToLogin()
-        return
-      }
-
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to load updates.'))
-      }
-
-      assignClientId(result.data.clientId)
-      setMessages(Array.isArray(result.data.messages) ? result.data.messages : [])
-    } catch (error) {
-      setPageError(error.message || 'Failed to load updates.')
-    } finally {
-      setMessagesLoading(false)
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
     }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load portal messages right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setMessages(Array.isArray(result.data.messages) ? result.data.messages : [])
+    setMessagesLoading(false)
+  }
+
+  async function loadAuditEvents() {
+    setAuditLoading(true)
+    const result = await fetchJson('/api/audit-list', { headers: { accept: 'application/json' } })
+
+    if (result?.unauthorized) {
+      redirectToLogin()
+      return
+    }
+
+    if (result?.forbidden || !result?.ok) {
+      throw new Error('Unable to load recent activity right now.')
+    }
+
+    assignClientId(result.data.clientId)
+    setAuditEvents(Array.isArray(result.data.auditEvents) ? result.data.auditEvents : [])
+    setAuditLoading(false)
   }
 
   useEffect(() => {
-    void Promise.all([loadSummary(), loadDocuments(), loadBilling(), loadRequests(), loadMessages()])
+    let cancelled = false
+
+    async function loadPortal() {
+      setPageError('')
+      try {
+        await Promise.all([loadSummary(), loadDocuments(), loadBilling(), loadRequests(), loadMessages(), loadAuditEvents()])
+      } catch (error) {
+        if (!cancelled) {
+          setPageError(error.message || 'Unable to load your portal right now.')
+        }
+      } finally {
+        if (!cancelled) {
+          setSummaryLoading(false)
+          setDocumentsLoading(false)
+          setBillingLoading(false)
+          setRequestsLoading(false)
+          setMessagesLoading(false)
+          setAuditLoading(false)
+        }
+      }
+    }
+
+    void loadPortal()
+    return () => {
+      cancelled = true
+    }
   }, [])
+
+  async function refreshAfterUpload() {
+    await Promise.all([loadSummary(), loadDocuments({ showLoading: true }), loadAuditEvents()])
+  }
 
   async function handleUpload(event) {
     event.preventDefault()
@@ -285,9 +303,7 @@ export default function ClientPortalDashboard() {
     try {
       const result = await fetchJson('/api/documents-upload-url', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           clientId,
           fileName: file.name,
@@ -302,13 +318,13 @@ export default function ClientPortalDashboard() {
         return
       }
 
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to prepare upload.'))
+      if (result?.forbidden || !result?.ok) {
+        throw new Error('We could not prepare that upload. Please try again.')
       }
 
       const upload = result.data?.upload
       if (!upload?.path || !upload?.token) {
-        throw new Error('Upload target is missing.')
+        throw new Error('We could not prepare that upload. Please try again.')
       }
 
       const supabase = getSupabaseBrowser()
@@ -327,7 +343,7 @@ export default function ClientPortalDashboard() {
       setUploadSuccess('Document uploaded successfully.')
       const fileInput = document.getElementById('portal-file-input')
       if (fileInput) fileInput.value = ''
-      await Promise.all([loadDocuments({ showLoading: true }), loadSummary()])
+      await refreshAfterUpload()
     } catch (error) {
       setUploadError(error.message || 'Upload failed.')
     } finally {
@@ -339,9 +355,7 @@ export default function ClientPortalDashboard() {
     try {
       const result = await fetchJson('/api/documents-download-url', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ documentId }),
       })
 
@@ -350,13 +364,14 @@ export default function ClientPortalDashboard() {
         return
       }
 
-      if (!result?.ok) {
-        throw new Error(parseErrorMessage(result?.data, 'Failed to create download link.'))
+      if (result?.forbidden || !result?.ok) {
+        throw new Error('Download is not available right now.')
       }
 
       window.open(result.data.downloadUrl, '_blank', 'noopener,noreferrer')
+      void loadAuditEvents()
     } catch (error) {
-      setPageError(error.message || 'Failed to create download link.')
+      setPageError(error.message || 'Download is not available right now.')
     }
   }
 
@@ -373,16 +388,15 @@ export default function ClientPortalDashboard() {
             <div className="inline-flex min-h-9 items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-medium uppercase tracking-[0.18em] text-emerald-700">
               Secure client portal
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Fidara Group Client Portal</h1>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Welcome to your Fidara dashboard</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
-              Securely manage documents, billing, and accounting requests.
+              Securely manage documents, billing, and accounting requests in one place.
             </p>
           </div>
-
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
             {clientId ? (
               <div className="inline-flex min-h-11 items-center rounded-xl border border-stone-200 bg-white px-4 text-sm font-medium text-slate-600 shadow-sm">
-                Client ID: {clientId}
+                Client account active
               </div>
             ) : null}
             <button
@@ -397,39 +411,26 @@ export default function ClientPortalDashboard() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Documents Uploaded"
-          value={summary?.documentsCount ?? 0}
-          detail="Files received in your secure portal"
-          loading={summaryLoading}
-        />
-        <StatCard
-          label="Open Requests"
-          value={summary?.openRequestsCount ?? 0}
-          detail="Items your Fidara team is still waiting on"
-          loading={summaryLoading}
-        />
+        <StatCard label="Documents Uploaded" value={summary?.documentsCount ?? 0} detail="Files received in private storage" loading={summaryLoading} />
+        <StatCard label="Open Requests" value={summary?.openRequestsCount ?? 0} detail="Outstanding items from your Fidara team" loading={summaryLoading} />
         <StatCard
           label="Outstanding Balance"
           value={formatCurrency(summary?.outstandingBalanceCents || 0)}
           detail={`${summary?.openInvoicesCount ?? 0} active invoice${summary?.openInvoicesCount === 1 ? '' : 's'}`}
           loading={summaryLoading}
         />
-        <StatCard
-          label="Last Upload"
-          value={summaryLoading ? '...' : formatDate(summary?.lastUploadDate)}
-          detail="Most recent document activity"
-          loading={summaryLoading}
-        />
+        <StatCard label="Last Upload" value={summaryLoading ? '...' : formatDate(summary?.lastUploadDate)} detail="Most recent document activity" loading={summaryLoading} />
       </section>
 
       {pageError ? (
-        <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{pageError}</p>
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          We hit a problem loading part of your dashboard. Refresh and try again.
+        </div>
       ) : null}
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_320px]">
         <div className="space-y-8">
-          <SectionCard title="Upload a Document" subtitle="Accepted files: PDF, JPG, PNG, XLSX, DOCX. Max 25MB.">
+          <SectionCard title="Upload a document" subtitle="Accepted files: PDF, JPG, PNG, XLSX, DOCX. Max 25MB.">
             <form onSubmit={handleUpload} className="grid gap-5">
               <label className="grid gap-2">
                 <span className="text-sm font-medium text-slate-800">Category</span>
@@ -462,24 +463,17 @@ export default function ClientPortalDashboard() {
                   className="sr-only"
                   required
                 />
-
                 <div>
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-stone-200 bg-white text-lg text-slate-500 shadow-sm">
                     +
                   </div>
-                  <p className="mt-4 text-sm font-medium text-slate-900">
-                    {file ? file.name : 'Choose a file to upload'}
-                  </p>
-                  <p className="mt-2 text-sm text-slate-500">
-                    {file ? `${formatFileSize(file.size)} selected` : 'Drag a file here or browse from your device'}
-                  </p>
+                  <p className="mt-4 text-sm font-medium text-slate-900">{file ? file.name : 'Choose a file to upload'}</p>
+                  <p className="mt-2 text-sm text-slate-500">{file ? `${formatFileSize(file.size)} selected` : 'Drag a file here or browse from your device'}</p>
                 </div>
               </label>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-sm text-slate-500">
-                  {file ? `Ready to upload ${file.name}` : 'Select a file to continue.'}
-                </div>
+                <div className="text-sm text-slate-500">{file ? `Ready to upload ${file.name}` : 'Select a file to continue.'}</div>
                 <button
                   type="submit"
                   disabled={uploading || documentsLoading || !clientId}
@@ -489,40 +483,27 @@ export default function ClientPortalDashboard() {
                 </button>
               </div>
             </form>
-
-            {uploadSuccess ? (
-              <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{uploadSuccess}</p>
-            ) : null}
-            {uploadError ? (
-              <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{uploadError}</p>
-            ) : null}
+            {uploadSuccess ? <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{uploadSuccess}</p> : null}
+            {uploadError ? <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{uploadError}</p> : null}
           </SectionCard>
 
-          <SectionCard title="Recent Documents" subtitle="Download previously submitted files and track their current status.">
+          <SectionCard title="Recent documents" subtitle="Track submitted files and download secure copies when needed.">
             {documentsLoading ? (
               <p className="text-sm text-slate-600">Loading documents...</p>
             ) : hasDocuments ? (
               <div className="space-y-3">
                 {documents.map((document) => (
-                  <div
-                    key={document.id}
-                    className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
+                  <div key={document.id} className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-slate-900">{document.original_file_name}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                        <span className="rounded-full bg-white px-2.5 py-1 uppercase tracking-[0.12em] text-slate-600">
-                          {document.category || 'general'}
-                        </span>
+                        <span className="rounded-full bg-white px-2.5 py-1 uppercase tracking-[0.12em] text-slate-600">{document.category || 'general'}</span>
                         <span>{formatDate(document.created_at)}</span>
                         <span>{formatFileSize(document.file_size)}</span>
                       </div>
                     </div>
-
                     <div className="flex flex-wrap items-center gap-3">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(document.status)}`}>
-                        {statusLabel(document.status)}
-                      </span>
+                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(document.status)}`}>{statusLabel(document.status)}</span>
                       <button
                         type="button"
                         onClick={() => handleDownload(document.id)}
@@ -535,26 +516,21 @@ export default function ClientPortalDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-7 text-slate-600">No documents have been uploaded yet.</p>
+              <EmptyState title="No documents uploaded yet" body="Upload tax workpapers, statements, payroll files, and supporting records from the secure uploader above." />
             )}
           </SectionCard>
 
-          <SectionCard title="Billing" subtitle="View invoice status and pay through secure hosted billing pages when available.">
+          <SectionCard title="Billing" subtitle="Invoice records only. Payments happen through secure hosted invoice pages.">
             {billingLoading ? (
               <p className="text-sm text-slate-600">Loading invoices...</p>
             ) : hasBilling ? (
               <div className="space-y-3">
                 {billingItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between"
-                  >
+                  <div key={item.id} className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-medium text-slate-900">{item.title}</p>
-                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(item.status)}`}>
-                          {statusLabel(item.status)}
-                        </span>
+                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(item.status)}`}>{statusLabel(item.status)}</span>
                       </div>
                       {item.description ? <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p> : null}
                       <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
@@ -562,26 +538,15 @@ export default function ClientPortalDashboard() {
                         <span>Due {formatDate(item.due_date || item.created_at)}</span>
                       </div>
                     </div>
-
                     <div className="flex flex-wrap items-center gap-3">
                       {item.invoice_pdf_url ? (
-                        <a
-                          href={item.invoice_pdf_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex min-h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900"
-                        >
+                        <a href={item.invoice_pdf_url} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900">
                           Download PDF
                         </a>
                       ) : null}
                       {item.stripe_hosted_invoice_url ? (
-                        <a
-                          href={item.stripe_hosted_invoice_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex min-h-10 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-                        >
-                          Pay Invoice
+                        <a href={item.stripe_hosted_invoice_url} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800">
+                          Pay invoice
                         </a>
                       ) : null}
                     </div>
@@ -589,11 +554,11 @@ export default function ClientPortalDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-7 text-slate-600">No invoices yet.</p>
+              <EmptyState title="No invoices yet" body="Hosted invoice links will appear here when Fidara issues billing for your account." />
             )}
           </SectionCard>
 
-          <SectionCard title="Requested Items" subtitle="Track missing documents and other action items from your Fidara team.">
+          <SectionCard title="Requested items" subtitle="Track outstanding accounting requests and due dates from your team.">
             {requestsLoading ? (
               <p className="text-sm text-slate-600">Loading requested items...</p>
             ) : hasRequests ? (
@@ -604,9 +569,7 @@ export default function ClientPortalDashboard() {
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="text-sm font-medium text-slate-900">{request.title}</p>
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(request.status)}`}>
-                            {statusLabel(request.status)}
-                          </span>
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(request.status)}`}>{statusLabel(request.status)}</span>
                         </div>
                         {request.description ? <p className="mt-2 text-sm leading-6 text-slate-600">{request.description}</p> : null}
                       </div>
@@ -616,41 +579,33 @@ export default function ClientPortalDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-7 text-slate-600">No open requests.</p>
+              <EmptyState title="No open requests" body="Your current document checklist is clear. New requests will show up here automatically." />
+            )}
+          </SectionCard>
+
+          <SectionCard title="Recent activity" subtitle="Time-stamped activity for document handling and portal access events.">
+            {auditLoading ? (
+              <p className="text-sm text-slate-600">Loading recent activity...</p>
+            ) : hasAuditEvents ? (
+              <div className="space-y-3">
+                {auditEvents.map((event) => (
+                  <div key={event.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm font-medium text-slate-900">{activityLabel(event.event_type)}</p>
+                      <span className="text-xs uppercase tracking-[0.14em] text-slate-500">{formatDate(event.created_at)}</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{event.description}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState title="No recent activity yet" body="Uploads, downloads, and other secure portal actions will appear here." />
             )}
           </SectionCard>
         </div>
 
         <aside className="space-y-6">
-          <SectionCard title="What to upload">
-            <ul className="space-y-3 text-sm leading-6 text-slate-600">
-              <li>Tax forms and notices</li>
-              <li>Bank statements and reconciliations</li>
-              <li>Payroll reports and provider exports</li>
-              <li>Bookkeeping files and supporting schedules</li>
-              <li>Entity formation and compliance documents</li>
-            </ul>
-          </SectionCard>
-
-          <SectionCard title="Security note">
-            <ul className="space-y-3 text-sm leading-6 text-slate-600">
-              <li>Files are stored in private storage.</li>
-              <li>Downloads use time-limited secure links.</li>
-              <li>Payments are handled through hosted billing pages.</li>
-            </ul>
-          </SectionCard>
-
-          <SectionCard title="Need help?">
-            <p className="text-sm leading-6 text-slate-600">Questions about requested items, billing, or document delivery can go directly to Fidara Group.</p>
-            <a
-              href="/contact"
-              className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900"
-            >
-              Contact Fidara Group
-            </a>
-          </SectionCard>
-
-          <SectionCard title="Recent updates">
+          <SectionCard title="Messages and notes" subtitle="Updates from Fidara Group about your account and next steps.">
             {messagesLoading ? (
               <p className="text-sm text-slate-600">Loading updates...</p>
             ) : hasMessages ? (
@@ -667,8 +622,33 @@ export default function ClientPortalDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm leading-7 text-slate-600">No messages yet.</p>
+              <EmptyState title="No messages yet" body="Important account updates and reminders from Fidara Group will show up here." />
             )}
+          </SectionCard>
+
+          <SectionCard title="What to upload">
+            <ul className="space-y-3 text-sm leading-6 text-slate-600">
+              <li>Tax forms and tax notices</li>
+              <li>Bank statements and reconciliations</li>
+              <li>Payroll reports and provider exports</li>
+              <li>Bookkeeping files and accounting schedules</li>
+              <li>Entity formation and compliance documents</li>
+            </ul>
+          </SectionCard>
+
+          <SectionCard title="Security note">
+            <ul className="space-y-3 text-sm leading-6 text-slate-600">
+              <li>Files are stored in private Supabase Storage buckets.</li>
+              <li>Downloads use time-limited secure links.</li>
+              <li>Payments are handled only through hosted billing pages.</li>
+            </ul>
+          </SectionCard>
+
+          <SectionCard title="Need help?">
+            <p className="text-sm leading-6 text-slate-600">Questions about requested items, billing, or secure document delivery can go directly to the Fidara team.</p>
+            <a href="/contact" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900">
+              Contact Fidara Group
+            </a>
           </SectionCard>
         </aside>
       </div>
