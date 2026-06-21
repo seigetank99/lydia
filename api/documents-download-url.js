@@ -65,7 +65,7 @@ export default async function handler(req, res) {
 
     const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
       .from(bucketName)
-      .createSignedUrl(document.storage_key, 60 * 5)
+      .createSignedUrl(document.storage_key, 60 * 10)
 
     if (signedUrlError || !signedUrlData?.signedUrl) {
       throw signedUrlError || new Error('Failed to create signed download URL.')
