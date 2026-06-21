@@ -56,6 +56,8 @@ values ('CLIENT_UUID', 'AUTH_USER_UUID')
 on conflict (client_id, user_id) do nothing;
 ```
 
+Once admin access is enabled, the same linking step can be done from the `/admin` dashboard without editing `client_users` manually.
+
 ## Make a user admin
 
 Admin access is controlled by `profiles.role`.
@@ -63,7 +65,7 @@ Admin access is controlled by `profiles.role`.
 ```sql
 update profiles
 set role = 'admin'
-where id = 'AUTH_USER_UUID';
+where email = 'seigetank99@gmail.com';
 ```
 
 Users without `role = 'admin'` will receive `403` on `/admin` APIs.
@@ -102,6 +104,15 @@ insert into billing_items (
 );
 ```
 
+Production billing workflow:
+
+1. Create the invoice in Stripe.
+2. Copy the Stripe `hosted_invoice_url`.
+3. Open `/admin`.
+4. Use the Create Billing Item form.
+5. Paste the hosted invoice URL and optional invoice PDF URL.
+6. The client sees the invoice in `/portal` and clicks `Pay Invoice`, which opens the Stripe-hosted payment page.
+
 ## Requests, messages, and audit activity
 
 Example request seed:
@@ -129,7 +140,16 @@ values (
 );
 ```
 
-Audit events are stored in `audit_events`. The portal now writes events for document upload and download requests automatically once the table exists.
+Audit events are stored in `audit_events`. The portal now writes events for:
+
+- client document uploads
+- client document download requests
+- admin document download requests
+- admin-created requests
+- admin-created billing items
+- admin-created portal messages
+- admin document status updates
+- client creation and client-user linking
 
 ## Final test checklist
 
@@ -140,9 +160,12 @@ Audit events are stored in `audit_events`. The portal now writes events for docu
 5. Confirm the document appears in Recent Documents.
 6. Confirm the upload appears in Recent Activity.
 7. Click Download and confirm the file opens from a signed Supabase Storage URL.
-8. Insert a billing record and confirm the Billing section shows the hosted invoice link.
-9. Insert a document request and confirm Requested Items renders correctly.
-10. Insert a portal message and confirm Messages and Notes renders correctly.
-11. Log in as an admin user and visit `/admin`.
-12. Confirm admin stats load.
-13. Confirm admin Recent Client Documents loads and secure downloads work.
+8. Log in as an admin user and visit `/admin`.
+9. Create a client from the admin dashboard.
+10. Create or confirm a Supabase Auth user exists for the client email.
+11. Link that user to the client from the Clients section.
+12. Create a document request and confirm Requested Items renders in `/portal`.
+13. Create a billing item with a Stripe hosted invoice URL and confirm Billing renders in `/portal`.
+14. Create a portal message and confirm Messages and Notes renders in `/portal`.
+15. Update a document status from `/admin` and confirm the updated badge appears in `/portal`.
+16. Confirm admin Recent Client Documents loads and secure downloads work.
