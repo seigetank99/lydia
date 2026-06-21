@@ -67,6 +67,15 @@ function activityLabel(eventType) {
   if (normalized === 'document_uploaded') return 'Document uploaded'
   if (normalized === 'document_download_requested') return 'Document download requested'
   if (normalized === 'admin_document_download_requested') return 'Admin download requested'
+  if (normalized === 'document_request_created') return 'Request created'
+  if (normalized === 'document_request_updated') return 'Request updated'
+  if (normalized === 'billing_item_created') return 'Billing item created'
+  if (normalized === 'billing_item_updated') return 'Billing item updated'
+  if (normalized === 'portal_message_created') return 'Portal message created'
+  if (normalized === 'portal_message_archived') return 'Portal message archived'
+  if (normalized === 'document_status_updated') return 'Document status updated'
+  if (normalized === 'document_archived') return 'Document archived'
+  if (normalized === 'document_deleted') return 'Document deleted'
   return statusLabel(normalized)
 }
 
@@ -645,7 +654,8 @@ export default function ClientPortalDashboard() {
           </SectionCard>
 
           <SectionCard title="Need help?">
-            <p className="text-sm leading-6 text-slate-600">Questions about requested items, billing, or secure document delivery can go directly to the Fidara team.</p>
+            <p className="text-sm leading-6 text-slate-600">Need help? Contact Fidara Group.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Questions about requested items, billing, or secure document delivery can go directly to the Fidara team.</p>
             <a href="/contact" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900">
               Contact Fidara Group
             </a>

@@ -1,18 +1,26 @@
 # Client Portal Deployment Checklist
 
-## Supabase setup
+## Supabase Setup
 
-1. Create the Supabase project.
-2. Run `docs/client-portal-supabase.sql`.
-3. Run `docs/client-portal-production.sql`.
-4. Create a private Supabase Storage bucket named `fidara-client-documents`.
-5. Confirm the bucket remains private.
+Run the SQL files in this order:
 
-Cloudflare R2 is no longer required for the portal.
+1. `docs/client-portal-supabase.sql`
+2. `docs/client-portal-production.sql`
+3. `docs/client-portal-production-v2.sql`
 
-## Production environment variables
+Create a private Supabase Storage bucket named:
 
-Add these in Vercel Project Settings:
+```text
+fidara-client-documents
+```
+
+Keep the bucket private. Client and admin downloads use short-lived signed URLs.
+
+Cloudflare R2 is not required for the portal.
+
+## Vercel Environment Variables
+
+Required for the client portal:
 
 ```env
 SUPABASE_URL=
@@ -23,42 +31,73 @@ PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_STORAGE_BUCKET=fidara-client-documents
 PUBLIC_SUPABASE_STORAGE_BUCKET=fidara-client-documents
 SESSION_COOKIE_NAME=fidara_session
+PUBLIC_SITE_URL=https://www.fidaragroup.com
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` must stay server-side only. Do not expose it in frontend code or public env vars.
+Required for contact form email delivery and recommended for portal notifications:
 
-## Create a client user
-
-1. Create the auth user in Supabase Auth.
-2. Insert a matching profile row if your auth hook does not already do it:
-
-```sql
-insert into profiles (id, email, full_name, role)
-values ('AUTH_USER_UUID', 'client@example.com', 'Client User', 'client')
-on conflict (id) do update
-set email = excluded.email,
-    full_name = excluded.full_name;
+```env
+CONTACT_TO=
+CONTACT_FROM=
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+PORTAL_EMAIL_FROM=
 ```
 
-3. Create the client row:
+`PORTAL_EMAIL_FROM` is optional. If it is blank, portal notifications use `CONTACT_FROM`.
 
-```sql
-insert into clients (name, business_name)
-values ('Client User', 'Example Business LLC')
-returning id;
+Optional site/security variables:
+
+```env
+PUBLIC_GA4_ID=
+PUBLIC_GOOGLE_SITE_VERIFICATION=
+PUBLIC_BING_SITE_VERIFICATION=
+PUBLIC_TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+PUBLIC_CLIENT_ERROR_REPORTING=false
+CLIENT_ERROR_WEBHOOK=
+CONTACT_ALERT_WEBHOOK=
 ```
 
-4. Link the user to the client:
+`SUPABASE_SERVICE_ROLE_KEY` must remain server-side only. Do not expose it through `PUBLIC_*` variables or frontend code.
 
-```sql
-insert into client_users (client_id, user_id)
-values ('CLIENT_UUID', 'AUTH_USER_UUID')
-on conflict (client_id, user_id) do nothing;
+## Supabase Auth Email Settings
+
+Configure Supabase Auth email templates and redirect URLs before enabling password reset and invite flows.
+
+Add these redirect URLs in Supabase Auth settings:
+
+```text
+https://www.fidaragroup.com/reset-password
+http://localhost:4321/reset-password
 ```
 
-Once admin access is enabled, the same linking step can be done from the `/admin` dashboard without editing `client_users` manually.
+Password reset flow:
 
-## Make a user admin
+1. Client opens `/forgot-password`.
+2. The browser uses `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY`.
+3. Supabase sends a reset email with redirect URL `${origin}/reset-password`.
+4. Client chooses a new password on `/reset-password`.
+
+Staff login and admin dashboard:
+
+1. Footer `Staff Login` points to `/staff-login`.
+2. `/staff-login` signs in through `POST /api/portal?action=login`.
+3. After login, the page verifies staff access with `GET /api/admin?action=summary`.
+4. If the account is not an admin, it logs out and shows an access-denied message.
+5. `/admin` is the protected admin dashboard and should only render dashboard content after admin API verification succeeds.
+
+Invite/link flow:
+
+1. Admin signs in at `/staff-login`, then opens `/admin`.
+2. Admin selects a client and enters email/full name in `Invite / Link Client User`.
+3. If the Supabase Auth user already exists, the API upserts `profiles` and links `client_users`.
+4. If the user does not exist and Supabase invite email is available, the API calls `supabase.auth.admin.inviteUserByEmail`.
+5. No passwords are emailed and no insecure default passwords are created.
+
+## Make A User Admin
 
 Admin access is controlled by `profiles.role`.
 
@@ -68,104 +107,94 @@ set role = 'admin'
 where email = 'seigetank99@gmail.com';
 ```
 
-Users without `role = 'admin'` will receive `403` on `/admin` APIs.
+Users without `role = 'admin'` receive `403` from `/api/admin`.
 
-## Billing model
+## Billing Model
 
-Billing is an MVP that displays stored invoice records only.
+Billing displays stored invoice records only.
 
 - Do not collect card details in the portal.
 - Do not build custom payment forms.
-- Payments should go through hosted Stripe invoice URLs stored in `billing_items.stripe_hosted_invoice_url`.
+- Create invoices in Stripe.
+- Copy the Stripe `hosted_invoice_url`.
+- Add the URL to the billing item in `/admin`.
+- Clients pay through the Stripe-hosted invoice page.
 
-Example invoice seed:
+The portal stores `stripe_hosted_invoice_url` and optional `invoice_pdf_url` on `billing_items`.
 
-```sql
-insert into billing_items (
-  client_id,
-  title,
-  description,
-  amount_cents,
-  currency,
-  status,
-  due_date,
-  stripe_hosted_invoice_url,
-  invoice_pdf_url
-) values (
-  'CLIENT_UUID',
-  'Monthly accounting services',
-  'June monthly bookkeeping and close support.',
-  125000,
-  'usd',
-  'open',
-  current_date + interval '7 days',
-  'https://invoice.stripe.com/test_example',
-  'https://example.com/invoice.pdf'
-);
-```
+## Email Notifications
 
-Production billing workflow:
+Portal notifications use `src/lib/portalEmail.js` and the existing SMTP variables.
 
-1. Create the invoice in Stripe.
-2. Copy the Stripe `hosted_invoice_url`.
-3. Open `/admin`.
-4. Use the Create Billing Item form.
-5. Paste the hosted invoice URL and optional invoice PDF URL.
-6. The client sees the invoice in `/portal` and clicks `Pay Invoice`, which opens the Stripe-hosted payment page.
+Notifications are sent when admin:
 
-## Requests, messages, and audit activity
+- creates a document request
+- creates a billing item
+- creates a portal message
+- marks a document as completed
 
-Example request seed:
+Email delivery is best effort. If SMTP is missing or delivery fails, the main admin action still succeeds and the server logs a warning. Emails do not include attachments, private storage keys, signed URLs, or passwords.
 
-```sql
-insert into document_requests (client_id, title, description, status, due_date)
-values (
-  'CLIENT_UUID',
-  'Upload June bank statements',
-  'Please upload the finalized June operating and payroll bank statements.',
-  'open',
-  current_date + interval '5 days'
-);
-```
+## Document Archive/Delete Policy
 
-Example message seed:
+Archive:
 
-```sql
-insert into portal_messages (client_id, title, body, created_by)
-values (
-  'CLIENT_UUID',
-  'Month-end close started',
-  'We have started your month-end review and will follow up if anything additional is needed.',
-  'Fidara Group'
-);
-```
+- Admin action sets `documents.archived_at` and `documents.archived_by`.
+- The physical file remains in Supabase Storage.
+- Archived documents are hidden from client views by default.
+- Admin can filter documents by Active, Archived, or All.
 
-Audit events are stored in `audit_events`. The portal now writes events for:
+Delete:
 
-- client document uploads
-- client document download requests
-- admin document download requests
-- admin-created requests
-- admin-created billing items
-- admin-created portal messages
-- admin document status updates
-- client creation and client-user linking
+- Admin action requires `confirm: true`.
+- The physical file is removed from the `fidara-client-documents` bucket.
+- The document row is retained with `deleted_at` and `deleted_by` metadata where possible.
+- Deleted documents are hidden from clients and cannot produce signed download URLs.
+- Audit events do not log secrets or signed URLs.
 
-## Final test checklist
+## Audit Events
 
-1. Visit `/login`.
-2. Log in as a linked client user.
-3. Confirm redirect to `/portal`.
-4. Upload one PDF, JPG, PNG, XLSX, or DOCX file.
-5. Confirm the document appears in Recent Documents.
-6. Confirm the upload appears in Recent Activity.
-7. Click Download and confirm the file opens from a signed Supabase Storage URL.
-8. Log in as an admin user and visit `/admin`.
-9. Create a client from the admin dashboard.
-10. Create or confirm a Supabase Auth user exists for the client email.
-11. Link that user to the client from the Clients section.
-12. Create a document request and confirm Requested Items renders in `/portal`.
-13. Create a billing item with a Stripe hosted invoice URL and confirm Billing renders in `/portal`.
-14. Create a portal message and confirm Messages and Notes renders in `/portal`.
-15. Update a document status from `/admin` and confirm the updated badge appears in `/portal`.
-16. Confirm admin Recent Client Documents loads and secure downloads work.
+Audit events are stored in `audit_events` with:
+
+- `client_id`
+- `event_type`
+- `description`
+- `actor_user_id`
+- `metadata`
+
+Current portal actions log:
+
+- admin client created
+- admin client user linked or invited
+- admin request created or updated
+- admin billing item created or updated
+- admin message created or archived
+- admin document status updated
+- admin document archived or deleted
+- client document uploaded
+- client document download requested
+- admin document download requested
+
+Do not log passwords, service keys, private storage links, full signed URLs, or other secrets.
+
+## Production Checklist
+
+1. Run all three Supabase SQL files in order.
+2. Create and verify the private `fidara-client-documents` bucket.
+3. Set all required Vercel environment variables.
+4. Configure Supabase Auth email templates and allowed reset redirect URLs.
+5. Deploy to Vercel.
+6. Make the admin user with the SQL above.
+7. Visit `/login`, `/forgot-password`, `/staff-login`, `/privacy`, `/terms`, and `/security`.
+8. In an incognito window, sign in at `/staff-login` with a non-admin user and confirm access is denied.
+9. In an incognito window, sign in at `/staff-login` with an admin user and confirm it redirects to `/admin`.
+10. Visit `/admin` while logged out and confirm it verifies access, then redirects to `/staff-login`.
+11. Visit `/admin` as a non-admin user and confirm access is denied.
+12. Visit `/admin` as an admin user and confirm the dashboard loads.
+13. Log in as admin and create a test client.
+14. Invite or link a test client user.
+15. Log in as the test client and upload a PDF, JPG, PNG, XLSX, or DOCX file.
+16. Confirm client upload, download, billing, requests, messages, and activity load in `/portal`.
+17. Confirm admin document download, status update, archive, and delete behavior in `/admin`.
+18. Confirm Stripe billing links open only on hosted Stripe pages.
+19. Confirm portal notification emails send when SMTP is configured.

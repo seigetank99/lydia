@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-const HIDDEN_PATH_PREFIXES = ['/login', '/portal', '/admin', '/client-portal']
+const HIDDEN_PATH_PREFIXES = ['/login', '/forgot-password', '/reset-password', '/staff-login', '/portal', '/admin', '/client-portal']
 const ACCOUNT_SPECIFIC_PATTERNS = [
   'my account',
   'my document',
@@ -90,7 +90,10 @@ function getScriptedResponse(input) {
 }
 
 export default function ChatbotWidget() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return !isHiddenPath(window.location.pathname)
+  })
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([
@@ -101,10 +104,6 @@ export default function ChatbotWidget() {
     },
   ])
   const messagesEndRef = useRef(null)
-
-  useEffect(() => {
-    setIsVisible(!isHiddenPath(window.location.pathname))
-  }, [])
 
   useEffect(() => {
     if (isOpen) {

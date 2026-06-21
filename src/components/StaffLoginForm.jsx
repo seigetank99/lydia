@@ -1,10 +1,18 @@
 import { useState } from 'react'
 
-export default function LoginForm() {
+async function readJson(response) {
+  return response.json().catch(() => ({}))
+}
+
+export default function StaffLoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  async function logout() {
+    await fetch('/api/portal?action=logout', { method: 'POST' }).catch(() => {})
+  }
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -12,23 +20,47 @@ export default function LoginForm() {
     setError('')
 
     try {
-      const response = await fetch('/api/portal?action=login', {
+      const loginResponse = await fetch('/api/portal?action=login', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       })
+      const loginData = await readJson(loginResponse)
 
-      const data = await response.json().catch(() => ({}))
-
-      if (!response.ok) {
-        throw new Error(data?.error || 'Login failed.')
+      if (!loginResponse.ok) {
+        throw new Error(loginData?.error || 'Unable to sign in with those credentials.')
       }
 
-      window.location.href = '/portal'
+      const adminResponse = await fetch('/api/admin?action=summary', {
+        headers: { accept: 'application/json' },
+      })
+
+      if (adminResponse.status === 403) {
+        await logout()
+        setPassword('')
+        setError('This account does not have staff access.')
+        return
+      }
+
+      if (adminResponse.status === 401) {
+        await logout()
+        setPassword('')
+        setError('Please sign in again to continue.')
+        return
+      }
+
+      if (!adminResponse.ok) {
+        await logout()
+        setPassword('')
+        setError('Staff access could not be verified right now.')
+        return
+      }
+
+      window.location.assign('/admin')
     } catch (submitError) {
-      setError(submitError.message || 'Login failed.')
+      setError(submitError.message || 'Unable to sign in right now.')
     } finally {
       setLoading(false)
     }
@@ -68,13 +100,13 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-12 items-center justify-center rounded-md bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+          className="inline-flex min-h-12 items-center justify-center rounded-md bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? 'Verifying...' : 'Sign in'}
         </button>
 
-        <a href="/forgot-password" className="text-sm font-medium text-emerald-700 transition hover:text-emerald-900">
-          Forgot password?
+        <a href="/" className="text-sm font-medium text-slate-600 transition hover:text-slate-900">
+          Back to home
         </a>
       </div>
     </form>

@@ -88,6 +88,8 @@ async function handleDocuments(req, res, user) {
     .from('documents')
     .select('id, original_file_name, file_type, file_size, category, status, created_at')
     .eq('client_id', clientId)
+    .is('archived_at', null)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -195,11 +197,12 @@ async function handleDownloadUrl(req, res, user) {
   const bucketName = getStorageBucket()
   const { data: document, error } = await supabaseAdmin
     .from('documents')
-    .select('id, client_id, storage_key')
+    .select('id, client_id, storage_key, archived_at, deleted_at')
     .eq('id', documentId)
     .single()
 
   if (error || !document) return json(res, 404, { error: 'Document not found.' })
+  if (document.archived_at || document.deleted_at) return json(res, 404, { error: 'Document not found.' })
 
   const hasAccess = await userHasClientAccess(user.id, document.client_id)
   if (!hasAccess) return json(res, 403, { error: 'You do not have access to this document.' })
@@ -238,8 +241,20 @@ async function handleSummary(req, res, user) {
     { data: requestRows, error: requestError },
     { data: invoiceRows, error: invoiceError },
   ] = await Promise.all([
-    supabaseAdmin.from('documents').select('id', { count: 'exact', head: true }).eq('client_id', clientId),
-    supabaseAdmin.from('documents').select('created_at').eq('client_id', clientId).order('created_at', { ascending: false }).limit(1),
+    supabaseAdmin
+      .from('documents')
+      .select('id', { count: 'exact', head: true })
+      .eq('client_id', clientId)
+      .is('archived_at', null)
+      .is('deleted_at', null),
+    supabaseAdmin
+      .from('documents')
+      .select('created_at')
+      .eq('client_id', clientId)
+      .is('archived_at', null)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(1),
     supabaseAdmin.from('document_requests').select('status').eq('client_id', clientId),
     supabaseAdmin.from('billing_items').select('amount_cents, status').eq('client_id', clientId),
   ])
@@ -317,6 +332,7 @@ async function handleMessages(req, res, user) {
     .from('portal_messages')
     .select('id, title, body, created_by, created_at')
     .eq('client_id', clientId)
+    .is('archived_at', null)
     .order('created_at', { ascending: false })
 
   if (error) throw error

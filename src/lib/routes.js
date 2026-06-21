@@ -87,8 +87,6 @@ const staticRouteEntries = [
   ['/resources', ResourcesPage],
   ['/onboarding', OnboardingPage],
   ['/pricing', PricingPage],
-  ['/privacy', LegalPage, { type: 'privacy' }],
-  ['/terms', LegalPage, { type: 'terms' }],
   ['/disclaimer', LegalPage, { type: 'disclaimer' }],
 ]
 

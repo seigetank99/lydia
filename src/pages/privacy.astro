@@ -1,0 +1,59 @@
+---
+import PageHero from '../components/astro/PageHero.astro'
+import PageShell from '../components/astro/PageShell.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getStructuredData } from '../lib/seo.js'
+
+const path = '/privacy'
+const sections = [
+  {
+    title: 'Information We Collect',
+    items: [
+      'Contact form submissions may include your name, email address, phone number, service interests, business details, and message content.',
+      'Client portal records may include account profile details, client account relationships, requests, portal messages, billing item metadata, and audit activity.',
+      'Uploaded documents may include tax, accounting, payroll, business, and related records that you choose to submit through approved portal workflows.',
+    ],
+  },
+  {
+    title: 'How We Use Information',
+    items: [
+      'We use information to respond to inquiries, evaluate fit, provide services under written engagement terms, operate the client portal, support billing workflows, and maintain business records.',
+      'We may use third-party providers for hosting, authentication, database, storage, email delivery, analytics, and Stripe-hosted billing links. Current portal infrastructure includes providers such as Supabase and Vercel.',
+      'Fidara Group does not sell client data.',
+    ],
+  },
+  {
+    title: 'Sharing and Contact',
+    items: [
+      'Information may be shared with service providers, professional advisors, or authorities when needed to provide services, operate systems, comply with law, or protect Fidara Group and its clients.',
+      'Do not submit passwords, full payment card details, or unrelated sensitive information through general website forms.',
+      'Questions about privacy can be sent through the Fidara Group contact page.',
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title="Privacy Policy | Fidara Group"
+  description="Privacy information covering Fidara Group website inquiries, client portal data, uploaded documents, providers, and data handling practices."
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <PageShell active="contact">
+    <PageHero eyebrow="Privacy Policy" title="Privacy and client confidentiality matter." description="How Fidara Group handles website inquiries, portal records, uploaded documents, and provider-supported workflows." />
+
+    <section class="border-t border-stone-200 px-8 py-12">
+      <div class="mx-auto grid max-w-4xl gap-6">
+        {sections.map((section) => (
+          <div class="rounded-xl border border-stone-200 bg-white/70 p-7 shadow-sm">
+            <h2 class="font-serif text-2xl text-slate-900">{section.title}</h2>
+            <ul class="mt-4 grid gap-3 text-sm leading-7 text-slate-700">
+              {section.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </PageShell>
+</BaseLayout>

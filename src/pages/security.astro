@@ -1,0 +1,59 @@
+---
+import PageHero from '../components/astro/PageHero.astro'
+import PageShell from '../components/astro/PageShell.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getStructuredData } from '../lib/seo.js'
+
+const path = '/security'
+const sections = [
+  {
+    title: 'Portal Access',
+    items: [
+      'Client portal access requires account login and a linked client account.',
+      'Administrative portal actions require staff access controls through the portal profile role.',
+      'Users are responsible for using strong passwords, keeping credentials private, and signing out on shared devices.',
+    ],
+  },
+  {
+    title: 'Documents',
+    items: [
+      'Uploaded documents are stored in private Supabase Storage buckets rather than public website folders.',
+      'Document downloads use time-limited signed links generated only after the portal verifies access.',
+      'Archived documents are hidden from client views. Deleted document actions remove the physical storage file and retain metadata for audit history where possible.',
+    ],
+  },
+  {
+    title: 'Monitoring and Reporting',
+    items: [
+      'Portal activity is logged for key client and admin events, including uploads, downloads, status changes, billing item changes, messages, archive actions, and delete actions.',
+      'No website or portal can guarantee complete security. Fidara Group avoids overclaiming certification or compliance status from these controls alone.',
+      'Contact Fidara Group promptly if you notice suspicious portal activity, unexpected reset emails, or possible credential exposure.',
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title="Security | Fidara Group"
+  description="Security information for Fidara Group client portal access, private document storage, signed download links, audit logging, and user responsibilities."
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <PageShell active="contact">
+    <PageHero eyebrow="Security" title="Practical safeguards for portal workflows." description="How Fidara Group handles portal access, private document storage, time-limited downloads, and activity logging." />
+
+    <section class="border-t border-stone-200 px-8 py-12">
+      <div class="mx-auto grid max-w-4xl gap-6">
+        {sections.map((section) => (
+          <div class="rounded-xl border border-stone-200 bg-white/70 p-7 shadow-sm">
+            <h2 class="font-serif text-2xl text-slate-900">{section.title}</h2>
+            <ul class="mt-4 grid gap-3 text-sm leading-7 text-slate-700">
+              {section.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </PageShell>
+</BaseLayout>

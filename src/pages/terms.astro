@@ -1,0 +1,59 @@
+---
+import PageHero from '../components/astro/PageHero.astro'
+import PageShell from '../components/astro/PageShell.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCanonical, getOgImageUrl, getStructuredData } from '../lib/seo.js'
+
+const path = '/terms'
+const sections = [
+  {
+    title: 'Website Use',
+    items: [
+      'This website is provided for general informational purposes. Content may change and may not reflect the latest tax, legal, accounting, technology, or regulatory developments.',
+      'Website content, chatbot responses, tools, and downloadable materials are not tax, legal, investment, cybersecurity, insurance, accounting, or financial advice for any specific person or business.',
+      'A Fidara Group client engagement begins only when accepted in writing under separate engagement terms.',
+    ],
+  },
+  {
+    title: 'Portal and Billing',
+    items: [
+      'Client portal users are responsible for keeping login credentials secure and using the portal only for authorized client matters.',
+      'Do not attempt to access another client account, interfere with portal systems, scrape data, or upload unlawful or unrelated materials.',
+      'Billing records in the portal may link to Stripe-hosted invoice pages. Fidara Group does not collect or store payment card details through custom portal forms.',
+    ],
+  },
+  {
+    title: 'Limitations',
+    items: [
+      'Third-party links and services are provided for convenience or operational support, and their own terms and policies may apply.',
+      'Fidara Group may update, limit, suspend, or discontinue website or portal functionality when needed for operations, security, or compliance.',
+      'To the extent permitted by law, website and portal materials are provided without warranties and with standard limitations of liability appropriate to informational online services.',
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title="Terms of Use | Fidara Group"
+  description="Terms covering Fidara Group website use, professional advice limitations, client portal rules, hosted billing links, and disclaimers."
+  canonical={getCanonical(path)}
+  ogImage={getOgImageUrl(path)}
+  jsonLd={getStructuredData(path)}
+>
+  <PageShell active="contact">
+    <PageHero eyebrow="Terms of Use" title="Terms for using Fidara Group online services." description="Website, portal, and hosted billing terms for visitors and client portal users." />
+
+    <section class="border-t border-stone-200 px-8 py-12">
+      <div class="mx-auto grid max-w-4xl gap-6">
+        {sections.map((section) => (
+          <div class="rounded-xl border border-stone-200 bg-white/70 p-7 shadow-sm">
+            <h2 class="font-serif text-2xl text-slate-900">{section.title}</h2>
+            <ul class="mt-4 grid gap-3 text-sm leading-7 text-slate-700">
+              {section.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </PageShell>
+</BaseLayout>

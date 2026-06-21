@@ -57,6 +57,7 @@ function Footer() {
       links: [
         ['Privacy', '/privacy'],
         ['Terms', '/terms'],
+        ['Security', '/security'],
         ['Disclaimer', '/disclaimer'],
         ['Contact', '/contact'],
         ['Referrals', '/referrals'],
@@ -123,7 +124,7 @@ function Footer() {
               relationship is formed until an engagement is accepted in writing.
             </p>
             <a
-                href="/admin"
+                href="/staff-login"
                 className="mt-3 inline-flex text-[11px] font-medium text-slate-400 transition hover:text-slate-600"
             >
               Staff Login

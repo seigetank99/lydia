@@ -90,6 +90,11 @@ export function getPageMeta(path) {
       description:
         'Review Fidara Financial Services website terms covering informational content, professional advice limitations, website use, and communications.',
     },
+    '/security': {
+      title: 'Security | Fidara Financial Services',
+      description:
+        'Review Fidara Financial Services client portal security practices covering login access, private document storage, signed downloads, and audit activity.',
+    },
     '/disclaimer': {
       title: 'Website Disclaimer | Fidara Financial Services',
       description:

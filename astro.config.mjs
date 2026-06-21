@@ -13,8 +13,12 @@ export default defineConfig({
       filter: (page) => ![
         `${site}/client-portal/`,
         `${site}/compliance-language/`,
+        `${site}/admin/`,
+        `${site}/forgot-password/`,
         `${site}/login/`,
         `${site}/portal/`,
+        `${site}/reset-password/`,
+        `${site}/staff-login/`,
       ].includes(page),
     }),
   ],

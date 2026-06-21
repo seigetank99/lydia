@@ -75,4 +75,26 @@ test.describe('site smoke checks', () => {
     await expect(page.getByText(/Please check your inbox/i)).toHaveCount(0)
     await expectNoHorizontalOverflow(page)
   })
+
+  test('portal auth and legal routes load without real credentials', async ({ page }) => {
+    const routes = [
+      ['/login', /Client Portal Login/i],
+      ['/staff-login', /Staff Login/i],
+      ['/forgot-password', /Reset your portal password/i],
+      ['/privacy', /Privacy and client confidentiality matter/i],
+      ['/terms', /Terms for using Fidara Group online services/i],
+      ['/security', /Practical safeguards for portal workflows/i],
+      ['/portal', /Welcome to your Fidara dashboard/i],
+    ]
+
+    for (const [path, heading] of routes) {
+      await page.goto(path)
+      await expect(page.getByRole('heading', { name: heading })).toBeVisible()
+      await expectNoHorizontalOverflow(page)
+    }
+
+    await page.goto('/admin')
+    await expect(page.getByText(/Verifying staff access|Unable to verify staff access|Access denied/i).first()).toBeVisible()
+    await expectNoHorizontalOverflow(page)
+  })
 })

@@ -6,10 +6,12 @@ import {
   recordAuditEvent,
   requireAdmin,
 } from '../src/lib/serverPortal.js'
+import { portalNotificationText, sendPortalNotification } from '../src/lib/portalEmail.js'
 import { getSupabaseAdmin } from '../src/lib/supabaseAdmin.js'
 
 const ALLOWED_DOCUMENT_STATUSES = new Set(['received', 'reviewing', 'completed'])
 const ALLOWED_BILLING_STATUSES = new Set(['open', 'paid', 'overdue'])
+const ALLOWED_REQUEST_STATUSES = new Set(['open', 'completed', 'closed'])
 
 function isValidDate(value) {
   if (!value) return true
@@ -73,7 +75,11 @@ async function handleSummary(req, res) {
     { data: recentUploads, error: recentUploadsError },
   ] = await Promise.all([
     supabaseAdmin.from('clients').select('id', { count: 'exact', head: true }),
-    supabaseAdmin.from('documents').select('id', { count: 'exact', head: true }),
+    supabaseAdmin
+      .from('documents')
+      .select('id', { count: 'exact', head: true })
+      .is('archived_at', null)
+      .is('deleted_at', null),
     supabaseAdmin.from('document_requests').select('id', { count: 'exact', head: true }).eq('status', 'open'),
     supabaseAdmin.from('billing_items').select('amount_cents, status'),
     supabaseAdmin
@@ -84,6 +90,8 @@ async function handleSummary(req, res) {
     supabaseAdmin
       .from('documents')
       .select('id, original_file_name, created_at, client_id, clients(name, business_name)')
+      .is('archived_at', null)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .limit(5),
   ])
@@ -149,11 +157,20 @@ async function handleClients(req, res) {
 async function handleDocuments(req, res) {
   if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' })
 
-  const { data, error } = await getSupabaseAdmin()
+  const filter = normalizeText(req.query?.filter || 'active').toLowerCase()
+  let query = getSupabaseAdmin()
     .from('documents')
-    .select('id, client_id, original_file_name, file_type, file_size, category, status, created_at, clients(name, business_name)')
+    .select('id, client_id, original_file_name, file_type, file_size, category, status, created_at, archived_at, deleted_at, clients(name, business_name)')
     .order('created_at', { ascending: false })
     .limit(100)
+
+  if (filter === 'archived') {
+    query = query.not('archived_at', 'is', null).is('deleted_at', null)
+  } else if (filter !== 'all') {
+    query = query.is('archived_at', null).is('deleted_at', null)
+  }
+
+  const { data, error } = await query
 
   if (error) throw error
 
@@ -166,9 +183,93 @@ async function handleDocuments(req, res) {
     status: document.status,
     file_size: document.file_size,
     created_at: document.created_at,
+    archived_at: document.archived_at,
+    deleted_at: document.deleted_at,
   }))
 
   return json(res, 200, { documents })
+}
+
+async function handleRequests(req, res) {
+  if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' })
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('document_requests')
+    .select('id, client_id, title, description, status, due_date, created_at, updated_at, clients(name, business_name)')
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  if (error) throw error
+
+  return json(res, 200, {
+    requests: (data || []).map((request) => ({
+      id: request.id,
+      client_id: request.client_id,
+      client_name: request.clients?.business_name || request.clients?.name || 'Unknown client',
+      title: request.title,
+      description: request.description,
+      status: request.status,
+      due_date: request.due_date,
+      created_at: request.created_at,
+      updated_at: request.updated_at,
+    })),
+  })
+}
+
+async function handleBilling(req, res) {
+  if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' })
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('billing_items')
+    .select('id, client_id, title, description, amount_cents, currency, status, due_date, stripe_hosted_invoice_url, invoice_pdf_url, created_at, updated_at, clients(name, business_name)')
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  if (error) throw error
+
+  return json(res, 200, {
+    billingItems: (data || []).map((item) => ({
+      id: item.id,
+      client_id: item.client_id,
+      client_name: item.clients?.business_name || item.clients?.name || 'Unknown client',
+      title: item.title,
+      description: item.description,
+      amount_cents: item.amount_cents,
+      currency: item.currency,
+      status: item.status,
+      due_date: item.due_date,
+      stripe_hosted_invoice_url: item.stripe_hosted_invoice_url,
+      invoice_pdf_url: item.invoice_pdf_url,
+      created_at: item.created_at,
+      updated_at: item.updated_at,
+    })),
+  })
+}
+
+async function handleMessages(req, res) {
+  if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' })
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('portal_messages')
+    .select('id, client_id, title, body, created_by, created_at, updated_at, archived_at, clients(name, business_name)')
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  if (error) throw error
+
+  return json(res, 200, {
+    messages: (data || []).map((message) => ({
+      id: message.id,
+      client_id: message.client_id,
+      client_name: message.clients?.business_name || message.clients?.name || 'Unknown client',
+      title: message.title,
+      body: message.body,
+      created_by: message.created_by,
+      created_at: message.created_at,
+      updated_at: message.updated_at,
+      archived_at: message.archived_at,
+    })),
+  })
 }
 
 async function handleCreateClient(req, res, user) {
@@ -227,34 +328,7 @@ async function findAuthUserByEmail(email) {
   return null
 }
 
-async function handleLinkClientUser(req, res, user) {
-  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
-  const payload = await parseJsonBody(req, res)
-  if (!payload) return
-
-  const clientId = normalizeText(payload.clientId)
-  const email = normalizeText(payload.email).toLowerCase()
-  const fullName = normalizeText(payload.fullName)
-
-  if (!clientId || !email) {
-    return json(res, 400, { error: 'Client and email are required.' })
-  }
-
-  const { data: client, error: clientError } = await getSupabaseAdmin()
-    .from('clients')
-    .select('id, name, business_name')
-    .eq('id', clientId)
-    .single()
-
-  if (clientError || !client) return json(res, 404, { error: 'Client not found.' })
-
-  const authUser = await findAuthUserByEmail(email)
-  if (!authUser) {
-    return json(res, 400, {
-      error: 'Supabase Auth user not found for that email. Create the auth user first, then link them to this client.',
-    })
-  }
-
+async function linkAuthUserToClient({ clientId, client, authUser, email, fullName, actorUserId, eventType = 'client_user_linked' }) {
   const supabaseAdmin = getSupabaseAdmin()
   const { error: profileError } = await supabaseAdmin.from('profiles').upsert(
     {
@@ -280,18 +354,167 @@ async function handleLinkClientUser(req, res, user) {
 
   await recordAuditEvent({
     clientId,
-    eventType: 'client_user_linked',
-    description: `Linked ${email} to client portal access.`,
-    actorUserId: user.id,
+    eventType,
+    description: `${eventType === 'client_user_invited' ? 'Invited' : 'Linked'} ${email} to client portal access.`,
+    actorUserId,
     metadata: {
       linked_user_id: authUser.id,
       linked_email: email,
+      client_name: client.business_name || client.name,
     },
+  })
+}
+
+async function handleLinkClientUser(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const clientId = normalizeText(payload.clientId)
+  const email = normalizeText(payload.email).toLowerCase()
+  const fullName = normalizeText(payload.fullName)
+
+  if (!clientId || !email) {
+    return json(res, 400, { error: 'Client and email are required.' })
+  }
+
+  const { data: client, error: clientError } = await getSupabaseAdmin()
+    .from('clients')
+    .select('id, name, business_name')
+    .eq('id', clientId)
+    .single()
+
+  if (clientError || !client) return json(res, 404, { error: 'Client not found.' })
+
+  const authUser = await findAuthUserByEmail(email)
+  if (!authUser) return await handleInviteClientUser(req, res, user, { payload, client })
+
+  await linkAuthUserToClient({
+    clientId,
+    client,
+    authUser,
+    email,
+    fullName,
+    actorUserId: user.id,
+  })
+
+  await sendPortalNotification({
+    clientId,
+    subject: 'Fidara client portal access',
+    text: [
+      'Fidara Group linked your email address to a client portal account.',
+      '',
+      'Please log in to review your portal. If you need a password, use the forgot password link on the login page.',
+    ].join('\n'),
   })
 
   return json(res, 200, {
     ok: true,
     message: `${email} linked to ${client.business_name || client.name}.`,
+  })
+}
+
+async function handleInviteClientUser(req, res, user, preloaded = {}) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = preloaded.payload || (await parseJsonBody(req, res))
+  if (!payload) return
+
+  const clientId = normalizeText(payload.clientId)
+  const email = normalizeText(payload.email).toLowerCase()
+  const fullName = normalizeText(payload.fullName)
+
+  if (!clientId || !email) {
+    return json(res, 400, { error: 'Client and email are required.' })
+  }
+
+  let client = preloaded.client
+  if (!client) {
+    const { data, error: clientError } = await getSupabaseAdmin()
+      .from('clients')
+      .select('id, name, business_name')
+      .eq('id', clientId)
+      .single()
+
+    if (clientError || !data) return json(res, 404, { error: 'Client not found.' })
+    client = data
+  }
+
+  const existingAuthUser = await findAuthUserByEmail(email)
+  if (existingAuthUser) {
+    await linkAuthUserToClient({
+      clientId,
+      client,
+      authUser: existingAuthUser,
+      email,
+      fullName,
+      actorUserId: user.id,
+    })
+
+    return json(res, 200, {
+      ok: true,
+      message: `${email} already existed in Supabase Auth and has been linked to ${client.business_name || client.name}.`,
+    })
+  }
+
+  const supabaseAdmin = getSupabaseAdmin()
+  if (typeof supabaseAdmin.auth.admin.inviteUserByEmail !== 'function') {
+    await recordAuditEvent({
+      clientId,
+      eventType: 'client_user_invite_unavailable',
+      description: `Invite requested for ${email}, but Supabase invite API was unavailable.`,
+      actorUserId: user.id,
+      metadata: { invited_email: email },
+    })
+
+    return json(res, 200, {
+      ok: true,
+      message:
+        'Supabase invite email is not available in this environment. Create the Supabase Auth user or enable invite emails, then link this email again.',
+    })
+  }
+
+  const redirectTo = `${(process.env.PUBLIC_SITE_URL || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}`).replace(/\/$/, '')}/reset-password`
+  const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+    redirectTo,
+    data: fullName ? { full_name: fullName } : undefined,
+  })
+
+  if (inviteError) {
+    await recordAuditEvent({
+      clientId,
+      eventType: 'client_user_invite_failed',
+      description: `Invite failed for ${email}.`,
+      actorUserId: user.id,
+      metadata: { invited_email: email, error_message: inviteError.message },
+    })
+
+    return json(res, 400, { error: inviteError.message || 'Unable to send Supabase invite email.' })
+  }
+
+  const invitedUser = inviteData?.user || (await findAuthUserByEmail(email))
+  if (invitedUser) {
+    await linkAuthUserToClient({
+      clientId,
+      client,
+      authUser: invitedUser,
+      email,
+      fullName,
+      actorUserId: user.id,
+      eventType: 'client_user_invited',
+    })
+  } else {
+    await recordAuditEvent({
+      clientId,
+      eventType: 'client_user_invited',
+      description: `Invite email sent to ${email}.`,
+      actorUserId: user.id,
+      metadata: { invited_email: email },
+    })
+  }
+
+  return json(res, 200, {
+    ok: true,
+    message: `Invite sent to ${email}. They will set their password through Supabase Auth.`,
   })
 }
 
@@ -330,6 +553,59 @@ async function handleCreateRequest(req, res, user) {
     metadata: {
       request_id: request.id,
       title,
+      due_date: dueDate,
+    },
+  })
+
+  await sendPortalNotification({
+    clientId,
+    subject: 'New item in your Fidara client portal',
+    text: portalNotificationText('a new request'),
+  })
+
+  return json(res, 200, { request })
+}
+
+async function handleUpdateRequest(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const id = normalizeText(payload.id)
+  const title = normalizeText(payload.title)
+  const description = normalizeOptionalText(payload.description)
+  const status = normalizeText(payload.status || 'open').toLowerCase()
+  const dueDate = normalizeOptionalText(payload.dueDate)
+
+  if (!id || !title) return json(res, 400, { error: 'Request ID and title are required.' })
+  if (!ALLOWED_REQUEST_STATUSES.has(status)) {
+    return json(res, 400, { error: 'Request status must be open, completed, or closed.' })
+  }
+  if (!isValidDate(dueDate)) return json(res, 400, { error: 'Due date must use YYYY-MM-DD format.' })
+
+  const { data: request, error } = await getSupabaseAdmin()
+    .from('document_requests')
+    .update({
+      title,
+      description,
+      status,
+      due_date: dueDate,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id, client_id, title, description, status, due_date, created_at, updated_at')
+    .single()
+
+  if (error || !request) return json(res, 404, { error: 'Request not found.' })
+
+  await recordAuditEvent({
+    clientId: request.client_id,
+    eventType: 'document_request_updated',
+    description: `Document request updated: ${title}.`,
+    actorUserId: user.id,
+    metadata: {
+      request_id: request.id,
+      status,
       due_date: dueDate,
     },
   })
@@ -391,6 +667,69 @@ async function handleCreateBillingItem(req, res, user) {
     },
   })
 
+  await sendPortalNotification({
+    clientId,
+    subject: 'New item in your Fidara client portal',
+    text: portalNotificationText('a new billing item'),
+  })
+
+  return json(res, 200, { billingItem })
+}
+
+async function handleUpdateBillingItem(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const id = normalizeText(payload.id)
+  const title = normalizeText(payload.title)
+  const description = normalizeOptionalText(payload.description)
+  const amountCents = asPositiveInteger(payload.amountCents)
+  const currency = normalizeText(payload.currency || 'usd').toLowerCase()
+  const status = normalizeText(payload.status || 'open').toLowerCase()
+  const dueDate = normalizeOptionalText(payload.dueDate)
+  const stripeHostedInvoiceUrl = normalizeOptionalText(payload.stripeHostedInvoiceUrl)
+  const invoicePdfUrl = normalizeOptionalText(payload.invoicePdfUrl)
+
+  if (!id || !title || amountCents === null) {
+    return json(res, 400, { error: 'Billing item ID, title, and amount are required.' })
+  }
+  if (!ALLOWED_BILLING_STATUSES.has(status)) {
+    return json(res, 400, { error: 'Billing status must be open, paid, or overdue.' })
+  }
+  if (!isValidDate(dueDate)) return json(res, 400, { error: 'Due date must use YYYY-MM-DD format.' })
+
+  const { data: billingItem, error } = await getSupabaseAdmin()
+    .from('billing_items')
+    .update({
+      title,
+      description,
+      amount_cents: amountCents,
+      currency,
+      status,
+      due_date: dueDate,
+      stripe_hosted_invoice_url: stripeHostedInvoiceUrl,
+      invoice_pdf_url: invoicePdfUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id, client_id, title, description, amount_cents, currency, status, due_date, stripe_hosted_invoice_url, invoice_pdf_url, created_at, updated_at')
+    .single()
+
+  if (error || !billingItem) return json(res, 404, { error: 'Billing item not found.' })
+
+  await recordAuditEvent({
+    clientId: billingItem.client_id,
+    eventType: 'billing_item_updated',
+    description: `Billing item updated: ${title}.`,
+    actorUserId: user.id,
+    metadata: {
+      billing_item_id: billingItem.id,
+      amount_cents: amountCents,
+      status,
+    },
+  })
+
   return json(res, 200, { billingItem })
 }
 
@@ -431,6 +770,45 @@ async function handleCreateMessage(req, res, user) {
     },
   })
 
+  await sendPortalNotification({
+    clientId,
+    subject: 'New item in your Fidara client portal',
+    text: portalNotificationText('a new message'),
+  })
+
+  return json(res, 200, { message })
+}
+
+async function handleArchiveMessage(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const id = normalizeText(payload.id)
+  if (!id) return json(res, 400, { error: 'Message ID is required.' })
+
+  const { data: message, error } = await getSupabaseAdmin()
+    .from('portal_messages')
+    .update({
+      archived_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id, client_id, title, archived_at')
+    .single()
+
+  if (error || !message) return json(res, 404, { error: 'Message not found.' })
+
+  await recordAuditEvent({
+    clientId: message.client_id,
+    eventType: 'portal_message_archived',
+    description: `Portal message archived: ${message.title}.`,
+    actorUserId: user.id,
+    metadata: {
+      message_id: message.id,
+    },
+  })
+
   return json(res, 200, { message })
 }
 
@@ -466,7 +844,105 @@ async function handleUpdateDocumentStatus(req, res, user) {
     },
   })
 
+  if (status === 'completed') {
+    await sendPortalNotification({
+      clientId: document.client_id,
+      subject: 'New item in your Fidara client portal',
+      text: [
+        'Fidara Group marked a document in your client portal as completed.',
+        '',
+        'Please log in to review your portal activity.',
+        '',
+        'For your security, this email does not include private document links or attachments.',
+      ].join('\n'),
+    })
+  }
+
   return json(res, 200, { document })
+}
+
+async function handleArchiveDocument(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const documentId = normalizeText(payload.documentId)
+  if (!documentId) return json(res, 400, { error: 'documentId is required.' })
+
+  const { data: document, error } = await getSupabaseAdmin()
+    .from('documents')
+    .update({
+      archived_at: new Date().toISOString(),
+      archived_by: user.id,
+    })
+    .eq('id', documentId)
+    .is('deleted_at', null)
+    .select('id, client_id, original_file_name, archived_at')
+    .single()
+
+  if (error || !document) return json(res, 404, { error: 'Document not found.' })
+
+  await recordAuditEvent({
+    clientId: document.client_id,
+    eventType: 'document_archived',
+    description: `Document archived: ${document.original_file_name}.`,
+    actorUserId: user.id,
+    metadata: {
+      document_id: document.id,
+    },
+  })
+
+  return json(res, 200, { document })
+}
+
+async function handleDeleteDocument(req, res, user) {
+  if (req.method !== 'POST') return json(res, 405, { error: 'Method not allowed' })
+  const payload = await parseJsonBody(req, res)
+  if (!payload) return
+
+  const documentId = normalizeText(payload.documentId)
+  if (!documentId || payload.confirm !== true) {
+    return json(res, 400, { error: 'documentId and confirm: true are required.' })
+  }
+
+  const supabaseAdmin = getSupabaseAdmin()
+  const { data: document, error } = await supabaseAdmin
+    .from('documents')
+    .select('id, client_id, original_file_name, storage_key, deleted_at')
+    .eq('id', documentId)
+    .single()
+
+  if (error || !document) return json(res, 404, { error: 'Document not found.' })
+  if (document.deleted_at) return json(res, 200, { ok: true, message: 'Document was already marked deleted.' })
+
+  const { error: storageError } = await supabaseAdmin.storage.from(getStorageBucket()).remove([document.storage_key])
+  if (storageError) {
+    return json(res, 500, { error: 'Storage deletion failed. The document record was not marked deleted.' })
+  }
+
+  const { data: deletedDocument, error: updateError } = await supabaseAdmin
+    .from('documents')
+    .update({
+      deleted_at: new Date().toISOString(),
+      deleted_by: user.id,
+    })
+    .eq('id', documentId)
+    .select('id, client_id, original_file_name, deleted_at')
+    .single()
+
+  if (updateError || !deletedDocument) throw updateError || new Error('Failed to mark document deleted.')
+
+  await recordAuditEvent({
+    clientId: deletedDocument.client_id,
+    eventType: 'document_deleted',
+    description: `Document file deleted from storage: ${deletedDocument.original_file_name}.`,
+    actorUserId: user.id,
+    metadata: {
+      document_id: deletedDocument.id,
+    },
+  })
+
+  return json(res, 200, { ok: true, document: deletedDocument })
 }
 
 async function handleDownloadUrl(req, res, user) {
@@ -482,11 +958,12 @@ async function handleDownloadUrl(req, res, user) {
   const bucketName = getStorageBucket()
   const { data: document, error } = await supabaseAdmin
     .from('documents')
-    .select('id, client_id, storage_key')
+    .select('id, client_id, storage_key, deleted_at')
     .eq('id', documentId)
     .single()
 
   if (error || !document) return json(res, 404, { error: 'Document not found.' })
+  if (document.deleted_at) return json(res, 404, { error: 'Document not found.' })
 
   const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
     .from(bucketName)
@@ -523,18 +1000,36 @@ export default async function handler(req, res) {
         return await handleClients(req, res)
       case 'documents':
         return await handleDocuments(req, res)
+      case 'requests':
+        return await handleRequests(req, res)
+      case 'billing':
+        return await handleBilling(req, res)
+      case 'messages':
+        return await handleMessages(req, res)
       case 'create-client':
         return await handleCreateClient(req, res, user)
       case 'link-client-user':
         return await handleLinkClientUser(req, res, user)
+      case 'invite-client-user':
+        return await handleInviteClientUser(req, res, user)
       case 'create-request':
         return await handleCreateRequest(req, res, user)
+      case 'update-request':
+        return await handleUpdateRequest(req, res, user)
       case 'create-billing-item':
         return await handleCreateBillingItem(req, res, user)
+      case 'update-billing-item':
+        return await handleUpdateBillingItem(req, res, user)
       case 'create-message':
         return await handleCreateMessage(req, res, user)
+      case 'archive-message':
+        return await handleArchiveMessage(req, res, user)
       case 'update-document-status':
         return await handleUpdateDocumentStatus(req, res, user)
+      case 'archive-document':
+        return await handleArchiveDocument(req, res, user)
+      case 'delete-document':
+        return await handleDeleteDocument(req, res, user)
       case 'download-url':
         return await handleDownloadUrl(req, res, user)
       default:

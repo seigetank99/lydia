@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 const DOCUMENT_STATUSES = ['received', 'reviewing', 'completed']
 const BILLING_STATUSES = ['open', 'paid', 'overdue']
+const REQUEST_STATUSES = ['open', 'completed', 'closed']
+const TABS = ['Overview', 'Clients', 'Documents', 'Requests', 'Billing', 'Messages', 'Audit']
 
 function formatDate(value) {
   if (!value) return 'No date'
@@ -28,7 +30,7 @@ function formatFileSize(bytes) {
 
 function statusBadgeClass(status) {
   const normalized = String(status || '').toLowerCase()
-  if (normalized === 'completed' || normalized === 'paid') {
+  if (normalized === 'completed' || normalized === 'paid' || normalized === 'closed') {
     return 'border border-emerald-200 bg-emerald-50 text-emerald-700'
   }
   if (normalized === 'overdue') {
@@ -108,16 +110,76 @@ function FormNotice({ kind, message }) {
   return <p className={`rounded-xl px-4 py-3 text-sm ${className}`}>{message}</p>
 }
 
+function TextInput(props) {
+  return (
+    <input
+      {...props}
+      className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+    />
+  )
+}
+
+function TextArea(props) {
+  return (
+    <textarea
+      {...props}
+      className="min-h-24 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+    />
+  )
+}
+
+function Select(props) {
+  return (
+    <select
+      {...props}
+      className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+    />
+  )
+}
+
+function PrimaryButton({ children, variant = 'emerald', ...props }) {
+  const styles =
+    variant === 'danger'
+      ? 'bg-rose-600 text-white hover:bg-rose-700 disabled:bg-rose-400'
+      : variant === 'dark'
+        ? 'bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-400'
+        : 'bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-emerald-400'
+
+  return (
+    <button
+      {...props}
+      className={`inline-flex min-h-10 items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed ${styles}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function SecondaryButton({ children, ...props }) {
+  return (
+    <button
+      {...props}
+      className="inline-flex min-h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {children}
+    </button>
+  )
+}
+
 export default function AdminPortal() {
+  const [activeTab, setActiveTab] = useState('Overview')
   const [summary, setSummary] = useState(null)
   const [documents, setDocuments] = useState([])
+  const [requests, setRequests] = useState([])
+  const [billingItems, setBillingItems] = useState([])
+  const [messages, setMessages] = useState([])
   const [recentActivity, setRecentActivity] = useState([])
   const [clients, setClients] = useState([])
-  const [summaryLoading, setSummaryLoading] = useState(true)
-  const [documentsLoading, setDocumentsLoading] = useState(true)
-  const [clientsLoading, setClientsLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [verified, setVerified] = useState(false)
   const [error, setError] = useState('')
   const [forbidden, setForbidden] = useState(false)
+  const [documentFilter, setDocumentFilter] = useState('active')
   const [createClientForm, setCreateClientForm] = useState({ name: '', businessName: '' })
   const [linkUserForm, setLinkUserForm] = useState({ clientId: '', email: '', fullName: '' })
   const [requestForm, setRequestForm] = useState({ clientId: '', title: '', description: '', dueDate: '' })
@@ -132,31 +194,38 @@ export default function AdminPortal() {
     invoicePdfUrl: '',
   })
   const [messageForm, setMessageForm] = useState({ clientId: '', title: '', body: '' })
+  const [requestEdits, setRequestEdits] = useState({})
+  const [billingEdits, setBillingEdits] = useState({})
   const [busyAction, setBusyAction] = useState('')
   const [notice, setNotice] = useState({ kind: '', message: '' })
 
-  const hasDocuments = useMemo(() => documents.length > 0, [documents])
   const hasClients = useMemo(() => clients.length > 0, [clients])
 
-  function redirectToLogin() {
-    window.location.assign('/login')
+  function redirectToStaffLogin() {
+    window.location.assign('/staff-login')
   }
 
   function clearNotice() {
     setNotice({ kind: '', message: '' })
   }
 
+  function clientOptions() {
+    return clients.map((client) => (
+      <option key={client.id} value={client.id}>
+        {client.business_name || client.name}
+      </option>
+    ))
+  }
+
   async function submitAdminAction(action, body) {
     const result = await fetchJson(`/api/admin?action=${action}`, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     })
 
     if (result?.unauthorized) {
-      redirectToLogin()
+      redirectToStaffLogin()
       return null
     }
 
@@ -172,25 +241,29 @@ export default function AdminPortal() {
     return result.data
   }
 
-  async function loadAdmin() {
+  async function loadAdmin(nextFilter = documentFilter) {
     setError('')
-    const [summaryResult, documentsResult, clientsResult] = await Promise.all([
+    const [summaryResult, documentsResult, clientsResult, requestsResult, billingResult, messagesResult] = await Promise.all([
       fetchJson('/api/admin?action=summary', { headers: { accept: 'application/json' } }),
-      fetchJson('/api/admin?action=documents', { headers: { accept: 'application/json' } }),
+      fetchJson(`/api/admin?action=documents&filter=${encodeURIComponent(nextFilter)}`, { headers: { accept: 'application/json' } }),
       fetchJson('/api/admin?action=clients', { headers: { accept: 'application/json' } }),
+      fetchJson('/api/admin?action=requests', { headers: { accept: 'application/json' } }),
+      fetchJson('/api/admin?action=billing', { headers: { accept: 'application/json' } }),
+      fetchJson('/api/admin?action=messages', { headers: { accept: 'application/json' } }),
     ])
 
-    if (summaryResult?.unauthorized || documentsResult?.unauthorized || clientsResult?.unauthorized) {
-      redirectToLogin()
+    const results = [summaryResult, documentsResult, clientsResult, requestsResult, billingResult, messagesResult]
+    if (results.some((result) => result?.unauthorized)) {
+      redirectToStaffLogin()
       return
     }
 
-    if (summaryResult?.forbidden || documentsResult?.forbidden || clientsResult?.forbidden) {
+    if (results.some((result) => result?.forbidden)) {
       setForbidden(true)
       return
     }
 
-    if (!summaryResult?.ok || !documentsResult?.ok || !clientsResult?.ok) {
+    if (results.some((result) => !result?.ok)) {
       throw new Error('Unable to load the admin dashboard right now.')
     }
 
@@ -198,6 +271,10 @@ export default function AdminPortal() {
     setRecentActivity(Array.isArray(summaryResult.data?.recentActivity) ? summaryResult.data.recentActivity : [])
     setDocuments(Array.isArray(documentsResult.data?.documents) ? documentsResult.data.documents : [])
     setClients(Array.isArray(clientsResult.data?.clients) ? clientsResult.data.clients : [])
+    setRequests(Array.isArray(requestsResult.data?.requests) ? requestsResult.data.requests : [])
+    setBillingItems(Array.isArray(billingResult.data?.billingItems) ? billingResult.data.billingItems : [])
+    setMessages(Array.isArray(messagesResult.data?.messages) ? messagesResult.data.messages : [])
+    setVerified(true)
   }
 
   useEffect(() => {
@@ -209,113 +286,106 @@ export default function AdminPortal() {
       } catch (loadError) {
         if (!cancelled) setError(loadError.message || 'Unable to load the admin dashboard right now.')
       } finally {
-        if (!cancelled) {
-          setSummaryLoading(false)
-          setDocumentsLoading(false)
-          setClientsLoading(false)
-        }
+        if (!cancelled) setLoading(false)
       }
     }
 
     void initialize()
-
     return () => {
       cancelled = true
     }
   }, [])
 
+  useEffect(() => {
+    if (!verified) return
+
+    async function reloadDocuments() {
+      try {
+        const result = await fetchJson(`/api/admin?action=documents&filter=${encodeURIComponent(documentFilter)}`, {
+          headers: { accept: 'application/json' },
+        })
+        if (result?.unauthorized) return redirectToStaffLogin()
+        if (result?.forbidden) return setForbidden(true)
+        if (!result?.ok) throw new Error('Unable to load documents.')
+        setDocuments(Array.isArray(result.data?.documents) ? result.data.documents : [])
+      } catch (loadError) {
+        setError(loadError.message || 'Unable to load documents.')
+      }
+    }
+
+    void reloadDocuments()
+  }, [documentFilter])
+
   async function refreshAdminData() {
-    setSummaryLoading(true)
-    setDocumentsLoading(true)
-    setClientsLoading(true)
     try {
-      await loadAdmin()
+      await loadAdmin(documentFilter)
     } catch (refreshError) {
       setError(refreshError.message || 'Unable to refresh the admin dashboard right now.')
-    } finally {
-      setSummaryLoading(false)
-      setDocumentsLoading(false)
-      setClientsLoading(false)
     }
   }
 
   async function handleLogout() {
     await fetch('/api/portal?action=logout', { method: 'POST' }).catch(() => {})
-    redirectToLogin()
+    redirectToStaffLogin()
+  }
+
+  async function withBusy(action, fn) {
+    setBusyAction(action)
+    clearNotice()
+    try {
+      await fn()
+    } catch (submitError) {
+      setNotice({ kind: 'error', message: submitError.message || 'Action failed.' })
+    } finally {
+      setBusyAction('')
+    }
   }
 
   async function handleDownload(documentId) {
-    try {
-      clearNotice()
+    await withBusy(`download-${documentId}`, async () => {
       const result = await submitAdminAction('download-url', { documentId })
       if (!result) return
       window.open(result.downloadUrl, '_blank', 'noopener,noreferrer')
       await refreshAdminData()
-    } catch (downloadError) {
-      setError(downloadError.message || 'Download is not available right now.')
-    }
+    })
   }
 
   async function handleCreateClient(event) {
     event.preventDefault()
-    setBusyAction('create-client')
-    clearNotice()
-
-    try {
+    await withBusy('create-client', async () => {
       const result = await submitAdminAction('create-client', createClientForm)
       if (!result) return
       setCreateClientForm({ name: '', businessName: '' })
       setNotice({ kind: 'success', message: 'Client created successfully.' })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to create the client.' })
-    } finally {
-      setBusyAction('')
-    }
+    })
   }
 
-  async function handleLinkUser(event) {
+  async function handleInviteUser(event) {
     event.preventDefault()
-    setBusyAction('link-client-user')
-    clearNotice()
-
-    try {
-      const result = await submitAdminAction('link-client-user', linkUserForm)
+    await withBusy('invite-client-user', async () => {
+      const result = await submitAdminAction('invite-client-user', linkUserForm)
       if (!result) return
       setLinkUserForm({ clientId: '', email: '', fullName: '' })
-      setNotice({ kind: 'success', message: result.message || 'Client user linked successfully.' })
+      setNotice({ kind: 'success', message: result.message || 'Client user invited or linked successfully.' })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to link this user.' })
-    } finally {
-      setBusyAction('')
-    }
+    })
   }
 
   async function handleCreateRequest(event) {
     event.preventDefault()
-    setBusyAction('create-request')
-    clearNotice()
-
-    try {
+    await withBusy('create-request', async () => {
       const result = await submitAdminAction('create-request', requestForm)
       if (!result) return
       setRequestForm({ clientId: '', title: '', description: '', dueDate: '' })
       setNotice({ kind: 'success', message: 'Document request added to the portal.' })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to create the request.' })
-    } finally {
-      setBusyAction('')
-    }
+    })
   }
 
   async function handleCreateBillingItem(event) {
     event.preventDefault()
-    setBusyAction('create-billing-item')
-    clearNotice()
-
-    try {
+    await withBusy('create-billing-item', async () => {
       const amountDollars = Number(billingForm.amountDollars || 0)
       const amountCents = Number.isFinite(amountDollars) ? Math.round(amountDollars * 100) : null
       const result = await submitAdminAction('create-billing-item', {
@@ -336,51 +406,177 @@ export default function AdminPortal() {
       })
       setNotice({ kind: 'success', message: 'Billing item created successfully.' })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to create the billing item.' })
-    } finally {
-      setBusyAction('')
-    }
+    })
   }
 
   async function handleCreateMessage(event) {
     event.preventDefault()
-    setBusyAction('create-message')
-    clearNotice()
-
-    try {
+    await withBusy('create-message', async () => {
       const result = await submitAdminAction('create-message', messageForm)
       if (!result) return
       setMessageForm({ clientId: '', title: '', body: '' })
       setNotice({ kind: 'success', message: 'Portal message sent successfully.' })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to send the portal message.' })
-    } finally {
-      setBusyAction('')
-    }
+    })
   }
 
   async function handleUpdateDocumentStatus(documentId, status) {
-    setBusyAction(`document-${documentId}-${status}`)
-    clearNotice()
-
-    try {
+    await withBusy(`document-${documentId}-${status}`, async () => {
       const result = await submitAdminAction('update-document-status', { documentId, status })
       if (!result) return
       setNotice({ kind: 'success', message: `Document marked as ${status}.` })
       await refreshAdminData()
-    } catch (submitError) {
-      setNotice({ kind: 'error', message: submitError.message || 'Unable to update the document status.' })
-    } finally {
-      setBusyAction('')
+    })
+  }
+
+  async function handleArchiveDocument(documentId) {
+    await withBusy(`archive-document-${documentId}`, async () => {
+      const result = await submitAdminAction('archive-document', { documentId })
+      if (!result) return
+      setNotice({ kind: 'success', message: 'Document archived.' })
+      await refreshAdminData()
+    })
+  }
+
+  async function handleDeleteDocument(documentId) {
+    if (!window.confirm('Delete this file from Supabase Storage? This keeps the audit record but removes the physical file.')) return
+    await withBusy(`delete-document-${documentId}`, async () => {
+      const result = await submitAdminAction('delete-document', { documentId, confirm: true })
+      if (!result) return
+      setNotice({ kind: 'success', message: 'Document file deleted and record marked deleted.' })
+      await refreshAdminData()
+    })
+  }
+
+  function getRequestEdit(request) {
+    return requestEdits[request.id] || {
+      title: request.title || '',
+      description: request.description || '',
+      status: request.status || 'open',
+      dueDate: request.due_date || '',
     }
+  }
+
+  function setRequestEdit(id, patch) {
+    const request = requests.find((item) => item.id === id)
+    const base = request
+      ? {
+          title: request.title || '',
+          description: request.description || '',
+          status: request.status || 'open',
+          dueDate: request.due_date || '',
+        }
+      : {}
+    setRequestEdits((current) => ({ ...current, [id]: { ...(current[id] || base), ...patch } }))
+  }
+
+  async function handleUpdateRequest(request) {
+    const edit = getRequestEdit(request)
+    await withBusy(`update-request-${request.id}`, async () => {
+      const result = await submitAdminAction('update-request', { id: request.id, ...edit })
+      if (!result) return
+      setNotice({ kind: 'success', message: 'Request updated.' })
+      setRequestEdits((current) => {
+        const next = { ...current }
+        delete next[request.id]
+        return next
+      })
+      await refreshAdminData()
+    })
+  }
+
+  function getBillingEdit(item) {
+    return billingEdits[item.id] || {
+      title: item.title || '',
+      description: item.description || '',
+      amountDollars: ((item.amount_cents || 0) / 100).toFixed(2),
+      status: item.status || 'open',
+      dueDate: item.due_date || '',
+      stripeHostedInvoiceUrl: item.stripe_hosted_invoice_url || '',
+      invoicePdfUrl: item.invoice_pdf_url || '',
+    }
+  }
+
+  function setBillingEdit(id, patch) {
+    const item = billingItems.find((entry) => entry.id === id)
+    const base = item
+      ? {
+          title: item.title || '',
+          description: item.description || '',
+          amountDollars: ((item.amount_cents || 0) / 100).toFixed(2),
+          status: item.status || 'open',
+          dueDate: item.due_date || '',
+          stripeHostedInvoiceUrl: item.stripe_hosted_invoice_url || '',
+          invoicePdfUrl: item.invoice_pdf_url || '',
+        }
+      : {}
+    setBillingEdits((current) => ({ ...current, [id]: { ...(current[id] || base), ...patch } }))
+  }
+
+  async function handleUpdateBillingItem(item) {
+    const edit = getBillingEdit(item)
+    const amountDollars = Number(edit.amountDollars || 0)
+    await withBusy(`update-billing-${item.id}`, async () => {
+      const result = await submitAdminAction('update-billing-item', {
+        id: item.id,
+        ...edit,
+        amountCents: Number.isFinite(amountDollars) ? Math.round(amountDollars * 100) : null,
+        currency: item.currency || 'usd',
+      })
+      if (!result) return
+      setNotice({ kind: 'success', message: 'Billing item updated.' })
+      setBillingEdits((current) => {
+        const next = { ...current }
+        delete next[item.id]
+        return next
+      })
+      await refreshAdminData()
+    })
+  }
+
+  async function handleArchiveMessage(messageId) {
+    await withBusy(`archive-message-${messageId}`, async () => {
+      const result = await submitAdminAction('archive-message', { id: messageId })
+      if (!result) return
+      setNotice({ kind: 'success', message: 'Message archived.' })
+      await refreshAdminData()
+    })
   }
 
   if (forbidden) {
     return (
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-6 text-sm text-amber-800 shadow-sm">
-        This account does not have admin access.
+      <div className="mx-auto max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-6 py-8 text-center shadow-sm">
+        <h1 className="text-2xl font-semibold text-amber-950">Access denied</h1>
+        <p className="mt-3 text-sm leading-6 text-amber-800">This account does not have staff access.</p>
+        <a
+          href="/staff-login"
+          className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+        >
+          Back to staff login
+        </a>
+      </div>
+    )
+  }
+
+  if (!verified) {
+    if (error) {
+      return (
+        <div className="mx-auto max-w-xl rounded-2xl border border-rose-200 bg-rose-50 px-6 py-8 text-center shadow-sm">
+          <h1 className="text-2xl font-semibold text-rose-950">Unable to verify staff access</h1>
+          <p className="mt-3 text-sm leading-6 text-rose-700">Please try signing in again from the staff login page.</p>
+          <a
+            href="/staff-login"
+            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+          >
+            Back to staff login
+          </a>
+        </div>
+      )
+    }
+
+    return (
+      <div className="mx-auto max-w-xl rounded-2xl border border-stone-200 bg-white px-6 py-8 text-center shadow-sm">
+        <p className="text-sm font-medium text-slate-900">Verifying staff access...</p>
       </div>
     )
   }
@@ -395,7 +591,7 @@ export default function AdminPortal() {
             </div>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Fidara Admin Portal</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
-              Manage clients, documents, billing, and requests from one operations dashboard.
+              Manage clients, documents, billing, requests, messages, and audit activity from one operations dashboard.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -417,11 +613,26 @@ export default function AdminPortal() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total Clients" value={summary?.clientsCount ?? 0} detail="Managed client accounts" loading={summaryLoading} />
-        <StatCard label="Documents Uploaded" value={summary?.documentsCount ?? 0} detail="Files stored in the portal" loading={summaryLoading} />
-        <StatCard label="Open Requests" value={summary?.openRequestsCount ?? 0} detail="Client follow-ups still outstanding" loading={summaryLoading} />
-        <StatCard label="Outstanding Balance" value={formatCurrency(summary?.outstandingBalanceCents || 0)} detail={`${summary?.openInvoicesCount ?? 0} open invoice${summary?.openInvoicesCount === 1 ? '' : 's'}`} loading={summaryLoading} />
+        <StatCard label="Total Clients" value={summary?.clientsCount ?? 0} detail="Managed client accounts" loading={loading} />
+        <StatCard label="Active Documents" value={summary?.documentsCount ?? 0} detail="Files stored in the portal" loading={loading} />
+        <StatCard label="Open Requests" value={summary?.openRequestsCount ?? 0} detail="Client follow-ups still outstanding" loading={loading} />
+        <StatCard label="Outstanding Balance" value={formatCurrency(summary?.outstandingBalanceCents || 0)} detail={`${summary?.openInvoicesCount ?? 0} open invoice${summary?.openInvoicesCount === 1 ? '' : 's'}`} loading={loading} />
       </section>
+
+      <div className="flex gap-2 overflow-x-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-sm">
+        {TABS.map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            className={`min-h-10 rounded-xl px-4 text-sm font-medium transition ${
+              activeTab === tab ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
       {error ? (
         <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
@@ -431,371 +642,31 @@ export default function AdminPortal() {
 
       <FormNotice kind={notice.kind} message={notice.message} />
 
-      <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_340px]">
-        <div className="space-y-8">
-          <SectionCard title="Recent Documents" subtitle="Review client uploads, download secure copies, and update processing status.">
-            {documentsLoading ? (
+      {activeTab === 'Overview' ? (
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.4fr)_420px]">
+          <SectionCard title="Recent Documents" subtitle="Latest active client uploads across the portal.">
+            {loading ? (
               <p className="text-sm text-slate-600">Loading recent client documents...</p>
-            ) : hasDocuments ? (
+            ) : documents.length ? (
               <div className="space-y-3">
-                {documents.map((document) => (
+                {documents.slice(0, 6).map((document) => (
                   <div key={document.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
-                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="truncate text-sm font-medium text-slate-900">{document.original_file_name}</p>
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(document.status)}`}>
-                            {statusLabel(document.status)}
-                          </span>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
-                          <span>{document.client_name}</span>
-                          <span>{document.category || 'general'}</span>
-                          <span>{formatDate(document.created_at)}</span>
-                          <span>{formatFileSize(document.file_size)}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        {DOCUMENT_STATUSES.map((status) => (
-                          <button
-                            key={status}
-                            type="button"
-                            onClick={() => handleUpdateDocumentStatus(document.id, status)}
-                            disabled={busyAction === `document-${document.id}-${status}` || document.status === status}
-                            className="inline-flex min-h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-3 py-2 text-xs font-medium uppercase tracking-[0.12em] text-slate-700 transition hover:border-stone-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            {busyAction === `document-${document.id}-${status}` ? 'Saving...' : status}
-                          </button>
-                        ))}
-                        <button
-                          type="button"
-                          onClick={() => handleDownload(document.id)}
-                          className="inline-flex min-h-10 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-                        >
-                          Download
-                        </button>
-                      </div>
+                    <p className="truncate text-sm font-medium text-slate-900">{document.original_file_name}</p>
+                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
+                      <span>{document.client_name}</span>
+                      <span>{formatDate(document.created_at)}</span>
+                      <span className={`rounded-full px-2.5 py-1 ${statusBadgeClass(document.status)}`}>{statusLabel(document.status)}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyState title="No documents found" body="Client uploads will appear here as soon as records start coming into the portal." />
+              <EmptyState title="No active documents found" body="Client uploads will appear here as soon as records start coming into the portal." />
             )}
           </SectionCard>
 
-          <SectionCard title="Clients" subtitle="Create client accounts and link existing Supabase Auth users to portal access.">
-            {clientsLoading ? (
-              <p className="text-sm text-slate-600">Loading clients...</p>
-            ) : (
-              <div className="space-y-6">
-                {hasClients ? (
-                  <div className="space-y-3">
-                    {clients.map((client) => (
-                      <div key={client.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
-                        <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-slate-900">{client.business_name || client.name}</p>
-                            <p className="mt-1 text-sm text-slate-600">{client.name}</p>
-                            <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">Created {formatDate(client.created_at)}</p>
-                          </div>
-                          <div className="text-sm text-slate-600">
-                            {client.linked_users?.length ? `${client.linked_users.length} linked user${client.linked_users.length === 1 ? '' : 's'}` : 'No linked users'}
-                          </div>
-                        </div>
-                        {client.linked_users?.length ? (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {client.linked_users.map((linkedUser) => (
-                              <span key={`${client.id}-${linkedUser.user_id}`} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-slate-600">
-                                {linkedUser.full_name || linkedUser.email}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState title="No clients yet" body="Create your first client below, then link an existing Supabase Auth user to portal access." />
-                )}
-
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <form onSubmit={handleCreateClient} className="grid gap-4 rounded-2xl border border-stone-200 bg-white p-5">
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-600">Create client</h3>
-                    <Field label="Name">
-                      <input
-                        value={createClientForm.name}
-                        onChange={(event) => setCreateClientForm((current) => ({ ...current, name: event.target.value }))}
-                        className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                        required
-                      />
-                    </Field>
-                    <Field label="Business name">
-                      <input
-                        value={createClientForm.businessName}
-                        onChange={(event) => setCreateClientForm((current) => ({ ...current, businessName: event.target.value }))}
-                        className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                      />
-                    </Field>
-                    <button
-                      type="submit"
-                      disabled={busyAction === 'create-client'}
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
-                    >
-                      {busyAction === 'create-client' ? 'Creating...' : 'Create client'}
-                    </button>
-                  </form>
-
-                  <form onSubmit={handleLinkUser} className="grid gap-4 rounded-2xl border border-stone-200 bg-white p-5">
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-600">Link client user</h3>
-                    <Field label="Client">
-                      <select
-                        value={linkUserForm.clientId}
-                        onChange={(event) => setLinkUserForm((current) => ({ ...current, clientId: event.target.value }))}
-                        className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                        required
-                      >
-                        <option value="">Select client</option>
-                        {clients.map((client) => (
-                          <option key={client.id} value={client.id}>
-                            {client.business_name || client.name}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-                    <Field label="Email">
-                      <input
-                        type="email"
-                        value={linkUserForm.email}
-                        onChange={(event) => setLinkUserForm((current) => ({ ...current, email: event.target.value }))}
-                        className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                        required
-                      />
-                    </Field>
-                    <Field label="Full name">
-                      <input
-                        value={linkUserForm.fullName}
-                        onChange={(event) => setLinkUserForm((current) => ({ ...current, fullName: event.target.value }))}
-                        className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                      />
-                    </Field>
-                    <button
-                      type="submit"
-                      disabled={busyAction === 'link-client-user'}
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-                    >
-                      {busyAction === 'link-client-user' ? 'Linking...' : 'Link user'}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
-          </SectionCard>
-
-          <SectionCard title="Create Request" subtitle="Add a new missing-item request that clients will see immediately in their portal.">
-            <form onSubmit={handleCreateRequest} className="grid gap-4 lg:grid-cols-2">
-              <Field label="Client">
-                <select
-                  value={requestForm.clientId}
-                  onChange={(event) => setRequestForm((current) => ({ ...current, clientId: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                >
-                  <option value="">Select client</option>
-                  {clients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.business_name || client.name}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Due date">
-                <input
-                  type="date"
-                  value={requestForm.dueDate}
-                  onChange={(event) => setRequestForm((current) => ({ ...current, dueDate: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                />
-              </Field>
-              <div className="lg:col-span-2">
-                <Field label="Request title">
-                  <input
-                    value={requestForm.title}
-                    onChange={(event) => setRequestForm((current) => ({ ...current, title: event.target.value }))}
-                    className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                    required
-                  />
-                </Field>
-              </div>
-              <div className="lg:col-span-2">
-                <Field label="Description">
-                  <textarea
-                    value={requestForm.description}
-                    onChange={(event) => setRequestForm((current) => ({ ...current, description: event.target.value }))}
-                    className="min-h-28 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  />
-                </Field>
-              </div>
-              <div className="lg:col-span-2">
-                <button
-                  type="submit"
-                  disabled={busyAction === 'create-request'}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
-                >
-                  {busyAction === 'create-request' ? 'Saving...' : 'Create request'}
-                </button>
-              </div>
-            </form>
-          </SectionCard>
-
-          <SectionCard title="Create Billing Item" subtitle="Store invoice records and hosted Stripe invoice URLs. No card handling happens inside the portal.">
-            <form onSubmit={handleCreateBillingItem} className="grid gap-4 lg:grid-cols-2">
-              <Field label="Client">
-                <select
-                  value={billingForm.clientId}
-                  onChange={(event) => setBillingForm((current) => ({ ...current, clientId: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                >
-                  <option value="">Select client</option>
-                  {clients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.business_name || client.name}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Status">
-                <select
-                  value={billingForm.status}
-                  onChange={(event) => setBillingForm((current) => ({ ...current, status: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                >
-                  {BILLING_STATUSES.map((status) => (
-                    <option key={status} value={status}>
-                      {statusLabel(status)}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <div className="lg:col-span-2">
-                <Field label="Title">
-                  <input
-                    value={billingForm.title}
-                    onChange={(event) => setBillingForm((current) => ({ ...current, title: event.target.value }))}
-                    className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                    required
-                  />
-                </Field>
-              </div>
-              <div className="lg:col-span-2">
-                <Field label="Description">
-                  <textarea
-                    value={billingForm.description}
-                    onChange={(event) => setBillingForm((current) => ({ ...current, description: event.target.value }))}
-                    className="min-h-28 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  />
-                </Field>
-              </div>
-              <Field label="Amount in dollars">
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={billingForm.amountDollars}
-                  onChange={(event) => setBillingForm((current) => ({ ...current, amountDollars: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                />
-              </Field>
-              <Field label="Due date">
-                <input
-                  type="date"
-                  value={billingForm.dueDate}
-                  onChange={(event) => setBillingForm((current) => ({ ...current, dueDate: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                />
-              </Field>
-              <div className="lg:col-span-2">
-                <Field label="Stripe hosted invoice URL">
-                  <input
-                    type="url"
-                    value={billingForm.stripeHostedInvoiceUrl}
-                    onChange={(event) => setBillingForm((current) => ({ ...current, stripeHostedInvoiceUrl: event.target.value }))}
-                    className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  />
-                </Field>
-              </div>
-              <div className="lg:col-span-2">
-                <Field label="Invoice PDF URL">
-                  <input
-                    type="url"
-                    value={billingForm.invoicePdfUrl}
-                    onChange={(event) => setBillingForm((current) => ({ ...current, invoicePdfUrl: event.target.value }))}
-                    className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  />
-                </Field>
-              </div>
-              <div className="lg:col-span-2">
-                <button
-                  type="submit"
-                  disabled={busyAction === 'create-billing-item'}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-                >
-                  {busyAction === 'create-billing-item' ? 'Saving...' : 'Create billing item'}
-                </button>
-              </div>
-            </form>
-          </SectionCard>
-
-          <SectionCard title="Send Message" subtitle="Add a portal message that clients can read inside their dashboard.">
-            <form onSubmit={handleCreateMessage} className="grid gap-4">
-              <Field label="Client">
-                <select
-                  value={messageForm.clientId}
-                  onChange={(event) => setMessageForm((current) => ({ ...current, clientId: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                >
-                  <option value="">Select client</option>
-                  {clients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.business_name || client.name}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Title">
-                <input
-                  value={messageForm.title}
-                  onChange={(event) => setMessageForm((current) => ({ ...current, title: event.target.value }))}
-                  className="min-h-11 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                />
-              </Field>
-              <Field label="Message body">
-                <textarea
-                  value={messageForm.body}
-                  onChange={(event) => setMessageForm((current) => ({ ...current, body: event.target.value }))}
-                  className="min-h-32 rounded-xl border border-stone-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  required
-                />
-              </Field>
-              <button
-                type="submit"
-                disabled={busyAction === 'create-message'}
-                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
-              >
-                {busyAction === 'create-message' ? 'Sending...' : 'Send message'}
-              </button>
-            </form>
-          </SectionCard>
-        </div>
-
-        <aside className="space-y-6">
-          <SectionCard title="Recent activity" subtitle="Latest admin and client actions captured in the audit log.">
-            {summaryLoading ? (
+          <SectionCard title="Recent Activity" subtitle="Latest admin and client actions captured in the audit log.">
+            {loading ? (
               <p className="text-sm text-slate-600">Loading recent activity...</p>
             ) : recentActivity.length ? (
               <div className="space-y-3">
@@ -813,25 +684,355 @@ export default function AdminPortal() {
               <EmptyState title="No recent activity" body="Audit events will appear here as admins and clients interact with the portal." />
             )}
           </SectionCard>
+        </div>
+      ) : null}
 
-          <SectionCard title="Billing workflow">
-            <ul className="space-y-3 text-sm leading-6 text-slate-600">
-              <li>Create invoices in Stripe.</li>
-              <li>Copy the hosted invoice URL into the billing form.</li>
-              <li>Optionally add the invoice PDF URL for download.</li>
-              <li>Clients click Pay Invoice and complete payment on Stripe-hosted pages.</li>
-            </ul>
+      {activeTab === 'Clients' ? (
+        <SectionCard title="Clients" subtitle="Create client accounts and invite or link Supabase Auth users to portal access.">
+          {loading ? (
+            <p className="text-sm text-slate-600">Loading clients...</p>
+          ) : (
+            <div className="space-y-6">
+              {hasClients ? (
+                <div className="space-y-3">
+                  {clients.map((client) => (
+                    <div key={client.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
+                      <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">{client.business_name || client.name}</p>
+                          <p className="mt-1 text-sm text-slate-600">{client.name}</p>
+                          <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">Created {formatDate(client.created_at)}</p>
+                        </div>
+                        <div className="text-sm text-slate-600">
+                          {client.linked_users?.length ? `${client.linked_users.length} linked user${client.linked_users.length === 1 ? '' : 's'}` : 'No linked users'}
+                        </div>
+                      </div>
+                      {client.linked_users?.length ? (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {client.linked_users.map((linkedUser) => (
+                            <span key={`${client.id}-${linkedUser.user_id}`} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-slate-600">
+                              {linkedUser.full_name || linkedUser.email}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <EmptyState title="No clients yet" body="Create your first client below, then invite or link a user to portal access." />
+              )}
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                <form onSubmit={handleCreateClient} className="grid gap-4 rounded-2xl border border-stone-200 bg-white p-5">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-600">Create client</h3>
+                  <Field label="Name">
+                    <TextInput value={createClientForm.name} onChange={(event) => setCreateClientForm((current) => ({ ...current, name: event.target.value }))} required />
+                  </Field>
+                  <Field label="Business name">
+                    <TextInput value={createClientForm.businessName} onChange={(event) => setCreateClientForm((current) => ({ ...current, businessName: event.target.value }))} />
+                  </Field>
+                  <PrimaryButton type="submit" disabled={busyAction === 'create-client'}>
+                    {busyAction === 'create-client' ? 'Creating...' : 'Create client'}
+                  </PrimaryButton>
+                </form>
+
+                <form onSubmit={handleInviteUser} className="grid gap-4 rounded-2xl border border-stone-200 bg-white p-5">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-600">Invite / Link Client User</h3>
+                  <Field label="Client">
+                    <Select value={linkUserForm.clientId} onChange={(event) => setLinkUserForm((current) => ({ ...current, clientId: event.target.value }))} required>
+                      <option value="">Select client</option>
+                      {clientOptions()}
+                    </Select>
+                  </Field>
+                  <Field label="Email">
+                    <TextInput type="email" value={linkUserForm.email} onChange={(event) => setLinkUserForm((current) => ({ ...current, email: event.target.value }))} required />
+                  </Field>
+                  <Field label="Full name">
+                    <TextInput value={linkUserForm.fullName} onChange={(event) => setLinkUserForm((current) => ({ ...current, fullName: event.target.value }))} />
+                  </Field>
+                  <PrimaryButton type="submit" variant="dark" disabled={busyAction === 'invite-client-user'}>
+                    {busyAction === 'invite-client-user' ? 'Sending...' : 'Invite / link user'}
+                  </PrimaryButton>
+                </form>
+              </div>
+            </div>
+          )}
+        </SectionCard>
+      ) : null}
+
+      {activeTab === 'Documents' ? (
+        <SectionCard
+          title="Documents"
+          subtitle="Review client uploads, download secure copies, update status, archive records, or delete physical files when required."
+          actions={
+            <Select value={documentFilter} onChange={(event) => setDocumentFilter(event.target.value)}>
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+              <option value="all">All</option>
+            </Select>
+          }
+        >
+          {loading ? (
+            <p className="text-sm text-slate-600">Loading documents...</p>
+          ) : documents.length ? (
+            <div className="space-y-3">
+              {documents.map((document) => (
+                <div key={document.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
+                  <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-medium text-slate-900">{document.original_file_name}</p>
+                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(document.status)}`}>{statusLabel(document.status)}</span>
+                        {document.archived_at ? <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">Archived</span> : null}
+                        {document.deleted_at ? <span className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs text-rose-700">Deleted</span> : null}
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
+                        <span>{document.client_name}</span>
+                        <span>{document.category || 'general'}</span>
+                        <span>{formatDate(document.created_at)}</span>
+                        <span>{formatFileSize(document.file_size)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {DOCUMENT_STATUSES.map((status) => (
+                        <SecondaryButton
+                          key={status}
+                          type="button"
+                          onClick={() => handleUpdateDocumentStatus(document.id, status)}
+                          disabled={busyAction === `document-${document.id}-${status}` || document.status === status || Boolean(document.deleted_at)}
+                        >
+                          {busyAction === `document-${document.id}-${status}` ? 'Saving...' : status}
+                        </SecondaryButton>
+                      ))}
+                      <PrimaryButton type="button" variant="dark" onClick={() => handleDownload(document.id)} disabled={Boolean(document.deleted_at)}>
+                        Download
+                      </PrimaryButton>
+                      {!document.archived_at && !document.deleted_at ? (
+                        <SecondaryButton type="button" onClick={() => handleArchiveDocument(document.id)} disabled={busyAction === `archive-document-${document.id}`}>
+                          {busyAction === `archive-document-${document.id}` ? 'Archiving...' : 'Archive'}
+                        </SecondaryButton>
+                      ) : null}
+                      {!document.deleted_at ? (
+                        <PrimaryButton type="button" variant="danger" onClick={() => handleDeleteDocument(document.id)} disabled={busyAction === `delete-document-${document.id}`}>
+                          {busyAction === `delete-document-${document.id}` ? 'Deleting...' : 'Delete file'}
+                        </PrimaryButton>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState title="No documents found" body="Change the filter or wait for client uploads to appear." />
+          )}
+        </SectionCard>
+      ) : null}
+
+      {activeTab === 'Requests' ? (
+        <div className="space-y-8">
+          <SectionCard title="Create Request" subtitle="Add a new missing-item request that clients will see immediately in their portal.">
+            <form onSubmit={handleCreateRequest} className="grid gap-4 lg:grid-cols-2">
+              <Field label="Client">
+                <Select value={requestForm.clientId} onChange={(event) => setRequestForm((current) => ({ ...current, clientId: event.target.value }))} required>
+                  <option value="">Select client</option>
+                  {clientOptions()}
+                </Select>
+              </Field>
+              <Field label="Due date">
+                <TextInput type="date" value={requestForm.dueDate} onChange={(event) => setRequestForm((current) => ({ ...current, dueDate: event.target.value }))} />
+              </Field>
+              <div className="lg:col-span-2">
+                <Field label="Request title">
+                  <TextInput value={requestForm.title} onChange={(event) => setRequestForm((current) => ({ ...current, title: event.target.value }))} required />
+                </Field>
+              </div>
+              <div className="lg:col-span-2">
+                <Field label="Description">
+                  <TextArea value={requestForm.description} onChange={(event) => setRequestForm((current) => ({ ...current, description: event.target.value }))} />
+                </Field>
+              </div>
+              <div className="lg:col-span-2">
+                <PrimaryButton type="submit" disabled={busyAction === 'create-request'}>{busyAction === 'create-request' ? 'Saving...' : 'Create request'}</PrimaryButton>
+              </div>
+            </form>
           </SectionCard>
 
-          <SectionCard title="Operations notes">
-            <ul className="space-y-3 text-sm leading-6 text-slate-600">
-              <li>Auth users must already exist in Supabase Auth before they can be linked to a client.</li>
-              <li>Client uploads and downloads continue to use private Supabase Storage with time-limited signed URLs.</li>
-              <li>No card data is stored in the Fidara portal.</li>
-            </ul>
+          <SectionCard title="Requests" subtitle="Edit, complete, or close client requests.">
+            {requests.length ? (
+              <div className="space-y-4">
+                {requests.map((request) => {
+                  const edit = getRequestEdit(request)
+                  return (
+                    <div key={request.id} className="grid gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 lg:grid-cols-2">
+                      <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">{request.client_name}</p>
+                          <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">Created {formatDate(request.created_at)}</p>
+                        </div>
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(request.status)}`}>{statusLabel(request.status)}</span>
+                      </div>
+                      <Field label="Title">
+                        <TextInput value={edit.title} onChange={(event) => setRequestEdit(request.id, { title: event.target.value })} />
+                      </Field>
+                      <Field label="Status">
+                        <Select value={edit.status} onChange={(event) => setRequestEdit(request.id, { status: event.target.value })}>
+                          {REQUEST_STATUSES.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
+                        </Select>
+                      </Field>
+                      <Field label="Due date">
+                        <TextInput type="date" value={edit.dueDate} onChange={(event) => setRequestEdit(request.id, { dueDate: event.target.value })} />
+                      </Field>
+                      <div className="lg:col-span-2">
+                        <Field label="Description">
+                          <TextArea value={edit.description} onChange={(event) => setRequestEdit(request.id, { description: event.target.value })} />
+                        </Field>
+                      </div>
+                      <div className="lg:col-span-2">
+                        <PrimaryButton type="button" variant="dark" onClick={() => handleUpdateRequest(request)} disabled={busyAction === `update-request-${request.id}`}>
+                          {busyAction === `update-request-${request.id}` ? 'Saving...' : 'Save request'}
+                        </PrimaryButton>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <EmptyState title="No requests found" body="Create a request when Fidara needs follow-up documents or client information." />
+            )}
           </SectionCard>
-        </aside>
-      </div>
+        </div>
+      ) : null}
+
+      {activeTab === 'Billing' ? (
+        <div className="space-y-8">
+          <SectionCard title="Create Billing Item" subtitle="Store invoice records and hosted Stripe invoice URLs. No card handling happens inside the portal.">
+            <form onSubmit={handleCreateBillingItem} className="grid gap-4 lg:grid-cols-2">
+              <Field label="Client">
+                <Select value={billingForm.clientId} onChange={(event) => setBillingForm((current) => ({ ...current, clientId: event.target.value }))} required>
+                  <option value="">Select client</option>
+                  {clientOptions()}
+                </Select>
+              </Field>
+              <Field label="Status">
+                <Select value={billingForm.status} onChange={(event) => setBillingForm((current) => ({ ...current, status: event.target.value }))}>
+                  {BILLING_STATUSES.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
+                </Select>
+              </Field>
+              <div className="lg:col-span-2"><Field label="Title"><TextInput value={billingForm.title} onChange={(event) => setBillingForm((current) => ({ ...current, title: event.target.value }))} required /></Field></div>
+              <div className="lg:col-span-2"><Field label="Description"><TextArea value={billingForm.description} onChange={(event) => setBillingForm((current) => ({ ...current, description: event.target.value }))} /></Field></div>
+              <Field label="Amount in dollars"><TextInput type="number" min="0" step="0.01" value={billingForm.amountDollars} onChange={(event) => setBillingForm((current) => ({ ...current, amountDollars: event.target.value }))} required /></Field>
+              <Field label="Due date"><TextInput type="date" value={billingForm.dueDate} onChange={(event) => setBillingForm((current) => ({ ...current, dueDate: event.target.value }))} /></Field>
+              <div className="lg:col-span-2"><Field label="Stripe hosted invoice URL"><TextInput type="url" value={billingForm.stripeHostedInvoiceUrl} onChange={(event) => setBillingForm((current) => ({ ...current, stripeHostedInvoiceUrl: event.target.value }))} /></Field></div>
+              <div className="lg:col-span-2"><Field label="Invoice PDF URL"><TextInput type="url" value={billingForm.invoicePdfUrl} onChange={(event) => setBillingForm((current) => ({ ...current, invoicePdfUrl: event.target.value }))} /></Field></div>
+              <div className="lg:col-span-2"><PrimaryButton type="submit" variant="dark" disabled={busyAction === 'create-billing-item'}>{busyAction === 'create-billing-item' ? 'Saving...' : 'Create billing item'}</PrimaryButton></div>
+            </form>
+          </SectionCard>
+
+          <SectionCard title="Billing" subtitle="Edit invoice metadata and hosted Stripe invoice URLs.">
+            {billingItems.length ? (
+              <div className="space-y-4">
+                {billingItems.map((item) => {
+                  const edit = getBillingEdit(item)
+                  return (
+                    <div key={item.id} className="grid gap-4 rounded-2xl border border-stone-200 bg-slate-50 p-4 lg:grid-cols-2">
+                      <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">{item.client_name}</p>
+                          <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">{formatCurrency(item.amount_cents, item.currency)} · Created {formatDate(item.created_at)}</p>
+                        </div>
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(item.status)}`}>{statusLabel(item.status)}</span>
+                      </div>
+                      <Field label="Title"><TextInput value={edit.title} onChange={(event) => setBillingEdit(item.id, { title: event.target.value })} /></Field>
+                      <Field label="Status">
+                        <Select value={edit.status} onChange={(event) => setBillingEdit(item.id, { status: event.target.value })}>
+                          {BILLING_STATUSES.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
+                        </Select>
+                      </Field>
+                      <Field label="Amount in dollars"><TextInput type="number" min="0" step="0.01" value={edit.amountDollars} onChange={(event) => setBillingEdit(item.id, { amountDollars: event.target.value })} /></Field>
+                      <Field label="Due date"><TextInput type="date" value={edit.dueDate} onChange={(event) => setBillingEdit(item.id, { dueDate: event.target.value })} /></Field>
+                      <div className="lg:col-span-2"><Field label="Description"><TextArea value={edit.description} onChange={(event) => setBillingEdit(item.id, { description: event.target.value })} /></Field></div>
+                      <div className="lg:col-span-2"><Field label="Stripe hosted invoice URL"><TextInput type="url" value={edit.stripeHostedInvoiceUrl} onChange={(event) => setBillingEdit(item.id, { stripeHostedInvoiceUrl: event.target.value })} /></Field></div>
+                      <div className="lg:col-span-2"><Field label="Invoice PDF URL"><TextInput type="url" value={edit.invoicePdfUrl} onChange={(event) => setBillingEdit(item.id, { invoicePdfUrl: event.target.value })} /></Field></div>
+                      <div className="lg:col-span-2"><PrimaryButton type="button" variant="dark" onClick={() => handleUpdateBillingItem(item)} disabled={busyAction === `update-billing-${item.id}`}>{busyAction === `update-billing-${item.id}` ? 'Saving...' : 'Save billing item'}</PrimaryButton></div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <EmptyState title="No billing items found" body="Create billing records after Stripe hosted invoice URLs are ready." />
+            )}
+          </SectionCard>
+        </div>
+      ) : null}
+
+      {activeTab === 'Messages' ? (
+        <div className="space-y-8">
+          <SectionCard title="Send Message" subtitle="Add a portal message that clients can read inside their dashboard.">
+            <form onSubmit={handleCreateMessage} className="grid gap-4">
+              <Field label="Client">
+                <Select value={messageForm.clientId} onChange={(event) => setMessageForm((current) => ({ ...current, clientId: event.target.value }))} required>
+                  <option value="">Select client</option>
+                  {clientOptions()}
+                </Select>
+              </Field>
+              <Field label="Title"><TextInput value={messageForm.title} onChange={(event) => setMessageForm((current) => ({ ...current, title: event.target.value }))} required /></Field>
+              <Field label="Message body"><TextArea value={messageForm.body} onChange={(event) => setMessageForm((current) => ({ ...current, body: event.target.value }))} required /></Field>
+              <PrimaryButton type="submit" disabled={busyAction === 'create-message'}>{busyAction === 'create-message' ? 'Sending...' : 'Send message'}</PrimaryButton>
+            </form>
+          </SectionCard>
+
+          <SectionCard title="Messages" subtitle="Archive messages clients no longer need to see.">
+            {messages.length ? (
+              <div className="space-y-3">
+                {messages.map((message) => (
+                  <div key={message.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-sm font-medium text-slate-900">{message.title}</p>
+                          {message.archived_at ? <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">Archived</span> : null}
+                        </div>
+                        <p className="mt-1 text-sm text-slate-600">{message.client_name}</p>
+                        <p className="mt-3 text-sm leading-6 text-slate-700">{message.body}</p>
+                        <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">Created {formatDate(message.created_at)}</p>
+                      </div>
+                      {!message.archived_at ? (
+                        <SecondaryButton type="button" onClick={() => handleArchiveMessage(message.id)} disabled={busyAction === `archive-message-${message.id}`}>
+                          {busyAction === `archive-message-${message.id}` ? 'Archiving...' : 'Archive'}
+                        </SecondaryButton>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState title="No messages found" body="Portal messages will appear here after they are created." />
+            )}
+          </SectionCard>
+        </div>
+      ) : null}
+
+      {activeTab === 'Audit' ? (
+        <SectionCard title="Audit" subtitle="Recent portal activity across clients.">
+          {recentActivity.length ? (
+            <div className="space-y-3">
+              {recentActivity.map((event) => (
+                <div key={event.id} className="rounded-2xl border border-stone-200 bg-slate-50 p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm font-medium text-slate-900">{event.description}</p>
+                    <span className="text-xs uppercase tracking-[0.12em] text-slate-500">{formatDate(event.created_at)}</span>
+                  </div>
+                  <p className="mt-2 text-xs uppercase tracking-[0.12em] text-slate-500">{event.event_type}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState title="No recent activity" body="Audit events will appear here as admins and clients interact with the portal." />
+          )}
+        </SectionCard>
+      ) : null}
     </div>
   )
 }
