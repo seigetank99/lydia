@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+const COOLDOWN_AFTER_FAILED_ATTEMPTS = 3
+const COOLDOWN_SECONDS = 30
 
 async function readJson(response) {
   return response.json().catch(() => ({}))
@@ -9,13 +12,37 @@ export default function StaffLoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [, setFailedAttempts] = useState(0)
+  const [cooldownSeconds, setCooldownSeconds] = useState(0)
+
+  useEffect(() => {
+    if (!cooldownSeconds) return undefined
+    const timer = window.setTimeout(() => setCooldownSeconds((current) => Math.max(0, current - 1)), 1000)
+    return () => window.clearTimeout(timer)
+  }, [cooldownSeconds])
 
   async function logout() {
     await fetch('/api/portal?action=logout', { method: 'POST' }).catch(() => {})
   }
 
+  function registerFailedAttempt() {
+    setFailedAttempts((current) => {
+      const next = current + 1
+      if (next >= COOLDOWN_AFTER_FAILED_ATTEMPTS) {
+        setCooldownSeconds(COOLDOWN_SECONDS)
+        return 0
+      }
+      return next
+    })
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
+    if (cooldownSeconds > 0) {
+      setError(`Please wait ${cooldownSeconds} seconds before trying again.`)
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -30,9 +57,12 @@ export default function StaffLoginForm() {
       const loginData = await readJson(loginResponse)
 
       if (!loginResponse.ok) {
+        registerFailedAttempt()
         throw new Error(loginData?.error || 'Unable to sign in with those credentials.')
       }
 
+      setFailedAttempts(0)
+      setCooldownSeconds(0)
       const adminResponse = await fetch('/api/admin?action=summary', {
         headers: { accept: 'application/json' },
       })
@@ -99,10 +129,10 @@ export default function StaffLoginForm() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || cooldownSeconds > 0}
           className="inline-flex min-h-12 items-center justify-center rounded-md bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
-          {loading ? 'Verifying...' : 'Sign in'}
+          {loading ? 'Verifying...' : cooldownSeconds > 0 ? `Try again in ${cooldownSeconds}s` : 'Sign in'}
         </button>
 
         <a href="/" className="text-sm font-medium text-slate-600 transition hover:text-slate-900">

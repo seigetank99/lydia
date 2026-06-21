@@ -1,40 +1,26 @@
-# Client Portal Deployment Checklist
+# Fidara Client Portal Production Handoff
 
-## Supabase Setup
+Use this checklist before launching the Astro marketing site, client portal, and staff admin portal on Vercel.
 
-Run the SQL files in this order:
+## 1. Vercel Environment Variables
 
-1. `docs/client-portal-supabase.sql`
-2. `docs/client-portal-production.sql`
-3. `docs/client-portal-production-v2.sql`
-
-Create a private Supabase Storage bucket named:
-
-```text
-fidara-client-documents
-```
-
-Keep the bucket private. Client and admin downloads use short-lived signed URLs.
-
-Cloudflare R2 is not required for the portal.
-
-## Vercel Environment Variables
-
-Required for the client portal:
+Required portal and Supabase variables:
 
 ```env
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_STORAGE_BUCKET=fidara-client-documents
 PUBLIC_SUPABASE_URL=
 PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_STORAGE_BUCKET=fidara-client-documents
 PUBLIC_SUPABASE_STORAGE_BUCKET=fidara-client-documents
 SESSION_COOKIE_NAME=fidara_session
 PUBLIC_SITE_URL=https://www.fidaragroup.com
 ```
 
-Required for contact form email delivery and recommended for portal notifications:
+`SUPABASE_SERVICE_ROLE_KEY` is server-side only. Do not expose it through any `PUBLIC_*` variable, client component, browser bundle, chatbot path, or static asset.
+
+Required for the contact form if contact email delivery is enabled:
 
 ```env
 CONTACT_TO=
@@ -43,12 +29,17 @@ SMTP_HOST=
 SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
+```
+
+Recommended for portal notification emails:
+
+```env
 PORTAL_EMAIL_FROM=
 ```
 
-`PORTAL_EMAIL_FROM` is optional. If it is blank, portal notifications use `CONTACT_FROM`.
+If `PORTAL_EMAIL_FROM` is blank, portal notifications use `CONTACT_FROM`.
 
-Optional site/security variables:
+Optional variables already supported by the repo:
 
 ```env
 PUBLIC_GA4_ID=
@@ -59,47 +50,41 @@ TURNSTILE_SECRET_KEY=
 PUBLIC_CLIENT_ERROR_REPORTING=false
 CLIENT_ERROR_WEBHOOK=
 CONTACT_ALERT_WEBHOOK=
+MAX_JS_KB=380
+MAX_CSS_KB=80
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` must remain server-side only. Do not expose it through `PUBLIC_*` variables or frontend code.
+Cloudflare R2 variables are not required for the client portal.
 
-## Supabase Auth Email Settings
+## 2. Supabase SQL Order
 
-Configure Supabase Auth email templates and redirect URLs before enabling password reset and invite flows.
+Run these files manually in Supabase SQL Editor in this order:
 
-Add these redirect URLs in Supabase Auth settings:
+1. `docs/client-portal-supabase.sql`
+2. `docs/client-portal-production.sql`
+3. `docs/client-portal-production-v2.sql`
+
+The V2 migration adds archive/delete metadata, update timestamps, active-document indexes, and RLS policies that hide archived/deleted documents and archived messages from client portal reads.
+
+## 3. Supabase Storage
+
+Create one bucket:
 
 ```text
-https://www.fidaragroup.com/reset-password
-http://localhost:4321/reset-password
+fidara-client-documents
 ```
 
-Password reset flow:
+Storage rules:
 
-1. Client opens `/forgot-password`.
-2. The browser uses `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY`.
-3. Supabase sends a reset email with redirect URL `${origin}/reset-password`.
-4. Client chooses a new password on `/reset-password`.
+- The bucket must be private.
+- Files are uploaded through signed upload URLs.
+- Files are downloaded only through short-lived signed URLs.
+- Do not make document paths public.
+- Do not expose raw storage keys in UI.
 
-Staff login and admin dashboard:
+## 4. Make A User Admin
 
-1. Footer `Staff Login` points to `/staff-login`.
-2. `/staff-login` signs in through `POST /api/portal?action=login`.
-3. After login, the page verifies staff access with `GET /api/admin?action=summary`.
-4. If the account is not an admin, it logs out and shows an access-denied message.
-5. `/admin` is the protected admin dashboard and should only render dashboard content after admin API verification succeeds.
-
-Invite/link flow:
-
-1. Admin signs in at `/staff-login`, then opens `/admin`.
-2. Admin selects a client and enters email/full name in `Invite / Link Client User`.
-3. If the Supabase Auth user already exists, the API upserts `profiles` and links `client_users`.
-4. If the user does not exist and Supabase invite email is available, the API calls `supabase.auth.admin.inviteUserByEmail`.
-5. No passwords are emailed and no insecure default passwords are created.
-
-## Make A User Admin
-
-Admin access is controlled by `profiles.role`.
+After the user exists in Supabase Auth and `profiles`, run:
 
 ```sql
 update profiles
@@ -107,94 +92,243 @@ set role = 'admin'
 where email = 'seigetank99@gmail.com';
 ```
 
-Users without `role = 'admin'` receive `403` from `/api/admin`.
+Only users with `profiles.role = 'admin'` can use `/api/admin`.
 
-## Billing Model
+## 5. Staff Login Flow
 
-Billing displays stored invoice records only.
+Expected staff flow:
 
-- Do not collect card details in the portal.
-- Do not build custom payment forms.
-- Create invoices in Stripe.
-- Copy the Stripe `hosted_invoice_url`.
-- Add the URL to the billing item in `/admin`.
-- Clients pay through the Stripe-hosted invoice page.
+- `/staff-login` is the staff login page.
+- `/staff-login` is `noindex,nofollow`.
+- The footer Staff Login link points to `/staff-login`, not `/admin`.
+- Staff login posts credentials to `POST /api/portal?action=login`.
+- After login, staff login verifies admin access with `GET /api/admin?action=summary`.
+- If the account is not an admin, the browser calls logout and shows `This account does not have staff access.`
+- `/admin` is the protected admin dashboard.
+- `/admin` initially shows `Verifying staff access...`.
+- If unauthenticated, `/admin` redirects to `/staff-login`.
+- If logged in but not admin, `/admin` shows Access Denied.
+- Admin logout redirects to `/staff-login`.
+- Client logout redirects to `/login`.
 
-The portal stores `stripe_hosted_invoice_url` and optional `invoice_pdf_url` on `billing_items`.
+## 6. Client Onboarding
 
-## Email Notifications
+Current admin flow supports `Invite / Link Client User`.
 
-Portal notifications use `src/lib/portalEmail.js` and the existing SMTP variables.
+1. Create the client in `/admin`.
+2. In `Invite / Link Client User`, choose the client and enter the user's email and optional full name.
+3. If the Supabase Auth user already exists, the API links that user to the client.
+4. If the user does not exist and Supabase Admin invite email is available, the API calls `inviteUserByEmail` and redirects password setup to `/reset-password`.
+5. If invite email is unavailable or fails, create the user manually in Supabase Auth first, then run the link step again in `/admin`.
 
-Notifications are sent when admin:
+Invite status:
 
-- creates a document request
-- creates a billing item
-- creates a portal message
-- marks a document as completed
+- Invite emails are supported by the current admin API when Supabase Auth email settings and `inviteUserByEmail` are working.
+- Manual onboarding is still the fallback.
+- Do not send default passwords by email.
+- Do not create insecure temporary passwords.
 
-Email delivery is best effort. If SMTP is missing or delivery fails, the main admin action still succeeds and the server logs a warning. Emails do not include attachments, private storage keys, signed URLs, or passwords.
+## 7. Password Reset
 
-## Document Archive/Delete Policy
+Routes:
 
-Archive:
+- `/forgot-password`
+- `/reset-password`
 
-- Admin action sets `documents.archived_at` and `documents.archived_by`.
-- The physical file remains in Supabase Storage.
-- Archived documents are hidden from client views by default.
-- Admin can filter documents by Active, Archived, or All.
+Reset behavior:
 
-Delete:
+- `/forgot-password` uses Supabase Auth reset emails.
+- The user-facing response should not reveal whether an email exists.
+- `/reset-password` accepts Supabase code/hash reset links and updates the password in the browser through Supabase Auth.
+- Configure Supabase Auth email templates and allowed redirect URLs before launch.
 
-- Admin action requires `confirm: true`.
-- The physical file is removed from the `fidara-client-documents` bucket.
-- The document row is retained with `deleted_at` and `deleted_by` metadata where possible.
-- Deleted documents are hidden from clients and cannot produce signed download URLs.
-- Audit events do not log secrets or signed URLs.
+Required redirect URLs:
 
-## Audit Events
+```text
+https://www.fidaragroup.com/reset-password
+http://localhost:4321/reset-password
+```
 
-Audit events are stored in `audit_events` with:
+Password reset audit events are not emitted by this app because the reset is handled by Supabase Auth in the browser. Use Supabase Auth logs for reset delivery and auth-level activity.
 
-- `client_id`
-- `event_type`
-- `description`
-- `actor_user_id`
-- `metadata`
+## 8. Billing
 
-Current portal actions log:
+Billing uses hosted Stripe invoice URLs only.
 
-- admin client created
-- admin client user linked or invited
-- admin request created or updated
-- admin billing item created or updated
-- admin message created or archived
-- admin document status updated
-- admin document archived or deleted
-- client document uploaded
-- client document download requested
-- admin document download requested
+Admin workflow:
 
-Do not log passwords, service keys, private storage links, full signed URLs, or other secrets.
+1. Create the invoice in Stripe.
+2. Copy the Stripe `hosted_invoice_url`.
+3. Create or update the billing item in `/admin`.
+4. Client opens `/portal` and clicks Pay Invoice.
+5. Client leaves the Fidara site for the Stripe-hosted payment page.
 
-## Production Checklist
+Rules:
 
-1. Run all three Supabase SQL files in order.
-2. Create and verify the private `fidara-client-documents` bucket.
-3. Set all required Vercel environment variables.
-4. Configure Supabase Auth email templates and allowed reset redirect URLs.
-5. Deploy to Vercel.
-6. Make the admin user with the SQL above.
-7. Visit `/login`, `/forgot-password`, `/staff-login`, `/privacy`, `/terms`, and `/security`.
-8. In an incognito window, sign in at `/staff-login` with a non-admin user and confirm access is denied.
-9. In an incognito window, sign in at `/staff-login` with an admin user and confirm it redirects to `/admin`.
-10. Visit `/admin` while logged out and confirm it verifies access, then redirects to `/staff-login`.
-11. Visit `/admin` as a non-admin user and confirm access is denied.
-12. Visit `/admin` as an admin user and confirm the dashboard loads.
-13. Log in as admin and create a test client.
-14. Invite or link a test client user.
-15. Log in as the test client and upload a PDF, JPG, PNG, XLSX, or DOCX file.
-16. Confirm client upload, download, billing, requests, messages, and activity load in `/portal`.
-17. Confirm admin document download, status update, archive, and delete behavior in `/admin`.
-18. Confirm Stripe billing links open only on hosted Stripe pages.
-19. Confirm portal notification emails send when SMTP is configured.
+- No custom credit-card processing.
+- No card entry forms in Fidara.
+- No card details are stored by Fidara.
+- Billing item records store invoice metadata and hosted links only.
+
+## 9. Email Notifications
+
+Portal notifications use `src/lib/portalEmail.js` and the existing SMTP/Nodemailer settings.
+
+Notifications are wired for:
+
+- New document request.
+- New billing item.
+- New portal message.
+- Document marked completed.
+- Client user linked or invited.
+
+Notification rules:
+
+- Email failure does not break the admin action.
+- Missing SMTP logs a server-side warning and skips delivery.
+- Emails do not attach documents.
+- Emails do not include signed storage links.
+- Emails tell the client to log into the portal.
+
+Default subject used for new portal items:
+
+```text
+New item in your Fidara client portal
+```
+
+## 10. Admin Workflow Support
+
+Implemented admin capabilities:
+
+- View clients.
+- Create client.
+- Link existing Supabase Auth user to client.
+- Invite client user through Supabase Auth when available.
+- View uploaded documents.
+- Download documents through signed URLs.
+- Update document status to `received`, `reviewing`, or `completed`.
+- Create document request.
+- Edit, complete, or close document request.
+- Create billing item.
+- Edit billing item.
+- Create portal message.
+- Archive portal message.
+- Archive document.
+- Delete document file only after explicit confirmation.
+- View recent audit events.
+
+Delete behavior removes the physical file from Supabase Storage after confirmation, then marks the database row deleted so audit history can remain.
+
+## 11. Archive And Delete Behavior
+
+Expected behavior:
+
+- Archived/deleted documents do not show in the client portal.
+- Admin document list hides archived/deleted documents by default.
+- Admin can filter Active, Archived, or All.
+- Delete requires confirmation in the UI and `confirm: true` in the API.
+- Delete removes from Supabase Storage only after confirmation.
+- Archive/delete actions create audit events.
+- Raw storage keys are not displayed in UI.
+
+Prefer archive unless the file truly needs to be removed from storage.
+
+## 12. Audit Logging
+
+Audit events are written to `audit_events` for:
+
+- Client created.
+- Client user linked.
+- Client user invited.
+- Document uploaded.
+- Client document download requested.
+- Admin document download requested.
+- Request created.
+- Request updated, completed, or closed.
+- Billing item created.
+- Billing item updated.
+- Portal message created.
+- Portal message archived.
+- Document status updated.
+- Document archived.
+- Document deleted.
+
+Audit rules:
+
+- Do not log passwords.
+- Do not log service role keys.
+- Do not log signed URLs.
+- Do not log full private document contents.
+- Do not log raw storage keys unless a future incident workflow explicitly requires it.
+
+Password reset audit is not currently app-level because Supabase Auth owns that browser flow. Review Supabase Auth logs for reset activity.
+
+## 13. Login Abuse And Contact Form Protection
+
+Current protections:
+
+- Login errors are generic.
+- Password reset response does not reveal whether an email exists.
+- Server API responses do not expose stack traces.
+- Supabase Auth handles auth-level protections.
+- Client and staff login forms add a short browser-side cooldown after repeated failures.
+- Contact form uses an in-memory per-instance rate limit.
+- Contact form supports Cloudflare Turnstile when `TURNSTILE_SECRET_KEY` is set.
+- Contact form includes honeypot and minimum-fill-time checks.
+
+## 14. Public Policy Pages
+
+Before launch, review:
+
+- `/privacy`
+- `/terms`
+- `/security`
+
+These pages should remain plain-language and avoid overclaiming compliance certifications. They should mention portal data, uploaded documents, private storage, signed download links, staff/admin controls, audit logging, hosted Stripe billing, and user password responsibilities.
+
+## 15. Final Launch Test Checklist
+
+Run these checks on the production deployment:
+
+- Public site loads.
+- Chatbot appears on public pages only.
+- `/login` works for client.
+- `/portal` loads.
+- Upload PDF works.
+- Download PDF works.
+- `/forgot-password` sends reset email.
+- `/reset-password` updates password.
+- `/staff-login` rejects non-admin user.
+- `/staff-login` accepts admin user.
+- Direct `/admin` while logged out does not show admin data.
+- Admin can create client.
+- Admin can link/invite user.
+- Admin can create request.
+- Admin can create billing item.
+- Admin can create portal message.
+- Client sees request/billing/message in `/portal`.
+- Admin can update document status.
+- Audit log updates.
+
+Also confirm:
+
+- Hosted Stripe invoice links open on Stripe-hosted pages.
+- Portal notification emails send when SMTP is configured.
+- Notification email failure does not block admin actions.
+- Archived/deleted documents remain hidden from clients.
+
+## 16. Local Verification
+
+Before deployment, run:
+
+```sh
+npm run build
+```
+
+If browser smoke tests can run without real Supabase credentials, run:
+
+```sh
+npm run test:e2e
+```
+
+The smoke tests should cover public routes, login/reset pages, legal/security pages, and unauthenticated `/portal` and `/admin` behavior without requiring production credentials.

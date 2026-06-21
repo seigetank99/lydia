@@ -330,12 +330,20 @@ async function findAuthUserByEmail(email) {
 
 async function linkAuthUserToClient({ clientId, client, authUser, email, fullName, actorUserId, eventType = 'client_user_linked' }) {
   const supabaseAdmin = getSupabaseAdmin()
+  const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
+    .from('profiles')
+    .select('role, full_name')
+    .eq('id', authUser.id)
+    .maybeSingle()
+
+  if (existingProfileError) throw existingProfileError
+
   const { error: profileError } = await supabaseAdmin.from('profiles').upsert(
     {
       id: authUser.id,
       email,
-      full_name: fullName || authUser.user_metadata?.full_name || authUser.email,
-      role: 'client',
+      full_name: fullName || existingProfile?.full_name || authUser.user_metadata?.full_name || authUser.email,
+      role: existingProfile?.role || 'client',
     },
     { onConflict: 'id' },
   )

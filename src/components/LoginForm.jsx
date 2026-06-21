@@ -1,13 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+const COOLDOWN_AFTER_FAILED_ATTEMPTS = 3
+const COOLDOWN_SECONDS = 30
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [, setFailedAttempts] = useState(0)
+  const [cooldownSeconds, setCooldownSeconds] = useState(0)
+
+  useEffect(() => {
+    if (!cooldownSeconds) return undefined
+    const timer = window.setTimeout(() => setCooldownSeconds((current) => Math.max(0, current - 1)), 1000)
+    return () => window.clearTimeout(timer)
+  }, [cooldownSeconds])
+
+  function registerFailedAttempt() {
+    setFailedAttempts((current) => {
+      const next = current + 1
+      if (next >= COOLDOWN_AFTER_FAILED_ATTEMPTS) {
+        setCooldownSeconds(COOLDOWN_SECONDS)
+        return 0
+      }
+      return next
+    })
+  }
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (cooldownSeconds > 0) {
+      setError(`Please wait ${cooldownSeconds} seconds before trying again.`)
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -23,12 +50,15 @@ export default function LoginForm() {
       const data = await response.json().catch(() => ({}))
 
       if (!response.ok) {
-        throw new Error(data?.error || 'Login failed.')
+        registerFailedAttempt()
+        throw new Error(data?.error || 'Invalid email or password.')
       }
 
+      setFailedAttempts(0)
+      setCooldownSeconds(0)
       window.location.href = '/portal'
     } catch (submitError) {
-      setError(submitError.message || 'Login failed.')
+      setError(submitError.message || 'Invalid email or password.')
     } finally {
       setLoading(false)
     }
@@ -67,10 +97,10 @@ export default function LoginForm() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || cooldownSeconds > 0}
           className="inline-flex min-h-12 items-center justify-center rounded-md bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
         >
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? 'Signing in...' : cooldownSeconds > 0 ? `Try again in ${cooldownSeconds}s` : 'Sign in'}
         </button>
 
         <a href="/forgot-password" className="text-sm font-medium text-emerald-700 transition hover:text-emerald-900">

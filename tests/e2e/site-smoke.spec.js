@@ -76,15 +76,25 @@ test.describe('site smoke checks', () => {
     await expectNoHorizontalOverflow(page)
   })
 
+  test('chatbot appears only on public pages', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('button', { name: 'Ask Fidara' })).toBeVisible()
+
+    for (const path of ['/login', '/staff-login', '/portal', '/admin']) {
+      await page.goto(path)
+      await expect(page.getByRole('button', { name: 'Ask Fidara' })).toHaveCount(0)
+    }
+  })
+
   test('portal auth and legal routes load without real credentials', async ({ page }) => {
     const routes = [
       ['/login', /Client Portal Login/i],
       ['/staff-login', /Staff Login/i],
       ['/forgot-password', /Reset your portal password/i],
+      ['/reset-password', /Choose a new password/i],
       ['/privacy', /Privacy and client confidentiality matter/i],
       ['/terms', /Terms for using Fidara Group online services/i],
       ['/security', /Practical safeguards for portal workflows/i],
-      ['/portal', /Welcome to your Fidara dashboard/i],
     ]
 
     for (const [path, heading] of routes) {
@@ -93,8 +103,16 @@ test.describe('site smoke checks', () => {
       await expectNoHorizontalOverflow(page)
     }
 
+    await page.goto('/portal')
+    await expect(page.getByRole('heading', { name: /Welcome to your Fidara dashboard/i })).toBeVisible()
+    await expect(page.getByText('Client account active')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Download' })).toHaveCount(0)
+    await expectNoHorizontalOverflow(page)
+
     await page.goto('/admin')
     await expect(page.getByText(/Verifying staff access|Unable to verify staff access|Access denied/i).first()).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Fidara Admin Portal' })).toHaveCount(0)
+    await expect(page.getByText('Total Clients')).toHaveCount(0)
     await expectNoHorizontalOverflow(page)
   })
 })
