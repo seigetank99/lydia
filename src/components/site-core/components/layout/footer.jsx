@@ -122,6 +122,12 @@ function Footer() {
               legal, investment, cybersecurity, or financial advice. No professional
               relationship is formed until an engagement is accepted in writing.
             </p>
+            <a
+                href="/admin"
+                className="mt-3 inline-flex text-[11px] font-medium text-slate-400 transition hover:text-slate-600"
+            >
+              Staff Login
+            </a>
           </div>
         </div>
       </footer>

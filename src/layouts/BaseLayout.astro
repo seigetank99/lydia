@@ -1,5 +1,6 @@
 ---
 import '../index.css'
+import ChatbotWidget from '../components/ChatbotWidget.jsx'
 
 const {
   title,
@@ -48,6 +49,7 @@ const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING
   </head>
   <body>
     <slot />
+    <ChatbotWidget client:load />
     <script is:inline define:vars={{ ga4Id, enableClientErrorReporting }}>
       if (ga4Id && !document.querySelector(`script[data-ga4="${ga4Id}"]`)) {
         const script = document.createElement('script');
