@@ -8,7 +8,6 @@ function CookieBanner() {
         <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
           <p className="text-sm leading-6 text-slate-700">
             Fidara may use basic analytics and cookies to understand site usage and improve the experience.
-            Review the <a href="/privacy" className="font-medium text-emerald-700 hover:text-emerald-900">Privacy Policy</a> for more information.
           </p>
 
           <button

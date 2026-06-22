@@ -316,7 +316,7 @@ export function getMetaImagePath(path) {
 
 export function getRobotsPolicy(path) {
   const cleanPath = normalizeRoute(path)
-  const noIndexPaths = new Set(['/404', '/compliance-language'])
+  const noIndexPaths = new Set(['/404', '/compliance-language', '/privacy', '/terms', '/disclaimer'])
   return noIndexPaths.has(cleanPath) ? 'noindex,nofollow' : 'index,follow'
 }
 

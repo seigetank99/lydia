@@ -97,7 +97,6 @@ export const practiceAreaPages = [
       ['Tax Services', '/services/tax'],
       ['Tax Advice Center', '/tax-advice'],
       ['Contact Fidara', '/contact'],
-      ['Disclaimer', '/disclaimer'],
     ],
   },
   {

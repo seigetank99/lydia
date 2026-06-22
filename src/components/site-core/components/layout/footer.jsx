@@ -55,10 +55,7 @@ function Footer() {
     {
       title: 'Legal',
       links: [
-        ['Privacy', '/privacy'],
-        ['Terms', '/terms'],
         ['Security', '/security'],
-        ['Disclaimer', '/disclaimer'],
         ['Contact', '/contact'],
         ['Referrals', '/referrals'],
         ['Service Areas', '/service-areas'],
