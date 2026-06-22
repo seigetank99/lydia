@@ -21,20 +21,34 @@ const path = '/login'
       description="Access your secure Lydia Financial workspace to upload and retrieve documents."
     />
 
-    <section class="border-t border-stone-200 px-8 py-12">
-      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,480px)] lg:items-start">
-        <div class="rounded-xl border border-stone-200 bg-white/70 p-8 shadow-sm">
-          <h2 class="font-serif text-3xl leading-tight text-slate-900">Secure document exchange</h2>
-          <p class="mt-4 text-sm leading-7 text-slate-700">
-            Use your portal credentials to upload tax files, bookkeeping records, payroll documents, and other requested items.
-          </p>
-          <div class="mt-6 grid gap-3">
-            {['Private document storage', 'Access limited to your linked client account', 'Direct download links for existing files'].map((item) => (
-              <div class="flex items-start gap-3 text-sm leading-7 text-slate-700">
-                <span class="mt-1 text-emerald-600">✓</span>
-                <span>{item}</span>
-              </div>
+    <section class="border-t border-cedar/10 bg-cedar/5 px-8 py-12 sm:py-16">
+      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,460px)] lg:items-start">
+        <div class="space-y-8 rounded-2xl bg-sand p-8 ring-1 ring-cedar/10">
+          <div class="space-y-4">
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-moss">Secure Access</span>
+            <h2 class="font-serif text-3xl leading-tight text-cedar sm:text-4xl">Private document exchange for Lydia clients.</h2>
+            <p class="max-w-[58ch] text-base leading-relaxed text-cedar/75">
+              Use your portal credentials to send tax files, bookkeeping records, payroll documents, and other requested items without relying on email attachments.
+            </p>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            {[
+              ['Private storage', 'Documents stay inside your linked client workspace.'],
+              ['Requested uploads', 'See what Lydia has asked for and send it directly.'],
+              ['Shared files', 'Download completed files and portal documents in one place'],
+            ].map(([title, copy]) => (
+              <article class="rounded-xl bg-cedar/5 p-5 ring-1 ring-cedar/10">
+                <h3 class="font-medium text-cedar">{title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-cedar/70">{copy}</p>
+              </article>
             ))}
+          </div>
+
+          <div class="rounded-xl border border-cedar/10 bg-sand px-5 py-4">
+            <p class="text-sm leading-relaxed text-cedar/75">
+              Need access or having trouble signing in? Contact Lydia directly before sending sensitive files by email.
+            </p>
           </div>
         </div>
 

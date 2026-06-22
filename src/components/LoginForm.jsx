@@ -67,35 +67,40 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+    <form onSubmit={handleSubmit} className="rounded-2xl bg-sand p-6 ring-1 ring-cedar/10 sm:p-8">
       <div className="grid gap-5">
+        <div className="space-y-2">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Sign In</span>
+          <h2 className="font-serif text-3xl leading-tight text-cedar">Enter your portal credentials.</h2>
+        </div>
+
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-slate-800">Email</span>
+          <span className="text-sm font-medium text-cedar">Email</span>
           <input
             type="email"
             autoComplete="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="rounded-md border border-stone-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+            className="rounded-xl border border-cedar/15 bg-sand px-4 py-3 text-base text-cedar outline-none transition focus:border-cedar focus:ring-2 focus:ring-cedar/10"
             required
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-slate-800">Password</span>
+          <span className="text-sm font-medium text-cedar">Password</span>
           <span className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 pr-12 text-base text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+              className="w-full rounded-xl border border-cedar/15 bg-sand px-4 py-3 pr-12 text-base text-cedar outline-none transition focus:border-cedar focus:ring-2 focus:ring-cedar/10"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword((current) => !current)}
-              className="absolute inset-y-0 right-0 inline-flex w-12 items-center justify-center text-slate-500 transition hover:text-slate-900"
+              className="absolute inset-y-0 right-0 inline-flex w-12 items-center justify-center text-cedar/45 transition hover:text-cedar"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
@@ -104,18 +109,18 @@ export default function LoginForm() {
         </label>
 
         {error ? (
-          <p className="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
         ) : null}
 
         <button
           type="submit"
           disabled={loading || cooldownSeconds > 0}
-          className="inline-flex min-h-12 items-center justify-center rounded-md bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400"
+          className="inline-flex min-h-12 items-center justify-center rounded-full bg-cedar px-5 py-3 text-sm font-medium text-sand ring-1 ring-cedar transition hover:bg-cedar/92 disabled:cursor-not-allowed disabled:bg-cedar/45"
         >
           {loading ? 'Signing in...' : cooldownSeconds > 0 ? `Try again in ${cooldownSeconds}s` : 'Sign in'}
         </button>
 
-        <a href="/forgot-password" className="text-sm font-medium text-emerald-700 transition hover:text-emerald-900">
+        <a href="/forgot-password" className="text-sm font-medium text-cedar/80 underline underline-offset-4 transition hover:text-cedar">
           Forgot password?
         </a>
       </div>
