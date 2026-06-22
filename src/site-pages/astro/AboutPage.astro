@@ -1,93 +1,121 @@
 ---
-import PageHero from '../../components/astro/PageHero.astro'
 import PageShell from '../../components/astro/PageShell.astro'
 
-const pillars = [
-  ['Clarity', 'We turn scattered financial details into clean records, practical insights, and decisions people can use.'],
-  ['Trust', 'We build consistent systems, careful communication, and long-term relationships grounded in reliability.'],
-  ['Calm', 'We reduce the noise around deadlines, documents, compliance, and systems so clients can think clearly.'],
+const served = [
+  [
+    'Kingdom-minded entrepreneurs',
+    'Assisting business owners who want to grow profitable companies while operating with integrity and generosity.',
+    'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.416 0a48.765 48.765 0 0 0-3.414.387m-4.416 0a48.765 48.765 0 0 0-3.414-.387m4.416 0a48.114 48.114 0 0 0-3.413.387',
+  ],
+  [
+    'Values-driven professionals',
+    'Providing meticulous accounting and advisory services to individuals and families who seek alignment between their finances and their convictions.',
+    'M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z',
+  ],
 ]
 
-const audiences = [
-  ['Established businesses', 'Companies ready to move from basic bookkeeping to more strategic financial management.'],
-  ['Modern founders', 'Entrepreneurs who use technology and need an equally organized partner around finance, payroll, and scale.'],
-  ['Professional firms', 'Agencies, consultants, practices, and service businesses that need clean records and practical tax planning.'],
-  ['Asset-heavy operators', 'Real estate and operational businesses navigating cash flow, compliance, and long-term planning.'],
-]
-
-const feelings = [
-  ['Relieved', 'The burden of financial guesswork feels lighter because records, deadlines, and next steps are organized.'],
-  ['Secure', 'Clients know their information is handled carefully, ethically, and with professional discipline.'],
-  ['Clear-headed', 'Clean data and plain-English guidance help owners understand where they stand and what to consider next.'],
-  ['Respected', 'Communication is calm, transparent, and mindful of the client’s time.'],
+const reasons = [
+  ['Personal attention', 'You will never be handed off to a junior associate. You work directly with experienced professionals who know your business.'],
+  ['Plain language', 'We explain your finances in terms you can actually understand: no jargon, no condescension, just clear guidance.'],
+  ['Values-driven counsel', 'Our advice is shaped by a deep commitment to honesty, stewardship, and the long-term health of your enterprise.'],
 ]
 ---
 
 <PageShell active="about">
-  <PageHero eyebrow="About Fidara" title="Built on trust, clarity, and calm financial structure." description="Fidara exists for people and businesses who want their financial lives to feel more organized, intentional, and understandable." backgroundImage="/images/about.png" />
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.85fr_1.15fr]">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">The name</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-slate-900">Fidara begins with trust.</h2>
-      </div>
-      <div class="grid gap-5 text-base leading-8 text-slate-700">
-        <p>The name Fidara is inspired by Fides, a root associated with trust, faith, and reliability. The modern ending points toward clarity, direction, and forward motion.</p>
-        <p>That combination reflects the role Fidara aims to play for clients: a steady financial partner that helps turn complexity into a clearer, more predictable path forward.</p>
+  <section class="py-20 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
+        Built on fellowship. Guided by conviction.
+      </h1>
+    </div>
+  </section>
+
+  <section class="border-y border-cedar/10 bg-cedar/5 py-20 sm:py-28">
+    <div class="mx-auto max-w-5xl px-6">
+      <div class="grid items-start gap-16 sm:grid-cols-2">
+        <div class="space-y-6">
+          <h2 class="font-serif text-3xl text-cedar">The Official Lydia Story</h2>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">Our foundation is drawn from the Biblical account of Lydia of Thyatira, found in the Book of Acts. Lydia was a prominent first-century entrepreneur and a dealer in purple cloth, a luxury commodity of the ancient world.</p>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">More than just a successful merchant, Lydia was a devoted leader who opened her heart to God's purpose and her home to others. She proved that deep faith and high-level business acumen go hand in hand.</p>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">At Lydia, we draw inspiration from her legacy, merging technical excellence with a heart for service to help our clients build thriving, purpose-driven organizations.</p>
+        </div>
+        <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-cedar/5 ring-1 ring-cedar/10">
+          <img src="/images/lydia-office.jpg" alt="The Lydia office" class="h-full w-full object-cover" width="1024" height="768" loading="eager" />
+        </div>
       </div>
     </div>
   </section>
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-      {pillars.map(([title, description]) => (
-        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
-          <h2 class="font-serif text-3xl text-slate-900">{title}</h2>
-          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+
+  <section class="py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <div class="grid gap-12 sm:grid-cols-2">
+        <article class="space-y-5 rounded-2xl bg-sand p-8 ring-1 ring-cedar/10">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-moss">Mission</span>
+          <p class="font-serif text-2xl italic leading-snug text-cedar">
+            Helping businesses and people honor God through honest, practical, Christ-centered accounting, tax, financial, and business advisory services, one spreadsheet at a time.
+          </p>
         </article>
-      ))}
-    </div>
-  </section>
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto max-w-6xl rounded-xl border border-stone-200 bg-white/60 p-8 shadow-sm">
-      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">Our story</p>
-      <h2 class="mt-5 font-serif text-4xl leading-tight text-slate-900">We were built for clients who need more than reactive filing or basic data entry.</h2>
-      <div class="mt-6 grid gap-5 text-base leading-8 text-slate-700 md:grid-cols-2">
-        <p>Every business has a vision, but the path toward it is often crowded by operational noise: messy records, tax deadlines, payroll questions, disconnected systems, and compliance uncertainty.</p>
-        <p>Fidara brings accounting, tax, payroll, advisory, U.S. expansion, and managed technology support into one calmer relationship. We help clients understand the numbers that matter so they can move forward with more confidence.</p>
-      </div>
-    </div>
-  </section>
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-4">
-      {audiences.map(([title, description]) => (
-        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
-          <h2 class="font-serif text-2xl leading-tight text-slate-900">{title}</h2>
-          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
+        <article class="space-y-5 rounded-2xl bg-sand p-8 ring-1 ring-cedar/10">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-moss">Vision</span>
+          <p class="font-serif text-2xl italic leading-snug text-cedar">
+            A community where businesses and individuals prosper responsibly, while experiencing God's love in all they do.
+          </p>
         </article>
-      ))}
+      </div>
     </div>
   </section>
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.8fr_1.2fr]">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">How clients should feel</p>
-        <h2 class="mt-5 font-serif text-4xl leading-tight text-slate-900">Relieved, secure, clear-headed, and respected.</h2>
-      </div>
-      <div class="grid gap-4 md:grid-cols-2">
-        {feelings.map(([title, description]) => (
-          <article class="border-t border-stone-200 pt-5">
-            <h3 class="font-serif text-2xl leading-tight text-slate-900">{title}</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-700">{description}</p>
+
+  <section class="border-y border-cedar/10 bg-moss/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="mb-12 font-serif text-3xl text-cedar">Whom We Serve</h2>
+      <p class="text-pretty mb-10 max-w-[56ch] text-base leading-relaxed text-cedar/75">
+        We partner with small business clients and individuals who view their work as a calling and want their financial practices to reflect their values.
+      </p>
+      <div class="grid gap-10 sm:grid-cols-2">
+        {served.map(([title, description, icon]) => (
+          <article class="space-y-4">
+            <div class="flex size-10 items-center justify-center rounded-lg bg-moss/5 text-moss">
+              <svg class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={icon}></path>
+              </svg>
+            </div>
+            <h3 class="font-medium text-cedar">{title}</h3>
+            <p class="text-pretty text-sm leading-relaxed text-cedar/75">{description}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto max-w-6xl rounded-xl border border-emerald-900/10 bg-emerald-950 p-8 text-white shadow-sm">
-      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-100">The people behind the work</p>
-      <h2 class="mt-5 font-serif text-4xl leading-tight">A coordinated team around your financial and operational life.</h2>
-      <p class="mt-5 max-w-3xl text-sm leading-7 text-emerald-50">Fidara’s work is delivered through professionals focused on accounting, tax coordination, payroll workflows, advisory conversations, technology systems, and client communication. As the firm grows, this page can expand into individual bios while keeping the same clear, grounded voice.</p>
+
+  <section class="py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <div class="grid items-center gap-12 sm:grid-cols-2">
+        <div class="group relative order-2 [perspective:1200px] sm:order-1">
+          <div aria-hidden="true" class="absolute -inset-3 -z-10 rounded-[2rem] bg-gradient-to-br from-moss/40 via-cedar/20 to-transparent blur-2xl"></div>
+          <div aria-hidden="true" class="absolute inset-0 -z-10 translate-x-4 translate-y-4 rounded-2xl border border-cedar/30 transition-transform duration-700 ease-out group-hover:translate-x-2 group-hover:translate-y-2"></div>
+          <img src="/images/lydia-founder.jpg" alt="David Miller, founder of Lydia Financial" class="aspect-[4/5] w-full rounded-2xl object-cover shadow-xl shadow-cedar/10 ring-1 ring-cedar/10 transition-all duration-700 ease-out group-hover:scale-[1.03]" width="800" height="1000" loading="lazy" />
+        </div>
+        <div class="order-1 space-y-6 sm:order-2">
+          <h2 class="font-serif text-3xl text-cedar">Meet David Miller, CPA</h2>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">David spent fifteen years in corporate tax before founding Lydia. He saw too many small business owners receiving impersonal service and confusing advice. He started this firm to bring the human element back to financial advisory.</p>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">David believes that how you handle money is an extension of your character. He brings that conviction, along with deep technical expertise, to every client relationship.</p>
+          <p class="font-medium text-cedar">David Miller, CPA · Founder</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-cedar/10 bg-moss/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="mb-16 font-serif text-3xl text-cedar">Why business owners choose Lydia</h2>
+      <div class="grid gap-10 sm:grid-cols-3">
+        {reasons.map(([title, description]) => (
+          <article class="space-y-3">
+            <h3 class="font-medium text-cedar">{title}</h3>
+            <p class="text-pretty text-sm leading-relaxed text-cedar/75">{description}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 </PageShell>

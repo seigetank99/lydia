@@ -7,7 +7,7 @@ const CATEGORY_OPTIONS = [
   { value: 'bookkeeping', label: 'Bookkeeping' },
   { value: 'payroll', label: 'Payroll' },
 ]
-const DEFAULT_STORAGE_BUCKET = 'fidara-client-documents'
+const DEFAULT_STORAGE_BUCKET = 'lydia-client-documents'
 const STORAGE_BUCKET = import.meta.env.PUBLIC_SUPABASE_STORAGE_BUCKET || DEFAULT_STORAGE_BUCKET
 
 function formatDate(value) {
@@ -397,7 +397,7 @@ export default function ClientPortalDashboard() {
             <div className="inline-flex min-h-9 items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-medium uppercase tracking-[0.18em] text-emerald-700">
               Secure client portal
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Welcome to your Fidara dashboard</h1>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Welcome to your Lydia Financial dashboard</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
               Securely manage documents, billing, and accounting requests in one place.
             </p>
@@ -421,7 +421,7 @@ export default function ClientPortalDashboard() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Documents Uploaded" value={summary?.documentsCount ?? 0} detail="Files received in private storage" loading={summaryLoading} />
-        <StatCard label="Open Requests" value={summary?.openRequestsCount ?? 0} detail="Outstanding items from your Fidara team" loading={summaryLoading} />
+        <StatCard label="Open Requests" value={summary?.openRequestsCount ?? 0} detail="Outstanding items from your Lydia Financial team" loading={summaryLoading} />
         <StatCard
           label="Outstanding Balance"
           value={formatCurrency(summary?.outstandingBalanceCents || 0)}
@@ -563,7 +563,7 @@ export default function ClientPortalDashboard() {
                 ))}
               </div>
             ) : (
-              <EmptyState title="No invoices yet" body="Hosted invoice links will appear here when Fidara issues billing for your account." />
+              <EmptyState title="No invoices yet" body="Hosted invoice links will appear here when Lydia Financial issues billing for your account." />
             )}
           </SectionCard>
 
@@ -614,7 +614,7 @@ export default function ClientPortalDashboard() {
         </div>
 
         <aside className="space-y-6">
-          <SectionCard title="Messages and notes" subtitle="Updates from Fidara Group about your account and next steps.">
+          <SectionCard title="Messages and notes" subtitle="Updates from Lydia Financial about your account and next steps.">
             {messagesLoading ? (
               <p className="text-sm text-slate-600">Loading updates...</p>
             ) : hasMessages ? (
@@ -626,12 +626,12 @@ export default function ClientPortalDashboard() {
                       <span className="text-xs text-slate-500">{formatDate(message.created_at)}</span>
                     </div>
                     <p className="mt-2 text-sm leading-6 text-slate-600">{message.body}</p>
-                    <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">{message.created_by || 'Fidara Group'}</p>
+                    <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">{message.created_by || 'Lydia Financial'}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyState title="No messages yet" body="Important account updates and reminders from Fidara Group will show up here." />
+              <EmptyState title="No messages yet" body="Important account updates and reminders from Lydia Financial will show up here." />
             )}
           </SectionCard>
 
@@ -654,10 +654,10 @@ export default function ClientPortalDashboard() {
           </SectionCard>
 
           <SectionCard title="Need help?">
-            <p className="text-sm leading-6 text-slate-600">Need help? Contact Fidara Group.</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Questions about requested items, billing, or secure document delivery can go directly to the Fidara team.</p>
+            <p className="text-sm leading-6 text-slate-600">Need help? Contact Lydia Financial.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Questions about requested items, billing, or secure document delivery can go directly to the Lydia Financial team.</p>
             <a href="/contact" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-stone-400 hover:text-slate-900">
-              Contact Fidara Group
+              Contact Lydia Financial
             </a>
           </SectionCard>
         </aside>

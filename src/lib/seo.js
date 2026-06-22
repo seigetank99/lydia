@@ -24,179 +24,184 @@ export function getPageMeta(path) {
   const cleanPath = normalizeRoute(path)
 
   const defaultMeta = {
-    title: 'Fidara | Accounting, Tax, Advisory & Managed IT',
+    title: 'Lydia — Christian Values Financial Advisory',
     description:
-      'Fidara Financial Services provides accounting, bookkeeping, tax, payroll, advisory, U.S. expansion, and managed IT support for growing businesses.',
+      'Lydia provides accounting, tax strategy, bookkeeping, and financial advisory services for small business entrepreneurs.',
   }
 
   const exact = {
     '/404': {
-      title: 'Page Not Found | Fidara Financial Services',
+      title: 'Page Not Found | Lydia Financial',
       description:
-        'The page you requested could not be found. Return to Fidara Financial Services to explore accounting, tax, advisory, payroll, and managed IT support.',
+        'The page you requested could not be found. Return to Lydia Financial to explore accounting, tax, advisory, payroll, and managed IT support.',
     },
     '/careers': {
-      title: 'Careers | Fidara Financial Services',
+      title: 'Careers | Lydia Financial',
       description:
-        'Explore future opportunities with Fidara across accounting, tax, payroll, advisory, operations, systems, and managed IT support.',
+        'Explore future opportunities with Lydia Financial across accounting, tax, payroll, advisory, operations, systems, and managed IT support.',
     },
     '/case-studies': {
-      title: 'Client Scenarios | Fidara Financial Services',
+      title: 'Client Scenarios | Lydia Financial',
       description:
-        'Review practical examples of how Fidara helps businesses clean up books, improve payroll and AP workflows, understand cash flow, and prepare for U.S. expansion.',
+        'Review practical examples of how Lydia Financial helps businesses clean up books, improve payroll and AP workflows, understand cash flow, and prepare for U.S. expansion.',
     },
     '/faq': {
-      title: 'FAQ | Fidara Financial Services',
+      title: 'FAQ | Lydia Financial',
       description:
-        'Answers to common questions about working with Fidara for accounting, bookkeeping, tax, payroll, advisory, U.S. expansion, and managed IT support.',
+        'Answers to common questions about working with Lydia Financial for accounting, bookkeeping, tax, payroll, advisory, U.S. expansion, and managed IT support.',
     },
     '/industries': {
-      title: 'Industries | Fidara Financial Services',
+      title: 'Industries | Lydia Financial',
       description:
         'Industry-specific accounting, tax, payroll, advisory, and systems support for restaurants, dental practices, construction, real estate, e-commerce, and more.',
     },
     '/newsletter': {
-      title: 'Newsletter | Fidara Financial Services',
+      title: 'Newsletter | Lydia Financial',
       description:
-        'Subscribe for practical Fidara updates on bookkeeping, tax readiness, payroll, business operations, advisory planning, and financial systems.',
+        'Subscribe for practical Lydia Financial updates on bookkeeping, tax readiness, payroll, business operations, advisory planning, and financial systems.',
     },
     '/onboarding': {
-      title: 'Client Onboarding | Fidara Financial Services',
+      title: 'Client Onboarding | Lydia Financial',
       description:
-        'Understand how Fidara organizes onboarding for accounting, bookkeeping, tax, payroll, advisory, documents, systems access, and recurring workflows.',
+        'Understand how Lydia Financial organizes onboarding for accounting, bookkeeping, tax, payroll, advisory, documents, systems access, and recurring workflows.',
     },
     '/partners': {
-      title: 'Professional Partners | Fidara Financial Services',
+      title: 'Professional Partners | Lydia Financial',
       description:
-        'Fidara coordinates with attorneys, bankers, insurance advisors, technology vendors, and other professionals around shared client goals.',
+        'Lydia Financial coordinates with attorneys, bankers, insurance advisors, technology vendors, and other professionals around shared client goals.',
     },
     '/privacy': {
-      title: 'Privacy Policy | Fidara Financial Services',
+      title: 'Privacy Policy | Lydia Financial',
       description:
-        'Read Fidara Financial Services privacy information covering website use, inquiry details, client communications, and data handling expectations.',
+        'Read Lydia Financial privacy information covering website use, inquiry details, client communications, and data handling expectations.',
     },
     '/referrals': {
-      title: 'Referrals | Fidara Financial Services',
+      title: 'Referrals | Lydia Financial',
       description:
         'Refer a founder, family, operator, or growing business that needs calmer books, stronger systems, tax clarity, and year-round financial guidance.',
     },
     '/service-areas': {
-      title: 'Service Areas | Fidara Financial Services',
+      title: 'Service Areas | Lydia Financial',
       description:
-        'Fidara supports clients locally and remotely across New York, New Jersey, Connecticut, and other appropriate service areas.',
+        'Lydia Financial supports clients locally and remotely across New York, New Jersey, Connecticut, and other appropriate service areas.',
     },
     '/terms': {
-      title: 'Terms of Use | Fidara Financial Services',
+      title: 'Terms of Use | Lydia Financial',
       description:
-        'Review Fidara Financial Services website terms covering informational content, professional advice limitations, website use, and communications.',
+        'Review Lydia Financial website terms covering informational content, professional advice limitations, website use, and communications.',
     },
     '/security': {
-      title: 'Security | Fidara Financial Services',
+      title: 'Security | Lydia Financial',
       description:
-        'Review Fidara Financial Services client portal security practices covering login access, private document storage, signed downloads, and audit activity.',
+        'Review Lydia Financial client portal security practices covering login access, private document storage, signed downloads, and audit activity.',
     },
     '/disclaimer': {
-      title: 'Website Disclaimer | Fidara Financial Services',
+      title: 'Website Disclaimer | Lydia Financial',
       description:
-        'Read Fidara Financial Services disclaimers about informational website content, professional advice limitations, third-party tools, and regulated services.',
+        'Read Lydia Financial disclaimers about informational website content, professional advice limitations, third-party tools, and regulated services.',
     },
     '/us-expansion': {
-      title: 'U.S. Expansion Support | Fidara Financial Services',
+      title: 'U.S. Expansion Support | Lydia Financial',
       description:
         'Accounting, payroll, tax-readiness, reporting, and systems setup for founders and businesses entering or growing in the U.S. market.',
     },
     '/who-we-help': {
-      title: 'Who We Help | Fidara Financial Services',
+      title: 'Who We Help | Lydia Financial',
       description:
-        'Fidara supports individuals, families, small business owners, growing teams, U.S. expansion clients, and operators with messy books or advisory needs.',
+        'Lydia Financial supports individuals, families, small business owners, growing teams, U.S. expansion clients, and operators with messy books or advisory needs.',
     },
     '/tax-resources': {
-      title: 'Tax Resource Library | Fidara Financial Services',
+      title: 'Tax Resource Library | Lydia Financial',
       description:
         'Tax organizers and planning guides for individuals, families, freelancers, and small business owners.',
     },
     '/client-document-checklist': {
-      title: 'Client Document Checklist | Fidara Financial Services',
+      title: 'Client Document Checklist | Lydia Financial',
       description:
-        'A practical checklist of records to prepare before working with Fidara on bookkeeping, tax, payroll, advisory, or managed IT.',
+        'A practical checklist of records to prepare before working with Lydia Financial on bookkeeping, tax, payroll, advisory, or managed IT.',
     },
     '/compliance-language': {
-      title: 'Compliance Language Checklist | Fidara Financial Services',
+      title: 'Compliance Language Checklist | Lydia Financial',
       description:
         'Internal launch guidance for reviewing CPA, tax, managed IT, wealth, testimonial, and regulated website language.',
     },
     '/practice-areas': {
-      title: 'Practice Areas | Fidara Financial Services',
+      title: 'Practice Areas | Lydia Financial',
       description:
-        'Explore Fidara practice areas for individuals, families, small businesses, bookkeeping cleanup, tax planning, tax notices, monthly accounting, and owner advisory.',
+        'Explore Lydia Financial practice areas for individuals, families, small businesses, bookkeeping cleanup, tax planning, tax notices, monthly accounting, and owner advisory.',
     },
     '/business-health-check': {
-      title: 'Business Health Check | Fidara Financial Services',
+      title: 'Business Health Check | Lydia Financial',
       description:
         'A quick self-assessment for small business owners covering bookkeeping, cash flow, payroll, taxes, controls, and managed IT readiness.',
     },
     '/tax-calendar': {
-      title: 'Tax Calendar | Fidara Financial Services',
+      title: 'Tax Calendar | Lydia Financial',
       description:
         'A practical tax, payroll, estimated tax, sales tax, and year-end planning reminder calendar for individuals and small business owners.',
     },
     '/tax-advice': {
-      title: 'Tax Advice Center | Fidara Financial Services',
+      title: 'Tax Advice Center | Lydia Financial',
       description:
         'Common tax questions for everyday people and small business owners, explained clearly with educational guidance and reminders to seek professional advice.',
     },
     '/start': {
-      title: 'Start Here | Fidara Financial Services',
+      title: 'Start Here | Lydia Financial',
       description:
-        'Choose the Fidara path that best matches your needs, from messy books and payroll to U.S. expansion and managed IT support.',
+        'Choose the Lydia Financial path that best matches your needs, from messy books and payroll to U.S. expansion and managed IT support.',
     },
     '/': {
-      title: 'Fidara | Financial Clarity for Life and Business',
+      title: 'Lydia — Christian Values Financial Advisory for Small Business',
       description:
-        'Accounting, tax, advisory, payroll, technology, and strategic support for every stage of life and business.',
+        'Lydia provides peace of mind through expert accounting, tax, and business advisory services, guided by Christian values.',
     },
     '/about': {
-      title: 'About Fidara | Trust, Clarity & Calm Financial Structure',
+      title: 'About — Lydia Financial Advisory',
       description:
-        'Learn about Fidara Financial Services and the philosophy behind its accounting, advisory, tax, payroll, and technology support.',
+        'Learn about Lydia, a Christian values-focused accounting and financial advisory firm serving small business entrepreneurs with integrity and care.',
+    },
+    '/our-values': {
+      title: 'Our Values — Lydia Financial Advisory',
+      description:
+        'Discover the Lydia values that guide our work: Faith-Centered Purpose, Integrity, Wisdom, Stewardship, Excellence, and Compassion.',
     },
     '/services': {
-      title: 'Services | Fidara Financial Services',
+      title: 'Services — Lydia Financial Advisory',
       description:
-        'Explore Fidara services including bookkeeping, tax, CFO services, payroll, AP management, spend management, U.S. expansion, wealth coordination, and managed IT.',
+        'Lydia provides accounting, tax strategy, bookkeeping, and fractional CFO services for small business entrepreneurs guided by Christian values.',
     },
     '/sectors': {
-      title: 'Sectors We Support | Fidara Financial Services',
+      title: 'Sectors We Support | Lydia Financial',
       description:
-        'Explore the sectors Fidara supports, including home services, health care practices, hospitality, retail, professional services, and mission-driven organizations.',
+        'Explore the sectors Lydia Financial supports, including home services, health care practices, hospitality, retail, professional services, and mission-driven organizations.',
     },
     '/resources': {
-      title: 'Resources | Fidara Financial Services',
+      title: 'Resources | Lydia Financial',
       description:
         'Plain-English guides for bookkeeping, tax readiness, payroll, managed IT, CFO support, and better business operations.',
     },
     '/tools': {
-      title: 'Tools & Checklists | Fidara Financial Services',
+      title: 'Tools & Checklists | Lydia Financial',
       description:
         'Practical checklists for monthly close, payroll onboarding, tax season, managed IT security, and business readiness.',
     },
     '/contact': {
-      title: 'Contact Fidara | Book a Consultation',
+      title: 'Contact — Lydia Financial Advisory',
       description:
-        'Contact Fidara Financial Services to discuss accounting, tax, advisory, payroll, managed IT, or U.S. expansion support.',
+        'Get in touch with Lydia Financial. Schedule a consultation for accounting, tax, and financial advisory services.',
     },
     '/thank-you': {
-      title: 'Thank You | Fidara Financial Services',
+      title: 'Thank You | Lydia Financial',
       description:
-        'Thank you for contacting Fidara Financial Services. Your inquiry has been received and will be reviewed for the next appropriate step.',
+        'Thank you for contacting Lydia Financial. Your inquiry has been received and will be reviewed for the next appropriate step.',
     },
     '/pricing': {
-      title: 'Pricing & Engagements | Fidara Financial Services',
+      title: 'Pricing & Engagements | Lydia Financial',
       description:
-        'Explore Fidara engagement types for foundation, growth, and strategic accounting, advisory, and technology support.',
+        'Explore Lydia Financial engagement types for foundation, growth, and strategic accounting, advisory, and technology support.',
     },
     '/technology': {
-      title: 'Technology Systems | Fidara Financial Services',
+      title: 'Technology Systems | Lydia Financial',
       description:
         'Technology support for accounting systems, payroll systems, document management, dashboards, cybersecurity basics, and managed IT.',
     },
@@ -208,7 +213,7 @@ export function getPageMeta(path) {
     const service = serviceBySlug[cleanPath.replace('/services/', '')]
     if (service) {
       return {
-        title: `${service.title} | Fidara Financial Services`,
+        title: `${service.title} | Lydia Financial`,
         description: service.intro || service.description,
       }
     }
@@ -218,7 +223,7 @@ export function getPageMeta(path) {
     const sector = sectorBySlug[cleanPath.replace('/sectors/', '')]
     if (sector) {
       return {
-        title: `${sector.title} | Fidara Financial Services`,
+        title: `${sector.title} | Lydia Financial`,
         description: `Accounting, advisory, payroll, tax, and systems support for ${sector.title.toLowerCase()}.`,
       }
     }
@@ -228,7 +233,7 @@ export function getPageMeta(path) {
     const profile = industryProfileBySlug[cleanPath.replace('/industries/', '')]
     if (profile) {
       return {
-        title: `${profile.title} Accounting & Advisory | Fidara`,
+        title: `${profile.title} Accounting & Advisory | Lydia Financial`,
         description: profile.description,
       }
     }
@@ -238,7 +243,7 @@ export function getPageMeta(path) {
     const page = practiceAreaBySlug[cleanPath.replace('/practice-areas/', '')]
     if (page) {
       return {
-        title: `${page.title} | Fidara Financial Services`,
+        title: `${page.title} | Lydia Financial`,
         description: page.description,
       }
     }
@@ -248,7 +253,7 @@ export function getPageMeta(path) {
     const page = taxResourceBySlug[cleanPath.replace('/tax-resources/', '')]
     if (page) {
       return {
-        title: `${page.title} | Fidara Financial Services`,
+        title: `${page.title} | Lydia Financial`,
         description: page.description,
       }
     }
@@ -258,7 +263,7 @@ export function getPageMeta(path) {
     const article = resourceBySlug[cleanPath.replace('/resources/', '')]
     if (article) {
       return {
-        title: `${article.title} | Fidara`,
+        title: `${article.title} | Lydia Financial`,
         description: article.description,
       }
     }
@@ -268,7 +273,7 @@ export function getPageMeta(path) {
     const area = serviceAreaBySlug[cleanPath.replace('/service-areas/', '')]
     if (area) {
       return {
-        title: `${area.title} | Fidara Financial Services`,
+        title: `${area.title} | Lydia Financial`,
         description: area.description,
       }
     }
@@ -278,7 +283,7 @@ export function getPageMeta(path) {
     const tool = toolBySlug[cleanPath.replace('/tools/', '')]
     if (tool) {
       return {
-        title: `${tool.title} | Fidara Financial Services`,
+        title: `${tool.title} | Lydia Financial`,
         description: tool.description,
       }
     }
@@ -288,7 +293,7 @@ export function getPageMeta(path) {
     const page = usExpansionBySlug[cleanPath.replace('/us-expansion/', '')]
     if (page) {
       return {
-        title: `${page.title} | Fidara Financial Services`,
+        title: `${page.title} | Lydia Financial`,
         description: page.description,
       }
     }

@@ -1,4 +1,4 @@
--- Fidara client portal production v2 migration.
+-- Lydia Financial client portal production v2 migration.
 -- Run after docs/client-portal-supabase.sql and docs/client-portal-production.sql.
 
 alter table if exists documents

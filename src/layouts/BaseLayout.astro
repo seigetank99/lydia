@@ -1,6 +1,5 @@
 ---
 import '../index.css'
-import ChatbotWidget from '../components/ChatbotWidget.jsx'
 
 const {
   title,
@@ -24,21 +23,24 @@ const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#f7f3eb" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..600;1,400..600&family=Instrument+Serif:ital@0;1&display=swap" />
+    <meta name="theme-color" content="#f7f2e3" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={robots} />
     {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
     {bingSiteVerification && <meta name="msvalidate.01" content={bingSiteVerification} />}
-    <meta property="og:site_name" content="Fidara Financial Services" />
+    <meta property="og:site_name" content="Lydia Financial" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:alt" content="Fidara Financial Services" />
+    <meta property="og:image:alt" content="Lydia Financial" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -49,7 +51,6 @@ const enableClientErrorReporting = import.meta.env.PUBLIC_CLIENT_ERROR_REPORTING
   </head>
   <body>
     <slot />
-    <ChatbotWidget client:load />
     <script is:inline define:vars={{ ga4Id, enableClientErrorReporting }}>
       if (ga4Id && !document.querySelector(`script[data-ga4="${ga4Id}"]`)) {
         const script = document.createElement('script');

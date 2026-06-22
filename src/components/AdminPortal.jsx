@@ -589,7 +589,7 @@ export default function AdminPortal() {
             <div className="inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-xs font-medium uppercase tracking-[0.18em] text-slate-700">
               Admin dashboard
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Fidara Admin Portal</h1>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Lydia Financial Admin Portal</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
               Manage clients, documents, billing, requests, messages, and audit activity from one operations dashboard.
             </p>
@@ -899,7 +899,7 @@ export default function AdminPortal() {
                 })}
               </div>
             ) : (
-              <EmptyState title="No requests found" body="Create a request when Fidara needs follow-up documents or client information." />
+              <EmptyState title="No requests found" body="Create a request when Lydia Financial needs follow-up documents or client information." />
             )}
           </SectionCard>
         </div>

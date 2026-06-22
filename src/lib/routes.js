@@ -24,6 +24,7 @@ import LegalPage from '../site-pages/astro/LegalPage.astro'
 import NewsletterPage from '../site-pages/routes/NewsletterPage.jsx'
 import NotFoundPage from '../site-pages/astro/NotFoundPage.astro'
 import OnboardingPage from '../site-pages/astro/OnboardingPage.astro'
+import OurValuesPage from '../site-pages/astro/OurValuesPage.astro'
 import PartnersPage from '../site-pages/astro/PartnersPage.astro'
 import PracticeAreaPage from '../site-pages/astro/PracticeAreaPage.astro'
 import PracticeAreasPage from '../site-pages/astro/PracticeAreasPage.astro'
@@ -61,6 +62,7 @@ const staticRouteEntries = [
   ['/', HomePage],
   ['/start', StartPage],
   ['/about', AboutPage],
+  ['/our-values', OurValuesPage],
   ['/who-we-help', WhoWeHelpPage],
   ['/case-studies', CaseStudiesPage],
   ['/technology', TechnologyPage],

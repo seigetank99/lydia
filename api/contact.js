@@ -99,7 +99,7 @@ export default async function handler(req, res) {
   // Honeypot: if filled, pretend success.
   if (company) return json(res, 200, { ok: true })
 
-  if (!name || !email || !phone || !service || !message) {
+  if (!name || !email || !service || !message) {
     return json(res, 400, { error: 'Missing required fields.' })
   }
 
@@ -145,11 +145,11 @@ export default async function handler(req, res) {
     auth: { user, pass },
   })
 
-  const subject = `New Fidara inquiry: ${service}`
+  const subject = `New Lydia Financial inquiry: ${service}`
   const text =
     `Name: ${name}\n` +
     `Email: ${email}\n` +
-    `Phone: ${phone}\n` +
+    `Phone: ${phone || 'Not provided'}\n` +
     `Service: ${service}\n` +
     `IP: ${ip}\n` +
     `\n` +
@@ -169,7 +169,7 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          text: `New Fidara inquiry: ${service} from ${name} <${email}>`,
+          text: `New Lydia Financial inquiry: ${service} from ${name} <${email}>`,
           ip,
         }),
       }).catch(() => {})

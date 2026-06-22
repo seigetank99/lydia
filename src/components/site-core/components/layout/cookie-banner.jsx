@@ -2,16 +2,16 @@ function CookieBanner() {
   return (
       <>
         <div
-            id="fidara-cookie-banner"
+            id="lydia-cookie-banner"
             className="fixed bottom-4 left-4 right-4 z-[100] mx-auto hidden max-w-4xl rounded-2xl border border-stone-200 bg-white/95 p-5 shadow-2xl backdrop-blur"
         >
         <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
           <p className="text-sm leading-6 text-slate-700">
-            Fidara may use basic analytics and cookies to understand site usage and improve the experience.
+            Lydia Financial may use basic analytics and cookies to understand site usage and improve the experience.
           </p>
 
           <button
-              id="fidara-cookie-accept"
+              id="lydia-cookie-accept"
               type="button"
               className="rounded-md bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
           >
@@ -23,16 +23,16 @@ function CookieBanner() {
             dangerouslySetInnerHTML={{
               __html: `
                 (() => {
-                  const banner = document.getElementById('fidara-cookie-banner');
-                  const accept = document.getElementById('fidara-cookie-accept');
+                  const banner = document.getElementById('lydia-cookie-banner');
+                  const accept = document.getElementById('lydia-cookie-accept');
                   if (!banner || !accept) return;
                   try {
-                    const accepted = window.localStorage.getItem('fidara-cookie-consent') === 'accepted';
+                    const accepted = window.localStorage.getItem('lydia-cookie-consent') === 'accepted';
                     if (!accepted) {
                       banner.classList.remove('hidden');
                     }
                     accept.addEventListener('click', () => {
-                      window.localStorage.setItem('fidara-cookie-consent', 'accepted');
+                      window.localStorage.setItem('lydia-cookie-consent', 'accepted');
                       banner.remove();
                     }, { once: true });
                   } catch {

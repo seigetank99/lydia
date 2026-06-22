@@ -28,7 +28,7 @@ export default function NewsletterPage() {
               <a
                   href={mailto(
                       'Newsletter Signup',
-                      `Please add this email to the Fidara newsletter: ${email}`.trim(),
+                      `Please add this email to the Lydia Financial newsletter: ${email}`.trim(),
                   )}
                   className={`inline-flex justify-center rounded-md px-8 py-4 text-sm font-medium transition ${
                       email

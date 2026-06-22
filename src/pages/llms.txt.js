@@ -2,12 +2,12 @@ import { siteConfig } from '../lib/seo.js'
 
 export function GET() {
   return new Response(
-    `Fidara Financial Services
+    `Lydia Financial
 
 Primary site: ${siteConfig.domain}
 
 Summary:
-Fidara publishes service pages, sector pages, industry-specific pages, tax resources, operational checklists, pricing information, onboarding guidance, and contact details for accounting, tax, advisory, payroll, U.S. expansion, and managed IT support.
+Lydia Financial publishes service pages, sector pages, industry-specific pages, tax resources, operational checklists, pricing information, onboarding guidance, and contact details for accounting, tax, advisory, payroll, U.S. expansion, and managed IT support.
 
 High-value sections:
 - /services

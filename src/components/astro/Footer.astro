@@ -1,137 +1,42 @@
 ---
-import { mailto } from '../site-core/data/index.jsx'
-
-const footerGroups = [
-  {
-    title: 'Services',
-    links: [
-      ['All Services', '/services'],
-      ['Practice Areas', '/practice-areas'],
-      ['Bookkeeping', '/services/bookkeeping'],
-      ['Tax', '/services/tax'],
-      ['CFO Services', '/services/cfo-services'],
-      ['Managed IT Services', '/services/managed-it-services'],
-      ['U.S. Expansion', '/us-expansion'],
-    ],
-  },
-  {
-    title: 'Sectors',
-    links: [
-      ['All Sectors', '/sectors'],
-      ['Industry Pages', '/industries'],
-      ['Restaurants', '/industries/restaurants'],
-      ['Dental Practices', '/industries/dental-practices'],
-      ['Construction', '/industries/construction'],
-      ['E-Commerce', '/industries/ecommerce'],
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      ['Resources', '/resources'],
-      ['Tax Advice Center', '/tax-advice'],
-      ['Tools', '/tools'],
-      ['Business Health Check', '/business-health-check'],
-      ['Tax Calendar', '/tax-calendar'],
-      ['Onboarding', '/onboarding'],
-      ['Client Document Checklist', '/client-document-checklist'],
-      ['Pricing', '/pricing'],
-      ['Newsletter', '/newsletter'],
-      ['FAQ', '/faq'],
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      ['About', '/about'],
-      ['Who We Help', '/who-we-help'],
-      ['Case Studies', '/case-studies'],
-      ['Technology', '/technology'],
-      ['Client Login', '/login'],
-      ['Careers', '/careers'],
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      ['Security', '/security'],
-      ['Contact', '/contact'],
-      ['Referrals', '/referrals'],
-      ['Service Areas', '/service-areas'],
-    ],
-  },
-]
+import { siteConfig } from '../site-core/data/index.jsx'
 ---
 
-<footer class="border-t border-stone-200 px-8 py-10">
-  <div class="mx-auto grid max-w-7xl gap-10">
-    <div class="grid gap-8 md:grid-cols-[260px_1fr]">
-      <div>
-        <img
-          src="/images/logo.png"
-          alt="Fidara Financial Services"
-          class="h-28 w-auto mix-blend-multiply"
-        />
-
-        <p class="mt-4 text-sm leading-6 text-slate-700">
-          Modern accounting, advisory, tax, payroll, and technology support for growing businesses and the people behind them.
+<footer class="border-t border-cedar/10 py-16">
+  <div class="mx-auto max-w-5xl px-6">
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="space-y-4 sm:col-span-2">
+        <span class="font-serif text-xl text-cedar">Lydia</span>
+        <p class="max-w-[30ch] text-sm text-cedar/55">
+          Financial advisory rooted in principle. Serving the dreamers and doers of the small business community.
         </p>
+      </div>
 
-        <div class="mt-5 flex gap-4 text-slate-500">
-          <a
-            class="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-white/70 hover:text-emerald-700"
-            href={mailto()}
-            aria-label="Email Fidara"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-4 w-4"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-              <path d="m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7"></path>
-            </svg>
-          </a>
+      <div class="space-y-4">
+        <h4 class="text-[10px] font-semibold uppercase tracking-widest text-moss">Navigation</h4>
+        <div class="flex flex-col gap-2">
+          <a href="/about" class="text-sm text-cedar/75 transition-colors hover:text-cedar">About</a>
+          <a href="/our-values" class="text-sm text-cedar/75 transition-colors hover:text-cedar">Our Values</a>
+          <a href="/services" class="text-sm text-cedar/75 transition-colors hover:text-cedar">Services</a>
+          <a href="/contact" class="text-sm text-cedar/75 transition-colors hover:text-cedar">Contact</a>
         </div>
       </div>
 
-      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-        {footerGroups.map((group) => (
-          <div>
-            <h3 class="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-              {group.title}
-            </h3>
-
-            <div class="mt-4 grid gap-2">
-              {group.links.map(([label, href]) => (
-                <a
-                  href={href}
-                  class="text-sm leading-6 text-slate-600 transition hover:text-emerald-800"
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div class="space-y-4">
+        <h4 class="text-[10px] font-semibold uppercase tracking-widest text-moss">Contact</h4>
+        <div class="flex flex-col gap-2">
+          <a href={`mailto:${siteConfig.email}`} class="text-sm text-cedar/75 transition-colors hover:text-cedar">{siteConfig.email}</a>
+          <a href={`tel:${siteConfig.phone}`} class="text-sm text-cedar/75 transition-colors hover:text-cedar">(516) 646-1015</a>
+          <p class="text-sm text-cedar/75">Mon - Fri: 9am - 5pm</p>
+        </div>
       </div>
     </div>
 
-    <div class="border-t border-stone-200 pt-6 text-xs leading-6 text-slate-500">
-      <p>© 2024 Fidara Financial Services, LLC. All rights reserved.</p>
-      <p class="mt-2">
-        Website content is for general informational purposes only and is not tax, legal, investment, cybersecurity, or financial advice. No professional relationship is formed until an engagement is accepted in writing.
+    <div class="mt-16 flex flex-col justify-between gap-2 border-t border-cedar/10 pt-8 sm:flex-row">
+      <p class="text-[10px] font-medium uppercase tracking-widest text-cedar/45">
+        © 2026 Lydia Financial LLC
       </p>
-      <a
-        href="/staff-login"
-        class="mt-3 inline-flex text-[11px] font-medium text-slate-400 transition hover:text-slate-600"
-      >
-        Staff Login
-      </a>
+      <p class="text-[10px] font-medium uppercase tracking-widest text-cedar/45">Stewardship first</p>
     </div>
   </div>
 </footer>

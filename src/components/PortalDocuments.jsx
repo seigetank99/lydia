@@ -7,7 +7,7 @@ const CATEGORY_OPTIONS = [
   { value: 'bookkeeping', label: 'Bookkeeping' },
   { value: 'payroll', label: 'Payroll' },
 ]
-const DEFAULT_STORAGE_BUCKET = 'fidara-client-documents'
+const DEFAULT_STORAGE_BUCKET = 'lydia-client-documents'
 const STORAGE_BUCKET = import.meta.env.PUBLIC_SUPABASE_STORAGE_BUCKET || DEFAULT_STORAGE_BUCKET
 
 export default function PortalDocuments() {
@@ -202,7 +202,7 @@ export default function PortalDocuments() {
           <div>
             <h2 className="font-serif text-3xl leading-tight text-slate-900">Documents</h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-700">
-              Upload records for your Fidara team and access previously submitted files.
+              Upload records for your Lydia Financial team and access previously submitted files.
             </p>
           </div>
           <button

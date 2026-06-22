@@ -1,4 +1,4 @@
-# Fidara Client Portal Production Handoff
+# Lydia Financial Client Portal Production Handoff
 
 Use this checklist before launching the Astro marketing site, client portal, and staff admin portal on Vercel.
 
@@ -10,12 +10,12 @@ Required portal and Supabase variables:
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_STORAGE_BUCKET=fidara-client-documents
+SUPABASE_STORAGE_BUCKET=lydia-client-documents
 PUBLIC_SUPABASE_URL=
 PUBLIC_SUPABASE_ANON_KEY=
-PUBLIC_SUPABASE_STORAGE_BUCKET=fidara-client-documents
-SESSION_COOKIE_NAME=fidara_session
-PUBLIC_SITE_URL=https://www.fidaragroup.com
+PUBLIC_SUPABASE_STORAGE_BUCKET=lydia-client-documents
+SESSION_COOKIE_NAME=lydia_session
+PUBLIC_SITE_URL=https://www.lydiafinancial.com
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` is server-side only. Do not expose it through any `PUBLIC_*` variable, client component, browser bundle, chatbot path, or static asset.
@@ -71,7 +71,7 @@ The V2 migration adds archive/delete metadata, update timestamps, active-documen
 Create one bucket:
 
 ```text
-fidara-client-documents
+lydia-client-documents
 ```
 
 Storage rules:
@@ -145,7 +145,7 @@ Reset behavior:
 Required redirect URLs:
 
 ```text
-https://www.fidaragroup.com/reset-password
+https://www.lydiafinancial.com/reset-password
 http://localhost:4321/reset-password
 ```
 
@@ -161,13 +161,13 @@ Admin workflow:
 2. Copy the Stripe `hosted_invoice_url`.
 3. Create or update the billing item in `/admin`.
 4. Client opens `/portal` and clicks Pay Invoice.
-5. Client leaves the Fidara site for the Stripe-hosted payment page.
+5. Client leaves the Lydia Financial site for the Stripe-hosted payment page.
 
 Rules:
 
 - No custom credit-card processing.
-- No card entry forms in Fidara.
-- No card details are stored by Fidara.
+- No card entry forms in Lydia Financial.
+- No card details are stored by Lydia Financial.
 - Billing item records store invoice metadata and hosted links only.
 
 ## 9. Email Notifications
@@ -193,7 +193,7 @@ Notification rules:
 Default subject used for new portal items:
 
 ```text
-New item in your Fidara client portal
+New item in your Lydia Financial client portal
 ```
 
 ## 10. Admin Workflow Support

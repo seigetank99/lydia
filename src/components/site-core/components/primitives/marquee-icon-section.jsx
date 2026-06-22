@@ -9,7 +9,7 @@ function MarqueeIconSection({
                             }) {
   const repeatedItems = [...items, ...items]
   const marqueeClass =
-      direction === 'left' ? 'fidara-marquee-left' : 'fidara-marquee-right'
+      direction === 'left' ? 'lydia-marquee-left' : 'lydia-marquee-right'
 
   return (
       <section

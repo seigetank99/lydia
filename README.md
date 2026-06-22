@@ -1,4 +1,4 @@
-# Fidara Site
+# Lydia Financial Site
 
 Astro static marketing site with React islands for interactive forms and Vercel
 functions for contact delivery, health checks, and optional client-error

@@ -4,7 +4,7 @@ import { parse, serialize } from 'cookie'
 import { getSupabaseAdmin } from './supabaseAdmin.js'
 
 export function getSessionCookieName() {
-  return process.env.SESSION_COOKIE_NAME || 'fidara_session'
+  return process.env.SESSION_COOKIE_NAME || 'lydia_session'
 }
 
 export function setSessionCookieHeader(token) {

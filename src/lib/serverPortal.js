@@ -1,7 +1,7 @@
 import process from 'node:process'
 import { getSupabaseAdmin } from './supabaseAdmin.js'
 
-const DEFAULT_STORAGE_BUCKET = 'fidara-client-documents'
+const DEFAULT_STORAGE_BUCKET = 'lydia-client-documents'
 
 export function json(res, status, body) {
   res.statusCode = status

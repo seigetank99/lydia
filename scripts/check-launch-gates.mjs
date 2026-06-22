@@ -4,7 +4,7 @@ import path from 'node:path'
 const DIST_DIR = path.resolve('dist')
 const MAX_JS_KB = Number(process.env.MAX_JS_KB || 380)
 const MAX_CSS_KB = Number(process.env.MAX_CSS_KB || 80)
-const SITE_URL = 'https://www.fidaragroup.com'
+const SITE_URL = 'https://www.lydiafinancial.com'
 
 async function listFiles(dir) {
   const out = []

@@ -24,7 +24,7 @@ const STARTERS = [
   'What documents do I need for tax prep?',
   'Do you help with bookkeeping?',
   'How does the client portal work?',
-  'How do I contact Fidara?',
+  'How do I contact Lydia Financial?',
 ]
 
 function isHiddenPath(pathname) {
@@ -35,15 +35,15 @@ function getScriptedResponse(input) {
   const message = input.toLowerCase()
 
   if (ACCOUNT_SPECIFIC_PATTERNS.some((pattern) => message.includes(pattern))) {
-    return 'For account-specific help, please log into your client portal or contact Fidara Group directly.'
+    return 'For account-specific help, please log into your client portal or contact Lydia Financial directly.'
   }
 
   if (message.includes('bookkeeping') || message.includes('books') || message.includes('reconcile')) {
-    return 'Fidara can help organize monthly books, reconcile accounts, clean up records, and prepare financial information that is easier to use for tax planning and business decisions.'
+    return 'Lydia Financial can help organize monthly books, reconcile accounts, clean up records, and prepare financial information that is easier to use for tax planning and business decisions.'
   }
 
   if (message.includes('payroll') || message.includes('wage') || message.includes('employee')) {
-    return 'Fidara supports payroll coordination, onboarding checklists, recurring payroll records, and reporting workflows so payroll information stays aligned with accounting and tax needs.'
+    return 'Lydia Financial supports payroll coordination, onboarding checklists, recurring payroll records, and reporting workflows so payroll information stays aligned with accounting and tax needs.'
   }
 
   if (
@@ -53,7 +53,7 @@ function getScriptedResponse(input) {
     message.includes('corporation') ||
     message.includes('incorporate')
   ) {
-    return 'For business formation and entity documents, Fidara can help organize records such as formation documents, EIN letters, operating agreements, ownership details, and state registration information.'
+    return 'For business formation and entity documents, Lydia Financial can help organize records such as formation documents, EIN letters, operating agreements, ownership details, and state registration information.'
   }
 
   if (
@@ -67,26 +67,26 @@ function getScriptedResponse(input) {
   }
 
   if (message.includes('portal') || message.includes('upload') || message.includes('download') || message.includes('secure')) {
-    return 'The Fidara client portal lets clients log in, upload documents securely, view requested items, see billing records, and download files through time-limited secure links.'
+    return 'The Lydia Financial client portal lets clients log in, upload documents securely, view requested items, see billing records, and download files through time-limited secure links.'
   }
 
   if (message.includes('billing') || message.includes('invoice') || message.includes('payment') || message.includes('pay')) {
-    return 'Billing records may appear in the client portal. Payments are handled through hosted invoice links, so clients complete payment on a secure billing page rather than inside the Fidara website.'
+    return 'Billing records may appear in the client portal. Payments are handled through hosted invoice links, so clients complete payment on a secure billing page rather than inside the Lydia Financial website.'
   }
 
   if (message.includes('pricing') || message.includes('price') || message.includes('cost') || message.includes('fee')) {
-    return 'Pricing depends on the services, volume, cleanup needs, and ongoing support required. The best next step is to contact Fidara so the team can scope the right engagement.'
+    return 'Pricing depends on the services, volume, cleanup needs, and ongoing support required. The best next step is to contact Lydia Financial so the team can scope the right engagement.'
   }
 
   if (message.includes('contact') || message.includes('call') || message.includes('email') || message.includes('talk')) {
-    return 'You can contact Fidara Group through the contact page at /contact. Share a short note about what you need and the team can follow up.'
+    return 'You can contact Lydia Financial through the contact page at /contact. Share a short note about what you need and the team can follow up.'
   }
 
   if (message.includes('service') || message.includes('accounting') || message.includes('cfo') || message.includes('tax planning')) {
-    return 'Fidara provides accounting, bookkeeping, tax, payroll, advisory, and related business support for growing companies and owners.'
+    return 'Lydia Financial provides accounting, bookkeeping, tax, payroll, advisory, and related business support for growing companies and owners.'
   }
 
-  return 'I can help with general Fidara questions about services, documents, billing, and the client portal. For account-specific help, please contact Fidara Group directly.'
+  return 'I can help with general Lydia Financial questions about services, documents, billing, and the client portal. For account-specific help, please contact Lydia Financial directly.'
 }
 
 export default function ChatbotWidget() {
@@ -100,7 +100,7 @@ export default function ChatbotWidget() {
     {
       id: 'welcome',
       role: 'assistant',
-      text: 'Hi, I can answer general questions about Fidara services, document preparation, billing, and the client portal.',
+      text: 'Hi, I can answer general questions about Lydia Financial services, document preparation, billing, and the client portal.',
     },
   ])
   const messagesEndRef = useRef(null)
@@ -142,14 +142,14 @@ export default function ChatbotWidget() {
           <div className="border-b border-stone-200 bg-slate-950 px-5 py-4 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-base font-semibold">Fidara Assistant</h2>
+                <h2 className="text-base font-semibold">Lydia Financial Assistant</h2>
                 <p className="mt-1 text-xs leading-5 text-slate-300">Ask about services, documents, or getting started.</p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-sm text-white transition hover:bg-white/10"
-                aria-label="Close Fidara Assistant"
+                aria-label="Close Lydia Financial Assistant"
               >
                 x
               </button>
@@ -213,7 +213,7 @@ export default function ChatbotWidget() {
         className="inline-flex min-h-12 items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-xl transition hover:bg-slate-800"
         aria-expanded={isOpen}
       >
-        Ask Fidara
+        Ask Lydia Financial
       </button>
     </div>
   )

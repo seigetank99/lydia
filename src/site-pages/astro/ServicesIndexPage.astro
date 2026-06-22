@@ -1,45 +1,112 @@
 ---
-import { services } from '../../components/site-core/data/index.jsx'
 import PageShell from '../../components/astro/PageShell.astro'
-import PageHero from '../../components/astro/PageHero.astro'
-import ServiceCard from '../../components/astro/ServiceCard.astro'
+
+const services = [
+  {
+    number: '01',
+    title: 'Tax Strategy & Preparation',
+    description:
+      'Tax season should not be a panic. We work with you year-round to position your business for favorable outcomes, legally, ethically, and with your long-term interests at heart.',
+    bullets: [
+      'Individual and business tax return preparation',
+      'Quarterly estimated tax planning and projections',
+      'Entity structure optimization (LLC, S-Corp, etc.)',
+      'IRS correspondence and audit support',
+    ],
+    quote: 'David found deductions I did not even know existed and explained exactly why they applied to my business.',
+    source: 'Sarah Chen, Chen Consulting',
+  },
+  {
+    number: '02',
+    title: 'Full Bookkeeping & Accounting',
+    description:
+      'Clean, accurate books are the foundation of every good business decision. We handle the day-to-day so you can focus on the work you were called to do.',
+    bullets: [
+      'Monthly bookkeeping and reconciliation',
+      'Financial statement preparation (P&L, balance sheet, cash flow)',
+      'Accounts payable and receivable management',
+      'Payroll processing and compliance',
+    ],
+    quote: 'I finally understand where my money is going. Lydia makes my monthly reports something I actually look forward to reading.',
+    source: "James Rivera, Rivera's Landscaping",
+    reverse: true,
+  },
+  {
+    number: '03',
+    title: 'Fractional CFO & Advisory',
+    description:
+      'Growing businesses need strategic financial guidance, but not always a full-time CFO. We step in as your financial partner, providing the insight you need at a scale that fits.',
+    bullets: [
+      'Cash flow forecasting and management',
+      'Budgeting and financial goal-setting',
+      'Growth strategy and expansion planning',
+      'Monthly or quarterly business review meetings',
+    ],
+    quote: 'Lydia helped me decide when to hire my first employee and how to price my services. That advice alone paid for itself ten times over.',
+    source: 'Amelia Park, Park Bakery',
+  },
+]
+
+const steps = [
+  ['01', 'Discovery', 'We start with a friendly conversation about your business, your goals, and where you need help.'],
+  ['02', 'Plan', 'We create a tailored service plan that fits your needs and your budget: no upselling, no surprises.'],
+  ['03', 'Execute', 'We handle the work with diligence and precision, keeping you informed every step of the way.'],
+  ['04', 'Grow', 'We meet regularly to review progress, adjust strategy, and ensure your finances support your vision.'],
+]
 ---
 
 <PageShell active="services">
-  <PageHero
-    eyebrow="Fidara Core Services"
-    title="Support for the financial, operational, and technology backbone of your business."
-    description="Start with one service or build a relationship that grows with you. Each service page explains what we focus on and how Fidara helps create structure."
-    backgroundImage="/images/service.png"
-  >
-    <div class="mt-8 flex flex-wrap gap-4">
-      <a href="/contact" class="rounded-md bg-emerald-600 px-8 py-4 text-sm font-medium text-white transition hover:bg-emerald-700">
-        Book a Consultation
-      </a>
-      <a href="/sectors" class="rounded-md border border-emerald-600 px-8 py-4 text-sm font-medium text-slate-900 transition hover:bg-white">
-        View Sectors
-      </a>
-    </div>
-  </PageHero>
-
-  <section class="border-t border-stone-200 px-8 py-12">
-    <div class="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {services.map((service) => <ServiceCard {...service} />)}
+  <section class="py-20 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
+        Services built with conviction.
+      </h1>
+      <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
+        From daily bookkeeping to long-term strategic planning, we provide the financial infrastructure small business owners need to thrive, guided by the values that guide everything we do at Lydia.
+      </p>
     </div>
   </section>
 
-  <section class="border-t border-stone-200 px-8 py-14">
-    <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-      {[
-        ['Foundation', 'Bookkeeping, tax readiness, clean records, and reliable reporting.'],
-        ['Growth', 'Payroll, AP, spend management, advisory, and ongoing financial support.'],
-        ['Strategic', 'CFO services, U.S. expansion, wealth coordination, and managed IT services.'],
-      ].map(([title, description]) => (
-        <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
-          <h3 class="font-serif text-3xl text-slate-900">{title}</h3>
-          <p class="mt-4 text-sm leading-7 text-slate-700">{description}</p>
-        </article>
+  <section class="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl space-y-24 px-6">
+      {services.map((service) => (
+        <div class="grid items-start gap-12 sm:grid-cols-2">
+          <div class={`space-y-6 ${service.reverse ? 'sm:order-2' : ''}`}>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-moss">{service.number}</span>
+            <h2 class="font-serif text-3xl text-cedar">{service.title}</h2>
+            <p class="text-pretty text-base leading-relaxed text-cedar/75">{service.description}</p>
+            <ul class="space-y-3 text-sm text-cedar/75">
+              {service.bullets.map((item) => (
+                <li class="flex items-start gap-3">
+                  <span class="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-cedar"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <aside class={`rounded-2xl bg-sand p-8 ring-1 ring-cedar/10 ${service.reverse ? 'sm:order-1' : ''}`}>
+            <div class="space-y-4">
+              <p class="font-serif text-xl italic text-cedar">“{service.quote}”</p>
+              <p class="text-sm font-medium text-cedar/80">{service.source}</p>
+            </div>
+          </aside>
+        </div>
       ))}
+    </div>
+  </section>
+
+  <section class="py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="mb-16 font-serif text-3xl text-cedar">How we work together</h2>
+      <div class="grid gap-10 sm:grid-cols-4">
+        {steps.map(([number, title, description]) => (
+          <article class="space-y-4">
+            <span class="font-serif text-4xl text-cedar/20">{number}</span>
+            <h3 class="font-medium text-cedar">{title}</h3>
+            <p class="text-pretty text-sm leading-relaxed text-cedar/75">{description}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 </PageShell>

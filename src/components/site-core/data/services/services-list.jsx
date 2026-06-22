@@ -18,7 +18,7 @@ export const services = [
     description: 'Clean, organized books that support tax readiness, cash flow clarity, and better decisions.',
     image: '/images/service-bookkeeping.png',
     intro:
-        'Bookkeeping is the foundation for a calmer business. Fidara helps turn transactions, receipts, statements, and documents into records you can trust.',
+        'Bookkeeping is the foundation for a calmer business. Lydia Financial helps turn transactions, receipts, statements, and documents into records you can trust.',
     outcomes: [
       'Monthly transaction review and reconciliation support',
       'Organized records for taxes, planning, lending, and reporting',
@@ -31,7 +31,7 @@ export const services = [
     description: 'Year-round tax clarity designed to reduce surprises and support better planning.',
     image: '/images/service-tax.png',
     intro:
-        'Tax should not feel like a surprise at the end of the year. Fidara helps clients prepare earlier, organize better, and understand the planning choices in front of them.',
+        'Tax should not feel like a surprise at the end of the year. Lydia Financial helps clients prepare earlier, organize better, and understand the planning choices in front of them.',
     outcomes: [
       'Tax-ready books and document organization',
       'Estimated tax and planning conversations',
@@ -57,7 +57,7 @@ export const services = [
     description: 'Payroll and people workflows that keep growing teams organized and deadline-ready.',
     image: '/images/service-hr-payroll.png',
     intro:
-        'As teams grow, payroll becomes more than a pay run. Fidara helps organize the records, approvals, deadlines, and workflows around your people.',
+        'As teams grow, payroll becomes more than a pay run. Lydia Financial helps organize the records, approvals, deadlines, and workflows around your people.',
     outcomes: [
       'Payroll coordination and recurring review',
       'Employee onboarding and compensation workflow support',
@@ -96,7 +96,7 @@ export const services = [
     description: 'Accounting, payroll, tax-readiness, and systems support for entering or growing in the U.S.',
     image: '/images/service-us-expansion.png',
     intro:
-        'Entering or expanding in the U.S. requires more than opening accounts. Fidara helps organize the financial, payroll, reporting, and document workflows behind the move.',
+        'Entering or expanding in the U.S. requires more than opening accounts. Lydia Financial helps organize the financial, payroll, reporting, and document workflows behind the move.',
     outcomes: [
       'U.S. accounting and reporting foundation',
       'Payroll, vendor, and document workflow coordination',
@@ -109,7 +109,7 @@ export const services = [
     description: 'Planning conversations that connect business performance with personal goals.',
     image: '/images/service-wealth-management.png',
     intro:
-        'For owners and families, business decisions and personal goals are often connected. Fidara helps bring the financial picture into one clearer conversation.',
+        'For owners and families, business decisions and personal goals are often connected. Lydia Financial helps bring the financial picture into one clearer conversation.',
     outcomes: [
       'Goal-based planning conversations',
       'Coordination with tax, estate, insurance, and investment advisors',

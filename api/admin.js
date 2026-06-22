@@ -408,9 +408,9 @@ async function handleLinkClientUser(req, res, user) {
 
   await sendPortalNotification({
     clientId,
-    subject: 'Fidara client portal access',
+    subject: 'Lydia Financial client portal access',
     text: [
-      'Fidara Group linked your email address to a client portal account.',
+      'Lydia Financial linked your email address to a client portal account.',
       '',
       'Please log in to review your portal. If you need a password, use the forgot password link on the login page.',
     ].join('\n'),
@@ -567,7 +567,7 @@ async function handleCreateRequest(req, res, user) {
 
   await sendPortalNotification({
     clientId,
-    subject: 'New item in your Fidara client portal',
+    subject: 'New item in your Lydia Financial client portal',
     text: portalNotificationText('a new request'),
   })
 
@@ -677,7 +677,7 @@ async function handleCreateBillingItem(req, res, user) {
 
   await sendPortalNotification({
     clientId,
-    subject: 'New item in your Fidara client portal',
+    subject: 'New item in your Lydia Financial client portal',
     text: portalNotificationText('a new billing item'),
   })
 
@@ -760,7 +760,7 @@ async function handleCreateMessage(req, res, user) {
       client_id: clientId,
       title,
       body,
-      created_by: 'Fidara Group',
+      created_by: 'Lydia Financial',
     })
     .select('id, client_id, title, body, created_by, created_at')
     .single()
@@ -780,7 +780,7 @@ async function handleCreateMessage(req, res, user) {
 
   await sendPortalNotification({
     clientId,
-    subject: 'New item in your Fidara client portal',
+    subject: 'New item in your Lydia Financial client portal',
     text: portalNotificationText('a new message'),
   })
 
@@ -855,9 +855,9 @@ async function handleUpdateDocumentStatus(req, res, user) {
   if (status === 'completed') {
     await sendPortalNotification({
       clientId: document.client_id,
-      subject: 'New item in your Fidara client portal',
+      subject: 'New item in your Lydia Financial client portal',
       text: [
-        'Fidara Group marked a document in your client portal as completed.',
+        'Lydia Financial marked a document in your client portal as completed.',
         '',
         'Please log in to review your portal activity.',
         '',

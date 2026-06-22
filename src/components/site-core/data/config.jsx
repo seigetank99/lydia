@@ -1,9 +1,9 @@
 export const siteConfig = {
-  companyName: 'Fidara Financial Services',
-  legalName: 'Fidara Financial Services, LLC',
-  email: 'sales@fidaragroup.com',
+  companyName: 'Lydia Financial',
+  legalName: 'Lydia Financial, LLC',
+  email: 'sales@lydiafinancial.com',
   phone: '+15166461015',
-  domain: (import.meta.env.PUBLIC_SITE_URL || 'https://www.fidaragroup.com').replace(/\/$/, ''),
+  domain: (import.meta.env.PUBLIC_SITE_URL || 'https://www.lydiafinancial.com').replace(/\/$/, ''),
   serviceArea: 'New York, New Jersey, Connecticut, and remote clients where appropriate',
   responseTime: '1–2 business days',
 }

@@ -1,39 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
-import { Footer, Header, services, siteConfig } from '../../components/site-core.jsx'
-import { FAQSection, PageHero, SectionTitle } from '../shared-sections.jsx'
+import { Footer, Header, siteConfig } from '../../components/site-core.jsx'
 
-function WhatHappensNextSection() {
-  const steps = [
-    ['Submit the inquiry', 'Tell us what you need help with, what feels urgent, and what outcome you want.'],
-    ['We review the situation', 'We look at the service area, timing, complexity, and whether Fidara is the right fit.'],
-    ['Discovery conversation', 'If there is fit, we schedule a conversation to understand the details and next steps.'],
-    ['Scope the engagement', 'We define responsibilities, timing, systems, documents, and the level of support needed.'],
-  ]
-
-  return (
-      <section className="border-t border-stone-200 px-8 py-12">
-        <SectionTitle>WHAT HAPPENS NEXT</SectionTitle>
-        <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-4">
-          {steps.map(([title, description], index) => (
-              <article key={title} className="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700">
-                  {String(index + 1).padStart(2, '0')}
-                </p>
-                <h3 className="mt-4 font-serif text-2xl text-slate-900">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-700">{description}</p>
-              </article>
-          ))}
-        </div>
-      </section>
-  )
-}
+const serviceOptions = [
+  'Tax preparation & strategy',
+  'Bookkeeping & accounting',
+  'Fractional CFO / advisory',
+  "Not sure yet - let's talk",
+]
 
 export default function ContactPage() {
   const [form, setForm] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    phone: '',
-    service: '',
+    businessName: '',
+    service: serviceOptions[0],
     message: '',
   })
   const [status, setStatus] = useState({ state: 'idle', message: '' })
@@ -41,7 +22,7 @@ export default function ContactPage() {
   const [turnstileToken, setTurnstileToken] = useState('')
   const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
   const turnstileRef = useRef(null)
-  const isReady = form.name && form.email && form.phone && form.service && form.message
+  const isReady = form.firstName && form.lastName && form.email && form.service && form.message
 
   useEffect(() => {
     if (!turnstileSiteKey || !turnstileRef.current) return
@@ -75,95 +56,187 @@ export default function ContactPage() {
     }
   }, [turnstileSiteKey])
 
+  async function handleSubmit(event) {
+    event.preventDefault()
+    if (!isReady || status.state === 'sending') return
+    setStatus({ state: 'sending', message: '' })
+
+    try {
+      const fd = new FormData(event.currentTarget)
+      const name = `${form.firstName} ${form.lastName}`.trim()
+      const message = [
+        form.message,
+        form.businessName ? `\nBusiness name: ${form.businessName}` : '',
+      ].join('')
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email: form.email,
+          phone: '',
+          service: form.service,
+          message,
+          company: String(fd.get('company') || ''),
+          startedAt,
+          turnstileToken,
+        }),
+      })
+
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(payload?.error || 'Unable to submit. Please try again.')
+      window.location.assign('/thank-you')
+    } catch (error) {
+      setStatus({ state: 'error', message: error?.message || 'Unable to submit.' })
+    }
+  }
+
   return (
-      <main id="main-content" className="min-h-screen bg-[#f7f3eb] text-slate-900">
-        <Header active="contact" />
-        <PageHero
-            eyebrow="Contact Fidara"
-            title="Start with a conversation."
-            description="Tell us what feels unclear, urgent, or ready for better structure. One of our team members will review your request and respond with the next appropriate step."
-            backgroundImage="/images/contact.png"
-        />
-        <section className="border-t border-stone-200 px-8 py-12">
-          <div className="mx-auto grid max-w-6xl gap-10 rounded-xl border border-stone-200 bg-white/60 p-8 shadow-sm md:grid-cols-[0.85fr_1.15fr]">
-            <div>
-              <h2 className="font-serif text-4xl leading-tight text-slate-900">Bring us the records, questions, deadlines, and uncertainty.</h2>
-              <p className="mt-5 text-base leading-8 text-slate-700">We value your time and your trust. Share the context in as much detail as you would like, and we will use it to determine whether Fidara is the right fit and how we can help.</p>
-              <div className="mt-6 grid gap-3 text-sm text-slate-700">
-                <p>Email: {siteConfig.email}</p>
-                <p>Response time: usually within {siteConfig.responseTime}</p>
-              </div>
+    <main id="main-content" className="min-h-screen bg-sand text-cedar">
+      <Header active="contact" />
+
+      <section className="py-20 sm:py-32">
+        <div className="mx-auto max-w-5xl px-6">
+          <h1 className="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
+            Let's start a conversation.
+          </h1>
+          <p className="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
+            Whether you are just starting out or looking to stabilize your growth, we are here to help you steward your resources well. No pressure, just a friendly conversation.
+          </p>
+        </div>
+      </section>
+
+      <section className="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-3">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Email</span>
+              <a href={`mailto:${siteConfig.email}`} className="block font-serif text-xl text-cedar underline underline-offset-4">{siteConfig.email}</a>
+              <p className="text-sm text-cedar/75">We reply to every inquiry within one business day.</p>
             </div>
-            <form className="grid gap-4" onSubmit={async (event) => {
-              event.preventDefault()
-              if (!isReady || status.state === 'sending') return
-              setStatus({ state: 'sending', message: '' })
-              try {
-                const fd = new FormData(event.currentTarget)
-                const payload = {
-                  ...form,
-                  company: String(fd.get('company') || ''),
-                  startedAt,
-                  turnstileToken,
-                }
-                const response = await fetch('/api/contact', {
-                  method: 'POST',
-                  headers: { 'content-type': 'application/json' },
-                  body: JSON.stringify(payload),
-                })
-                const respPayload = await response.json().catch(() => ({}))
-                if (!response.ok) throw new Error(respPayload?.error || 'Unable to submit. Please try again.')
-                window.location.assign('/thank-you')
-              } catch (err) {
-                setStatus({ state: 'error', message: err?.message || 'Unable to submit.' })
-              }
-            }}>
-              <label className="hidden">Company<input name="company" tabIndex={-1} autoComplete="off" /></label>
-              <label className="grid gap-2 text-sm text-slate-700">Name
-                <input name="name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Name" required className="rounded-xl border border-stone-200 bg-[#f7f3eb] px-5 py-4 focus:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30" />
-              </label>
-              <label className="grid gap-2 text-sm text-slate-700">Email
-                <input name="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="Email" type="email" required className="rounded-xl border border-stone-200 bg-[#f7f3eb] px-5 py-4 focus:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30" />
-              </label>
-              <label className="grid gap-2 text-sm text-slate-700">Phone
-                <input name="phone" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} placeholder="Phone number" type="tel" required className="rounded-xl border border-stone-200 bg-[#f7f3eb] px-5 py-4 focus:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30" />
-              </label>
-              <label className="grid gap-2 text-sm text-slate-700">Service interest
-                <select name="service" value={form.service} onChange={(event) => setForm({ ...form, service: event.target.value })} required className="rounded-xl border border-stone-200 bg-[#f7f3eb] px-5 py-4 focus:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30">
-                  <option value="">What do you need help with?</option>
-                  {services.map((service) => (<option key={service.slug} value={service.title}>{service.title}</option>))}
-                </select>
-              </label>
-              <label className="grid gap-2 text-sm text-slate-700">Message
-                <textarea name="message" value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} placeholder="Tell us about your situation in as much detail as you’d like." rows="8" required className="min-h-48 rounded-xl border border-stone-200 bg-[#f7f3eb] px-5 py-4 focus:border-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30" />
-              </label>
-              <button type="submit" disabled={!isReady || status.state === 'sending'} className={`inline-flex justify-center rounded-md px-8 py-4 text-sm font-medium transition ${isReady ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'cursor-not-allowed bg-stone-200 text-stone-500'}`}>{status.state === 'sending' ? 'Sending...' : 'Submit Request'}</button>
-              {turnstileSiteKey && <div ref={turnstileRef} />}
-              {status.state === 'success' && <p aria-live="polite" className="text-sm leading-6 text-emerald-800">{status.message}</p>}
-              {status.state === 'error' && <p aria-live="polite" className="text-sm leading-6 text-red-700">{status.message}</p>}
-              <p className="text-xs leading-6 text-slate-500">By submitting, you agree that Fidara may contact you about your inquiry. Please do not include sensitive account numbers, passwords, or full tax identification numbers in this form.</p>
-            </form>
+            <div className="space-y-3">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Phone</span>
+              <a href={`tel:${siteConfig.phone}`} className="block font-serif text-xl text-cedar underline underline-offset-4">(516) 646-1015</a>
+              <p className="text-sm text-cedar/75">Available during business hours. Voicemail is fine.</p>
+            </div>
+            <div className="space-y-3">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Office</span>
+              <p className="font-serif text-xl text-cedar">124 Heritage Way<br />Suite 400<br />Oak Creek, MI 48103</p>
+              <p className="text-sm text-cedar/75">By appointment. We also offer virtual meetings.</p>
+            </div>
           </div>
-        </section>
-        <section className="border-t border-stone-200 px-8 py-12">
-          <SectionTitle>WHAT TO INCLUDE IN YOUR MESSAGE</SectionTitle>
-          <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-4">
-            {[
-              ['Your situation', 'Tell us whether you need tax, bookkeeping, cleanup, payroll, advisory, U.S. expansion, managed IT, or broader financial organization.'],
-              ['Timing', 'Let us know about upcoming deadlines, notices, filing needs, payroll dates, expansion timelines, or urgent cleanup issues.'],
-              ['Current systems', 'Mention any accounting, payroll, banking, document, or business systems already in use.'],
-              ['Desired outcome', 'Tell us what would make the financial and operational side feel more organized, clear, and manageable.'],
-            ].map(([title, description]) => (
-                <article key={title} className="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm">
-                  <h3 className="font-serif text-2xl leading-tight text-slate-900">{title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-slate-700">{description}</p>
-                </article>
-            ))}
+
+          <div className="mt-16 grid gap-12 sm:grid-cols-2">
+            <div className="space-y-3">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Hours</span>
+              <p className="text-base text-cedar/85">Monday - Friday: 9:00am - 5:00pm<br />Saturday - Sunday: Family First</p>
+            </div>
+            <div className="space-y-3">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Availability</span>
+              <p className="text-base text-cedar/85">We are currently accepting new clients for the upcoming tax season. Book a free 30-minute discovery call to see if we are a good fit.</p>
+            </div>
           </div>
-        </section>
-        <WhatHappensNextSection />
-        <FAQSection />
-        <Footer />
-      </main>
+        </div>
+      </section>
+
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-xl px-6">
+          <h2 className="mb-2 text-center font-serif text-3xl text-cedar">Send an inquiry</h2>
+          <p className="mb-10 text-center text-cedar/75">Fill out the form below and we will be in touch shortly.</p>
+          <form className="space-y-5 text-left" onSubmit={handleSubmit}>
+            <label className="hidden">Company<input name="company" tabIndex={-1} autoComplete="off" /></label>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label>
+                <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">First name</span>
+                <input
+                  type="text"
+                  value={form.firstName}
+                  onChange={(event) => setForm({ ...form, firstName: event.target.value })}
+                  className="mt-1.5 w-full rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                  placeholder="Jane"
+                  required
+                />
+              </label>
+              <label>
+                <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">Last name</span>
+                <input
+                  type="text"
+                  value={form.lastName}
+                  onChange={(event) => setForm({ ...form, lastName: event.target.value })}
+                  className="mt-1.5 w-full rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                  placeholder="Doe"
+                  required
+                />
+              </label>
+            </div>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">Email</span>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(event) => setForm({ ...form, email: event.target.value })}
+                className="mt-1.5 w-full rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                placeholder="jane@company.co"
+                required
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">Business name</span>
+              <input
+                type="text"
+                value={form.businessName}
+                onChange={(event) => setForm({ ...form, businessName: event.target.value })}
+                className="mt-1.5 w-full rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                placeholder="Acme Co."
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">How can we help?</span>
+              <select
+                value={form.service}
+                onChange={(event) => setForm({ ...form, service: event.target.value })}
+                className="mt-1.5 w-full rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                required
+              >
+                {serviceOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-cedar/60">Message</span>
+              <textarea
+                rows="4"
+                value={form.message}
+                onChange={(event) => setForm({ ...form, message: event.target.value })}
+                className="mt-1.5 w-full resize-none rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
+                placeholder="Tell us a bit about your business and what you are looking for..."
+                required
+              />
+            </label>
+
+            {turnstileSiteKey && <div ref={turnstileRef} />}
+
+            <button
+              type="submit"
+              disabled={!isReady || status.state === 'sending'}
+              className="w-full rounded-lg bg-cedar py-3 text-sm font-medium text-sand ring-1 ring-cedar transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {status.state === 'sending' ? 'Sending...' : 'Send inquiry'}
+            </button>
+
+            {status.state === 'error' && <p aria-live="polite" className="text-sm leading-6 text-red-700">{status.message}</p>}
+          </form>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
   )
 }

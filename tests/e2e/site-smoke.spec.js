@@ -21,10 +21,10 @@ test.describe('site smoke checks', () => {
     await page.goto('/')
     await acceptCookiesIfPresent(page)
 
-    await expect(page.getByRole('heading', { name: /Financial clarity\. Operational calm\./i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Peace of mind, one spreadsheet at a time\./i })).toBeVisible()
     if (!isMobile) {
-      await expect(page.getByRole('link', { name: 'Client Login' }).first()).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Book a Consultation' }).first()).toBeVisible()
+      await expect(page.getByRole('link', { name: 'About' }).first()).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Work with us' }).first()).toBeVisible()
     }
     await expectNoHorizontalOverflow(page)
   })
@@ -34,19 +34,19 @@ test.describe('site smoke checks', () => {
     await acceptCookiesIfPresent(page)
     await page.evaluate(() => window.scrollTo(0, 1200))
 
-    const header = page.locator('header')
+    const header = page.getByRole('navigation').first()
     await expect(header).toBeVisible()
 
     const box = await header.boundingBox()
     expect(box?.y ?? 999).toBeLessThanOrEqual(isMobile ? 90 : 50)
 
     if (!isMobile) {
-      await expect(page.getByRole('link', { name: 'Client Login' }).first()).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Book a Consultation' }).first()).toBeVisible()
+      await expect(page.getByRole('link', { name: 'About' }).first()).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Work with us' }).first()).toBeVisible()
     }
   })
 
-  test('mobile menu exposes client login and consultation actions', async ({ page, isMobile }) => {
+  test('mobile menu exposes primary navigation actions', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'mobile navigation check only runs on mobile project')
 
     await page.goto('/')
@@ -54,16 +54,16 @@ test.describe('site smoke checks', () => {
     await page.locator('details summary').click({ force: true })
 
     const mobileNav = page.getByRole('navigation', { name: 'Mobile navigation' })
-    await expect(mobileNav.getByRole('link', { name: 'Client Login' })).toBeVisible()
-    await expect(mobileNav.getByRole('link', { name: 'Book a Consultation' }).last()).toBeVisible()
+    await expect(mobileNav.getByRole('link', { name: 'Our Values' })).toBeVisible()
+    await expect(mobileNav.getByRole('link', { name: 'Work with us' }).last()).toBeVisible()
     await expectNoHorizontalOverflow(page)
   })
 
-  test('contact page includes phone field and no horizontal overflow', async ({ page }) => {
+  test('contact page includes inquiry form and no horizontal overflow', async ({ page }) => {
     await page.goto('/contact')
 
-    await expect(page.getByRole('heading', { name: /Start with a conversation/i })).toBeVisible()
-    await expect(page.getByLabel('Phone')).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Let's start a conversation/i })).toBeVisible()
+    await expect(page.getByLabel('First name')).toBeVisible()
     await expectNoHorizontalOverflow(page)
   })
 
@@ -76,13 +76,13 @@ test.describe('site smoke checks', () => {
     await expectNoHorizontalOverflow(page)
   })
 
-  test('chatbot appears only on public pages', async ({ page }) => {
+  test('chatbot is not shown on the imported frontend', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('button', { name: 'Ask Fidara' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Ask Lydia Financial' })).toHaveCount(0)
 
     for (const path of ['/login', '/staff-login', '/portal', '/admin']) {
       await page.goto(path)
-      await expect(page.getByRole('button', { name: 'Ask Fidara' })).toHaveCount(0)
+      await expect(page.getByRole('button', { name: 'Ask Lydia Financial' })).toHaveCount(0)
     }
   })
 
@@ -93,7 +93,7 @@ test.describe('site smoke checks', () => {
       ['/forgot-password', /Reset your portal password/i],
       ['/reset-password', /Choose a new password/i],
       ['/privacy', /Privacy and client confidentiality matter/i],
-      ['/terms', /Terms for using Fidara Group online services/i],
+      ['/terms', /Terms for using Lydia Financial online services/i],
       ['/security', /Practical safeguards for portal workflows/i],
     ]
 
@@ -104,14 +104,14 @@ test.describe('site smoke checks', () => {
     }
 
     await page.goto('/portal')
-    await expect(page.getByRole('heading', { name: /Welcome to your Fidara dashboard/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Welcome to your Lydia Financial dashboard/i })).toBeVisible()
     await expect(page.getByText('Client account active')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Download' })).toHaveCount(0)
     await expectNoHorizontalOverflow(page)
 
     await page.goto('/admin')
     await expect(page.getByText(/Verifying staff access|Unable to verify staff access|Access denied/i).first()).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Fidara Admin Portal' })).toHaveCount(0)
+    await expect(page.getByRole('heading', { name: 'Lydia Financial Admin Portal' })).toHaveCount(0)
     await expect(page.getByText('Total Clients')).toHaveCount(0)
     await expectNoHorizontalOverflow(page)
   })

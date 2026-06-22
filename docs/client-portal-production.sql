@@ -27,7 +27,7 @@ create table if not exists portal_messages (
   client_id uuid not null references clients(id) on delete cascade,
   title text not null,
   body text not null,
-  created_by text default 'Fidara Group',
+  created_by text default 'Lydia Financial',
   created_at timestamp with time zone default now()
 );
 

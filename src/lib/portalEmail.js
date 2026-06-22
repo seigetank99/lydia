@@ -77,7 +77,7 @@ export async function sendPortalNotification({ clientId, subject, text }) {
 
 export function portalNotificationText(itemType) {
   return [
-    `Fidara Group added ${itemType} to your client portal.`,
+    `Lydia Financial added ${itemType} to your client portal.`,
     '',
     'Please log in to review it.',
     '',

@@ -1,0 +1,74 @@
+---
+import PageShell from '../../components/astro/PageShell.astro'
+
+const values = [
+  [
+    'Faith-Centered Purpose',
+    'Ensure the work you do honors God and encourages others to glorify Him through their financial and business decisions.',
+    '"So whether you eat or drink or whatever you do, do it all for the glory of God." - 1 Corinthians 10:31',
+    'M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z',
+  ],
+  [
+    'Integrity',
+    'Always act honestly, transparently, and ethically in every financial or business decision.',
+    '"The integrity of the upright guides them." - Proverbs 11:3',
+    'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+  ],
+  [
+    'Wisdom',
+    'Provide thoughtful, discerning guidance rooted in both business knowledge and Biblical principles.',
+    '"If any of you lacks wisdom, let him ask God." - James 1:5',
+    'M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.259c0-.141-.108-.27-.244-.288a6.59 6.59 0 0 0-1.012-.03c-.35 0-.701.01-1.012.03-.136.018-.244.147-.244.288V18M19.5 6.75a4.5 4.5 0 0 0-4.5-4.5h-6a4.5 4.5 0 0 0-4.5 4.5v.75m15 0v-.75a4.5 4.5 0 0 0-4.5-4.5h-6a4.5 4.5 0 0 0-4.5 4.5v.75',
+  ],
+  [
+    'Stewardship',
+    'Help clients wisely manage their resources: time, money, and talents as gifts from God.',
+    '"Moreover, it is required of stewards that they be found trustworthy." - 1 Corinthians 4:2',
+    'M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+  ],
+  [
+    'Excellence',
+    'Strive for professional competence, attention to detail, and high-quality work in all services.',
+    '"Whatever you do, work heartily, as for the Lord and not for men." - Colossians 3:23',
+    'M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z',
+  ],
+  [
+    'Compassion and Respect',
+    'Treat clients and employees with empathy, patience, and dignity.',
+    '"Be kind and compassionate to one another." - Ephesians 4:32',
+    'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z',
+  ],
+]
+---
+
+<PageShell active="values">
+  <section class="py-20 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
+        Principles over profit.
+      </h1>
+      <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
+        Our work is guided by convictions that run deeper than spreadsheets. These values shape every recommendation we make and every relationship we build.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+        {values.map(([title, description, citation, icon]) => (
+          <article class="space-y-4">
+            <div class="flex size-10 items-center justify-center rounded-lg bg-moss/5 text-moss">
+              <svg class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={icon}></path>
+              </svg>
+            </div>
+            <h2 class="font-serif text-xl text-cedar">{title}</h2>
+            <p class="text-pretty text-sm leading-relaxed text-cedar/75">{description}</p>
+            <p class="text-xs italic text-cedar/55">{citation}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</PageShell>
