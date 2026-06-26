@@ -15,9 +15,15 @@ const served = [
 ]
 
 const reasons = [
-  ['Personal attention', 'You will never be handed off to a junior associate. You work directly with experienced professionals who know your business.'],
-  ['Plain language', 'We explain your finances in terms you can actually understand: no jargon, no condescension, just clear guidance.'],
-  ['Values-driven counsel', 'Our advice is shaped by a deep commitment to honesty, stewardship, and the long-term health of your enterprise.'],
+  ['Calm ownership', 'You know what we are handling, what we need from you, and what decision comes next.'],
+  ['Plain language', 'We explain accounting, tax, systems, and advisory matters without jargon or condescension.'],
+  ['Values-driven counsel', 'Our advice is shaped by honesty, stewardship, wisdom, excellence, and long-term health.'],
+]
+
+const teamRoles = [
+  ['Client Advisory', 'Guides owners through decisions around cash flow, tax planning, pricing, growth, and business health.'],
+  ['Accounting & Tax', 'Maintains clean records, reconciliations, filing readiness, and practical reporting clients can trust.'],
+  ['Operations & Systems', 'Supports onboarding, documents, payroll workflows, managed IT coordination, and secure client communication.'],
 ]
 ---
 
@@ -25,8 +31,11 @@ const reasons = [
   <section class="py-20 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-        Built on fellowship. Guided by conviction.
+        A financial partner built on faith, clarity, and practical care.
       </h1>
+      <p class="text-pretty mt-6 max-w-[60ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
+        Lydia exists to help people and small businesses feel more organized, more confident, and less alone in their financial decisions.
+      </p>
     </div>
   </section>
 
@@ -37,7 +46,8 @@ const reasons = [
           <h2 class="font-serif text-3xl text-cedar">The Official Lydia Story</h2>
           <p class="text-pretty text-base leading-relaxed text-cedar/75">Our foundation is drawn from the Biblical account of Lydia of Thyatira, found in the Book of Acts. Lydia was a prominent first-century entrepreneur and a dealer in purple cloth, a luxury commodity of the ancient world.</p>
           <p class="text-pretty text-base leading-relaxed text-cedar/75">More than just a successful merchant, Lydia was a devoted leader who opened her heart to God's purpose and her home to others. She proved that deep faith and high-level business acumen go hand in hand.</p>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">At Lydia, we draw inspiration from her legacy, merging technical excellence with a heart for service to help our clients build thriving, purpose-driven organizations.</p>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">At Lydia, we draw inspiration from her legacy, merging technical excellence with a heart for service to help clients build thriving, sustainable, purpose-driven organizations.</p>
+          <p class="text-pretty text-base leading-relaxed text-cedar/75">The name reminds us that business can be both capable and generous. We believe financial service should bring order, honesty, and peace of mind without losing sight of the people behind the numbers.</p>
         </div>
         <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-cedar/5 ring-1 ring-cedar/10">
           <img src="/images/lydia-office.jpg" alt="The Lydia office" class="h-full w-full object-cover" width="1024" height="768" loading="eager" />
@@ -65,7 +75,30 @@ const reasons = [
     </div>
   </section>
 
-  <section class="border-y border-cedar/10 bg-moss/5 py-24 sm:py-32">
+  <section class="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
+      <div class="grid gap-12 sm:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <h2 class="font-serif text-3xl text-cedar">Our philosophy</h2>
+          <p class="mt-6 text-pretty text-base leading-relaxed text-cedar/75">
+            We believe financial clarity is a form of care. Clean books, thoughtful tax planning, clear systems, and wise advice help owners make better decisions with less pressure.
+          </p>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <article class="rounded-xl bg-sand p-6 ring-1 ring-cedar/10">
+            <h3 class="font-medium text-cedar">Professional and personal</h3>
+            <p class="mt-3 text-sm leading-relaxed text-cedar/75">Clients should feel known, respected, and supported by people who understand both the technical work and the weight of leadership.</p>
+          </article>
+          <article class="rounded-xl bg-sand p-6 ring-1 ring-cedar/10">
+            <h3 class="font-medium text-cedar">Modern and grounded</h3>
+            <p class="mt-3 text-sm leading-relaxed text-cedar/75">We use practical technology and disciplined processes, guided by Christian values rather than trend-driven advice.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h2 class="mb-12 font-serif text-3xl text-cedar">Whom We Serve</h2>
       <p class="text-pretty mb-10 max-w-[56ch] text-base leading-relaxed text-cedar/75">
@@ -87,25 +120,33 @@ const reasons = [
     </div>
   </section>
 
-  <section class="py-24 sm:py-32">
+  <section class="border-y border-cedar/10 bg-moss/5 py-24 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
-      <div class="grid items-center gap-12 sm:grid-cols-2">
-        <div class="group relative order-2 [perspective:1200px] sm:order-1">
-          <div aria-hidden="true" class="absolute -inset-3 -z-10 rounded-[2rem] bg-gradient-to-br from-moss/40 via-cedar/20 to-transparent blur-2xl"></div>
-          <div aria-hidden="true" class="absolute inset-0 -z-10 translate-x-4 translate-y-4 rounded-2xl border border-cedar/30 transition-transform duration-700 ease-out group-hover:translate-x-2 group-hover:translate-y-2"></div>
-          <img src="/images/lydia-founder.jpg" alt="David Miller, founder of Lydia Financial" class="aspect-[4/5] w-full rounded-2xl object-cover shadow-xl shadow-cedar/10 ring-1 ring-cedar/10 transition-all duration-700 ease-out group-hover:scale-[1.03]" width="800" height="1000" loading="lazy" />
+      <div class="grid items-start gap-12 sm:grid-cols-[0.85fr_1.15fr]">
+        <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-cedar/5 ring-1 ring-cedar/10">
+          <img src="/images/lydia-founder.jpg" alt="The people behind Lydia Financial" class="h-full w-full object-cover" width="800" height="1000" loading="lazy" />
         </div>
-        <div class="order-1 space-y-6 sm:order-2">
-          <h2 class="font-serif text-3xl text-cedar">Meet David Miller, CPA</h2>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">David spent fifteen years in corporate tax before founding Lydia. He saw too many small business owners receiving impersonal service and confusing advice. He started this firm to bring the human element back to financial advisory.</p>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">David believes that how you handle money is an extension of your character. He brings that conviction, along with deep technical expertise, to every client relationship.</p>
-          <p class="font-medium text-cedar">David Miller, CPA · Founder</p>
+        <div class="space-y-8">
+          <div>
+            <h2 class="font-serif text-3xl text-cedar">The people behind the firm</h2>
+            <p class="mt-6 text-pretty text-base leading-relaxed text-cedar/75">
+              Lydia is built around steady professionals who care about details, deadlines, communication, and the client relationship. Full bios can be added as the team page grows; for now, our work is organized around the roles clients interact with most.
+            </p>
+          </div>
+          <div class="grid gap-5">
+            {teamRoles.map(([title, description]) => (
+              <article class="rounded-xl bg-sand p-6 ring-1 ring-cedar/10">
+                <h3 class="font-medium text-cedar">{title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-cedar/75">{description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="border-y border-cedar/10 bg-moss/5 py-24 sm:py-32">
+  <section class="py-24 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h2 class="mb-16 font-serif text-3xl text-cedar">Why business owners choose Lydia</h2>
       <div class="grid gap-10 sm:grid-cols-3">

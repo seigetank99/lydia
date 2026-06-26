@@ -4,36 +4,37 @@ import PageShell from '../../components/astro/PageShell.astro'
 const services = [
   {
     number: '01',
-    title: 'Tax Strategy & Preparation',
+    title: 'Bookkeeping Services',
+    href: '/services/bookkeeping',
     description:
-      'Tax season should not be a panic. We work with you year-round to position your business for favorable outcomes, legally, ethically, and with your long-term interests at heart.',
+      'Clean, accurate books are the foundation of every good business decision. We organize transactions, reconciliations, documents, and reporting so you can lead from numbers you trust.',
     bullets: [
-      'Individual and business tax return preparation',
-      'Quarterly estimated tax planning and projections',
-      'Entity structure optimization (LLC, S-Corp, etc.)',
-      'IRS correspondence and audit support',
+      'Monthly bookkeeping and reconciliation',
+      'Financial statement preparation',
+      'Receipt and document organization',
+      'Tax-ready records and monthly close support',
     ],
-    quote: 'David found deductions I did not even know existed and explained exactly why they applied to my business.',
-    source: 'Sarah Chen, Chen Consulting',
+    note: 'Best for owners who want less chaos, cleaner records, and a reliable financial rhythm.',
   },
   {
     number: '02',
-    title: 'Full Bookkeeping & Accounting',
+    title: 'Tax Services',
+    href: '/services/tax',
     description:
-      'Clean, accurate books are the foundation of every good business decision. We handle the day-to-day so you can focus on the work you were called to do.',
+      'Tax season should not be a panic. We help individuals, families, and business owners prepare earlier, understand deadlines, and make thoughtful planning decisions.',
     bullets: [
-      'Monthly bookkeeping and reconciliation',
-      'Financial statement preparation (P&L, balance sheet, cash flow)',
-      'Accounts payable and receivable management',
-      'Payroll processing and compliance',
+      'Individual and business tax preparation where scoped',
+      'Quarterly estimated tax planning',
+      'Entity and owner compensation coordination',
+      'Tax-readiness support connected to clean books',
     ],
-    quote: 'I finally understand where my money is going. Lydia makes my monthly reports something I actually look forward to reading.',
-    source: "James Rivera, Rivera's Landscaping",
+    note: 'Best for clients who want proactive clarity, fewer surprises, and plain-English tax guidance.',
     reverse: true,
   },
   {
     number: '03',
-    title: 'Fractional CFO & Advisory',
+    title: 'CFO Advisory Services',
+    href: '/services/cfo-services',
     description:
       'Growing businesses need strategic financial guidance, but not always a full-time CFO. We step in as your financial partner, providing the insight you need at a scale that fits.',
     bullets: [
@@ -42,8 +43,51 @@ const services = [
       'Growth strategy and expansion planning',
       'Monthly or quarterly business review meetings',
     ],
-    quote: 'Lydia helped me decide when to hire my first employee and how to price my services. That advice alone paid for itself ten times over.',
-    source: 'Amelia Park, Park Bakery',
+    note: 'Best for owners making decisions around hiring, pricing, cash flow, debt, or expansion.',
+  },
+  {
+    number: '04',
+    title: 'Managed IT Services',
+    href: '/services/managed-it-services',
+    description:
+      'Modern businesses depend on secure, organized technology. We help protect the systems behind accounting, payroll, documents, users, devices, and daily operations.',
+    bullets: [
+      'User access and offboarding workflows',
+      'Device, backup, and vendor coordination',
+      'Cybersecurity basics and support processes',
+      'Technology systems connected to finance operations',
+    ],
+    note: 'Best for teams handling sensitive records, remote work, and client-facing systems.',
+    reverse: true,
+  },
+  {
+    number: '05',
+    title: 'Digital Marketing Services',
+    href: '/services/digital-marketing-services',
+    description:
+      'Marketing should be practical, measurable, and connected to the business. We help clarify your message, organize campaigns, and improve follow-up systems.',
+    bullets: [
+      'Messaging and service-page guidance',
+      'Lead-capture and follow-up workflows',
+      'Email, CRM, and reporting coordination',
+      'Campaign priorities reviewed through an ROI lens',
+    ],
+    note: 'Best for owners who want growth activity to feel disciplined instead of scattered.',
+  },
+  {
+    number: '06',
+    title: 'M&A Advisory',
+    href: '/services/m-and-a-advisory',
+    description:
+      'Major transitions require clean records and calm guidance. We help owners prepare financial information for buying, selling, merging, or succession conversations.',
+    bullets: [
+      'Financial readiness and diligence support',
+      'Revenue, margin, and cash flow narrative review',
+      'Document-request and advisor coordination',
+      'Owner decision support around timing and risk',
+    ],
+    note: 'Best for owners preparing for a transaction, transition, or outside review.',
+    reverse: true,
   },
 ]
 
@@ -59,10 +103,10 @@ const steps = [
   <section class="py-20 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-        Services built with conviction.
+        Accounting, tax, advisory, and systems support built with conviction.
       </h1>
       <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
-        From daily bookkeeping to long-term strategic planning, we provide the financial infrastructure small business owners need to thrive, guided by the values that guide everything we do at Lydia.
+        From monthly bookkeeping to tax strategy, CFO guidance, managed IT, marketing systems, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
       </p>
     </div>
   </section>
@@ -83,11 +127,12 @@ const steps = [
                 </li>
               ))}
             </ul>
+            <a href={service.href} class="inline-flex text-sm font-medium text-cedar underline underline-offset-4">Learn more</a>
           </div>
           <aside class={`rounded-2xl bg-sand p-8 ring-1 ring-cedar/10 ${service.reverse ? 'sm:order-1' : ''}`}>
             <div class="space-y-4">
-              <p class="font-serif text-xl italic text-cedar">“{service.quote}”</p>
-              <p class="text-sm font-medium text-cedar/80">{service.source}</p>
+              <p class="text-[10px] font-semibold uppercase tracking-widest text-moss">Client fit</p>
+              <p class="font-serif text-xl italic text-cedar">{service.note}</p>
             </div>
           </aside>
         </div>

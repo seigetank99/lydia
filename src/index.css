@@ -4,7 +4,7 @@
   --color-cedar: #0c1a32;
   --color-moss: #0c1a32;
   --color-sand: #f7f2e3;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -89,6 +89,8 @@ canvas {
 h1,
 h2,
 h3 {
+  font-weight: 500;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 

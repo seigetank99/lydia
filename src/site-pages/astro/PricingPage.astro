@@ -7,29 +7,33 @@ const goodFit = [
   'You want year-round organization instead of a last-minute scramble',
   'You are willing to keep documents, access, and communication organized',
   'You value clean books, clear deadlines, and plain-English guidance',
-  'You want accounting, tax, payroll, advisory, and technology systems to work together',
+  'You want accounting, tax, payroll, advisory, managed IT, and systems support to work together',
+  'You want a relationship built on trust, stewardship, and practical next steps',
 ]
 const notFit = [
   'You only want the cheapest possible filing with no ongoing relationship',
   'You need legal advice, audit opinions, or investment management',
   'You are not ready to provide records, access, or timely responses',
   'You need emergency work without time for proper review and scoping',
+  'You want promises of tax savings, refunds, financing, rankings, or transaction outcomes before proper review',
 ]
 const tiers = [
-  { name: 'Foundation', description: 'For clients who need clean records, tax readiness, and a reliable monthly financial rhythm.', bestFor: 'Simple businesses, early-stage operators, families, and clients who need organized records.', items: ['Monthly bookkeeping', 'Bank and card reconciliation', 'Basic reporting', 'Tax-ready record organization'] },
-  { name: 'Growth', description: 'For owners who need recurring support across accounting, payroll, payables, tax planning, and cash flow.', bestFor: 'Growing teams, service businesses, practices, and multi-vendor operations.', items: ['Bookkeeping', 'Payroll coordination', 'AP management', 'Spend management', 'Advisory check-ins'] },
-  { name: 'Strategic', description: 'For businesses needing deeper advisory, forecasting, systems, managed IT, and decision support.', bestFor: 'Scaling businesses, U.S. expansion clients, and owners making larger operating decisions.', items: ['CFO services', 'Forecasting', 'Managed IT services', 'U.S. expansion', 'Owner planning'] },
+  { name: 'Foundation', description: 'For clients who need clean records, tax readiness, and a reliable monthly financial rhythm.', bestFor: 'Simple businesses, early-stage operators, families, and clients who need organized records.', items: ['Monthly bookkeeping', 'Bank and card reconciliation', 'Basic reporting', 'Tax-ready record organization', 'Secure document workflow'] },
+  { name: 'Growth', description: 'For owners who need recurring support across accounting, payroll, payables, tax planning, cash flow, and operating systems.', bestFor: 'Growing teams, service businesses, practices, and multi-vendor operations.', items: ['Bookkeeping', 'Payroll coordination', 'AP management', 'Spend management', 'Tax planning', 'Advisory check-ins'] },
+  { name: 'Strategic', description: 'For businesses needing deeper advisory, forecasting, managed IT, marketing systems, transaction readiness, and decision support.', bestFor: 'Scaling businesses, U.S. expansion clients, and owners making larger operating decisions.', items: ['CFO services', 'Forecasting', 'Managed IT services', 'U.S. expansion', 'M&A readiness', 'Owner planning'] },
 ]
 const projectTypes = [
   ['Cleanup Projects', 'For catching up or repairing prior-period books before tax, financing, or advisory work.'],
   ['Tax Planning', 'For individuals and businesses that want proactive review before deadlines arrive.'],
   ['Systems Setup', 'For accounting, payroll, document, reporting, access-control, and managed IT workflows.'],
+  ['Digital Marketing Setup', 'For clarifying service messaging, lead capture, follow-up workflows, and practical reporting.'],
   ['U.S. Expansion', 'For businesses entering the U.S. that need accounting, payroll, and tax-readiness coordination.'],
+  ['M&A Readiness', 'For owners preparing financial records, diligence materials, and advisor coordination before a transaction.'],
 ]
 ---
 
 <PageShell active="resources">
-  <PageHero eyebrow="Engagements" title="Support scoped around your stage, systems, and goals." description="Lydia Financial engagements are designed around complexity, transaction volume, deadlines, systems, payroll needs, advisory depth, cleanup requirements, and the level of coordination your situation requires." />
+  <PageHero eyebrow="Engagements" title="Support scoped around your stage, systems, and goals." description="Lydia Financial pricing is relationship-based and scoped around complexity, transaction volume, deadlines, systems, payroll needs, advisory depth, cleanup requirements, and the level of coordination your situation requires." />
 
   <section class="border-t border-stone-200 px-8 py-12">
     <SectionTitle>SERVICE TIERS</SectionTitle>
@@ -52,14 +56,14 @@ const projectTypes = [
 
   <section class="border-t border-stone-200 px-8 py-12">
     <SectionTitle>PROJECT-BASED SUPPORT</SectionTitle>
-    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-4">
+    <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
       {projectTypes.map(([title, description]) => (
         <article class="rounded-xl border border-stone-200 bg-white/60 p-6 shadow-sm"><h3 class="font-serif text-2xl leading-tight text-slate-900">{title}</h3><p class="mt-4 text-sm leading-7 text-slate-700">{description}</p></article>
       ))}
     </div>
   </section>
 
-  <section class="border-t border-stone-200 px-8 py-10"><div class="mx-auto max-w-6xl rounded-xl border border-amber-200 bg-amber-50/70 p-5 text-sm leading-7 text-amber-950">Pricing is scoped after an initial review because the same service name can mean very different work depending on volume, urgency, cleanup needs, payroll complexity, systems, entity structure, and advisory expectations. Our goal is to define the work clearly before asking a client to commit.</div></section>
+  <section class="border-t border-stone-200 px-8 py-10"><div class="mx-auto max-w-6xl rounded-xl border border-amber-200 bg-amber-50/70 p-5 text-sm leading-7 text-amber-950">Pricing is scoped after an initial review because the same service name can mean very different work depending on volume, urgency, cleanup needs, payroll complexity, managed IT requirements, entity structure, tax deadlines, and advisory expectations. Our goal is to define the work clearly before asking a client to commit.</div></section>
 
   <section class="border-t border-stone-200 px-8 py-12">
     <SectionTitle>ENGAGEMENT FIT</SectionTitle>

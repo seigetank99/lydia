@@ -18,7 +18,7 @@ function Header({ active = 'home' }) {
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
           <a
             href="/"
-            className="font-serif text-xl tracking-tight text-cedar"
+            className="font-serif text-2xl font-medium tracking-normal text-cedar sm:text-3xl"
             aria-current={active === 'home' ? 'page' : undefined}
           >
             Lydia

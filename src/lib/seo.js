@@ -26,7 +26,7 @@ export function getPageMeta(path) {
   const defaultMeta = {
     title: 'Lydia — Christian Values Financial Advisory',
     description:
-      'Lydia provides accounting, tax strategy, bookkeeping, and financial advisory services for small business entrepreneurs.',
+      'Lydia provides accounting, tax, advisory, payroll, managed IT, and business services for values-driven small businesses, families, and founders.',
   }
 
   const exact = {
@@ -153,7 +153,7 @@ export function getPageMeta(path) {
     '/': {
       title: 'Lydia — Christian Values Financial Advisory for Small Business',
       description:
-        'Lydia provides peace of mind through expert accounting, tax, and business advisory services, guided by Christian values.',
+        'Lydia provides peace of mind through expert accounting, tax, advisory, payroll, managed IT, and business services, guided by Christian values.',
     },
     '/about': {
       title: 'About — Lydia Financial Advisory',
@@ -168,7 +168,7 @@ export function getPageMeta(path) {
     '/services': {
       title: 'Services — Lydia Financial Advisory',
       description:
-        'Lydia provides accounting, tax strategy, bookkeeping, and fractional CFO services for small business entrepreneurs guided by Christian values.',
+        'Lydia provides accounting, tax strategy, bookkeeping, CFO advisory, managed IT, digital marketing, and M&A advisory services for small business owners guided by Christian values.',
     },
     '/sectors': {
       title: 'Sectors We Support | Lydia Financial',

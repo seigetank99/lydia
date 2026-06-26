@@ -15,10 +15,10 @@ export const services = [
   {
     title: 'Bookkeeping',
     slug: 'bookkeeping',
-    description: 'Clean, organized books that support tax readiness, cash flow clarity, and better decisions.',
+    description: 'Clean, organized books that support tax readiness, cash flow clarity, and calmer decisions.',
     image: '/images/service-bookkeeping.png',
     intro:
-        'Bookkeeping is the foundation for a calmer business. Lydia Financial helps turn transactions, receipts, statements, and documents into records you can trust.',
+        'Bookkeeping is the foundation for a calmer business. Lydia Financial turns transactions, receipts, statements, and documents into records you can trust, so your numbers support real decisions instead of last-minute stress.',
     outcomes: [
       'Monthly transaction review and reconciliation support',
       'Organized records for taxes, planning, lending, and reporting',
@@ -31,7 +31,7 @@ export const services = [
     description: 'Year-round tax clarity designed to reduce surprises and support better planning.',
     image: '/images/service-tax.png',
     intro:
-        'Tax should not feel like a surprise at the end of the year. Lydia Financial helps clients prepare earlier, organize better, and understand the planning choices in front of them.',
+        'Tax should not feel like a surprise at the end of the year. Lydia Financial helps individuals, families, and businesses prepare earlier, organize better, and understand the planning choices in front of them.',
     outcomes: [
       'Tax-ready books and document organization',
       'Estimated tax and planning conversations',
@@ -44,7 +44,7 @@ export const services = [
     description: 'Strategic financial guidance for owners who need more than backward-looking reports.',
     image: '/images/service-cfo-services.png',
     intro:
-        'CFO support helps owners move from “what happened?” to “what should we do next?” through forecasting, planning, KPIs, and clearer financial conversations.',
+        'CFO support helps owners move from “what happened?” to “what should we do next?” through forecasting, planning, KPIs, cash flow discipline, and clearer financial conversations.',
     outcomes: [
       'Forecasting, budgeting, and scenario planning',
       'Owner-focused dashboards and KPI review',
@@ -127,6 +127,32 @@ export const services = [
       'User, device, and access-control workflows',
       'Cybersecurity basics, backup planning, and vendor coordination',
       'Help desk, onboarding, offboarding, and systems support',
+    ],
+  },
+  {
+    title: 'Digital Marketing Services',
+    slug: 'digital-marketing-services',
+    description: 'Practical marketing systems for owners who need a clearer message, cleaner follow-up, and measurable growth activity.',
+    image: '/images/industry-marketing.png',
+    intro:
+        'Digital marketing support helps business owners connect their message, website, campaigns, client follow-up, and reporting into a more disciplined growth system.',
+    outcomes: [
+      'Clearer service messaging and campaign priorities',
+      'Lead capture, email, content, and reporting workflow support',
+      'Marketing activity reviewed through a business and ROI lens',
+    ],
+  },
+  {
+    title: 'M&A Advisory',
+    slug: 'm-and-a-advisory',
+    description: 'Financial organization and advisory support for owners preparing to buy, sell, merge, or transition.',
+    image: '/images/business-exit-maturity.png',
+    intro:
+        'M&A advisory helps owners prepare for major transactions with cleaner records, stronger financial narratives, clearer diligence materials, and practical decision support.',
+    outcomes: [
+      'Financial readiness review before diligence or buyer conversations',
+      'Quality-of-information support around revenue, margin, expenses, and cash flow',
+      'Coordination with attorneys, bankers, tax advisors, and transaction partners',
     ],
   },
 ]

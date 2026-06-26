@@ -27,22 +27,26 @@ export const serviceContent = {
       'Established small businesses outgrowing spreadsheets and inconsistent recordkeeping',
       'Busy founders who are spending nights and weekends categorizing transactions',
       'Growth-focused leaders who need accurate monthly financial data they can trust',
+      'Families or individuals who need organized records before tax or advisory conversations',
     ],
     problems: [
       'Cash flow is hard to understand because accounts are not reconciled on a reliable rhythm',
       'Tax season becomes stressful because receipts, documents, and categories are incomplete',
       'Personal expenses, duplicate entries, and unclear categories make reports difficult to use',
+      'The owner does not have a clear monthly close process or dependable reporting cadence',
     ],
     included: [
       'Bank and credit card reconciliation',
       'Transaction categorization across a practical chart of accounts',
       'Monthly income statement, balance sheet, and cash flow review support',
       'Receipt and document organization guidance using secure cloud tools',
+      'Recurring review of open questions, uncategorized activity, and tax-readiness items',
     ],
     notIncluded: [
       'Long-range strategic forecasting unless paired with advisory or CFO services',
       'Tax return preparation or filing unless separately engaged',
       'Signing checks, initiating wires, or acting as bank authorization for payments',
+      'Audit, assurance, legal, or investment advice',
     ],
     onboarding: [
       'We review your current accounting file, systems, and recent financial statements.',
@@ -67,12 +71,14 @@ export const serviceContent = {
       'Federal and state tax preparation where scoped and engaged',
       'Estimated tax review and coordination around owner compensation',
       'Entity and bookkeeping coordination to support cleaner tax outcomes',
+      'Plain-English explanation of deadlines, documents, deductions, and planning tradeoffs',
     ],
     notIncluded: [
       'Legal advice',
       'Investment advice',
       'Formal audit or assurance services for lenders or investors',
       'Representation before tax authorities unless separately scoped and engaged',
+      'Guarantees of refunds, tax savings, or specific outcomes before full review',
     ],
     onboarding: [
       'We collect prior returns, entity documents, notices, payroll records, and current-year financials.',
@@ -97,6 +103,7 @@ export const serviceContent = {
       'KPI and dashboard design',
       'Cash flow review',
       'Strategic finance meetings',
+      'Pricing, hiring, margin, debt, expansion, and owner compensation decision support',
     ],
     notIncluded: [
       'Investment management',
@@ -127,6 +134,7 @@ export const serviceContent = {
       'Employee onboarding checklist support',
       'Payroll report review',
       'Compensation and reimbursement process support',
+      'Recurring coordination around pay schedules, records, tax forms, and deadline readiness',
     ],
     notIncluded: [
       'Employment law advice',
@@ -255,6 +263,7 @@ export const serviceContent = {
       'Device management and help desk coordination',
       'Cybersecurity basics, malware protection coordination, and backup planning',
       'Vendor, cloud system, and support workflow organization',
+      'Practical technology support for the systems connected to accounting, payroll, documents, and operations',
     ],
     notIncluded: [
       'Guaranteed prevention of cybersecurity incidents',
@@ -267,6 +276,66 @@ export const serviceContent = {
       'We secure priority systems and define onboarding, offboarding, and support workflows.',
       'We verify backup and recovery expectations for critical business data.',
       'We activate the agreed support rhythm for monitoring, help desk requests, and vendor coordination.',
+    ],
+  },
+  'digital-marketing-services': {
+    whoFor: [
+      'Small businesses that need a clearer online presence and more consistent follow-up',
+      'Founders who want marketing activity tied to measurable business goals',
+      'Professional services, local operators, and growing teams that need practical campaign support',
+    ],
+    problems: [
+      'The website, email list, social content, and client follow-up are disconnected',
+      'Marketing spend is happening without clear reporting or owner-level visibility',
+      'Messaging feels generic and does not explain the value of the business clearly',
+    ],
+    included: [
+      'Messaging and service-page guidance',
+      'Campaign planning, content priorities, and lead-capture workflow support',
+      'Email, CRM, reporting, and follow-up process coordination',
+      'Review of marketing activity through a practical ROI and business health lens',
+    ],
+    notIncluded: [
+      'Guaranteed leads, rankings, revenue, or advertising performance',
+      'Public relations, influencer management, or media buying unless separately scoped',
+      'Custom software development or complex website engineering',
+      'Legal review of advertising claims, privacy compliance, or regulated disclosures',
+    ],
+    onboarding: [
+      'We review the current website, offers, audience, campaigns, reporting, and follow-up systems.',
+      'We define the practical marketing priorities that connect to business goals.',
+      'We organize the messaging, channels, tools, and reporting cadence needed for execution.',
+      'We move into an agreed support rhythm for campaign review, content planning, and lead follow-up.',
+    ],
+  },
+  'm-and-a-advisory': {
+    whoFor: [
+      'Owners preparing to sell, merge, buy, or transition a business',
+      'Founders who want cleaner financial records before buyer, lender, or investor conversations',
+      'Leadership teams that need advisory coordination during diligence or succession planning',
+    ],
+    problems: [
+      'Financial records are not ready for outside review',
+      'Revenue, margins, add-backs, working capital, debt, and owner compensation need explanation',
+      'The owner needs practical coordination with attorneys, bankers, tax advisors, and transaction partners',
+    ],
+    included: [
+      'Financial readiness and diligence preparation support',
+      'Review of key revenue, expense, margin, cash flow, and balance sheet narratives',
+      'Coordination around document requests and advisor communication',
+      'Owner discussion support around timing, risks, tax-readiness, and next steps',
+    ],
+    notIncluded: [
+      'Legal advice, valuation opinions, fairness opinions, or investment banking services',
+      'Guarantees that a transaction will close or achieve a specific price',
+      'Audit, review, or assurance services unless separately engaged',
+      'Securities, investment, or financing advice requiring separate licensing',
+    ],
+    onboarding: [
+      'We clarify the transaction goal, timeline, stakeholders, and current readiness.',
+      'We review financial statements, tax returns, accounting records, contracts, debt, payroll, and key operating metrics.',
+      'We identify cleanup items, diligence gaps, and advisor handoff points.',
+      'We support the owner through an agreed advisory cadence as the opportunity develops.',
     ],
   },
 }

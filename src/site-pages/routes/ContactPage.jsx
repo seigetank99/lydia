@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Footer, Header, siteConfig } from '../../components/site-core.jsx'
 
 const serviceOptions = [
+  "Not sure yet - let's talk",
   'Tax preparation & strategy',
   'Bookkeeping & accounting',
   'Fractional CFO / advisory',
-  "Not sure yet - let's talk",
+  'Managed IT services',
+  'Payroll support',
+  'Digital marketing services',
+  'M&A advisory',
 ]
 
 export default function ContactPage() {
@@ -99,10 +103,10 @@ export default function ContactPage() {
       <section className="py-20 sm:py-32">
         <div className="mx-auto max-w-5xl px-6">
           <h1 className="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-            Let's start a conversation.
+            Let’s make your financial life feel more organized.
           </h1>
           <p className="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
-            Whether you are just starting out or looking to stabilize your growth, we are here to help you steward your resources well. No pressure, just a friendly conversation.
+            Whether you need clean books, tax clarity, advisory support, payroll coordination, or stronger systems, the first step is a calm conversation. Tell us where things stand and what you want to feel lighter.
           </p>
         </div>
       </section>
@@ -122,8 +126,8 @@ export default function ContactPage() {
             </div>
             <div className="space-y-3">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Office</span>
-              <p className="font-serif text-xl text-cedar">124 Heritage Way<br />Suite 400<br />Oak Creek, MI 48103</p>
-              <p className="text-sm text-cedar/75">By appointment. We also offer virtual meetings.</p>
+              <p className="font-serif text-xl text-cedar">Virtual and by appointment</p>
+              <p className="text-sm text-cedar/75">Serving {siteConfig.serviceArea.toLowerCase()}.</p>
             </div>
           </div>
 
@@ -134,7 +138,7 @@ export default function ContactPage() {
             </div>
             <div className="space-y-3">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Availability</span>
-              <p className="text-base text-cedar/85">We are currently accepting new clients for the upcoming tax season. Book a free 30-minute discovery call to see if we are a good fit.</p>
+              <p className="text-base text-cedar/85">We are accepting select new clients for bookkeeping, tax, advisory, payroll, and managed IT engagements. Discovery calls help us confirm fit, timing, and scope before any commitment.</p>
             </div>
           </div>
         </div>
@@ -143,7 +147,7 @@ export default function ContactPage() {
       <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-xl px-6">
           <h2 className="mb-2 text-center font-serif text-3xl text-cedar">Send an inquiry</h2>
-          <p className="mb-10 text-center text-cedar/75">Fill out the form below and we will be in touch shortly.</p>
+          <p className="mb-10 text-center text-cedar/75">Share a few details and we will respond with the next best step.</p>
           <form className="space-y-5 text-left" onSubmit={handleSubmit}>
             <label className="hidden">Company<input name="company" tabIndex={-1} autoComplete="off" /></label>
 
@@ -216,7 +220,7 @@ export default function ContactPage() {
                 value={form.message}
                 onChange={(event) => setForm({ ...form, message: event.target.value })}
                 className="mt-1.5 w-full resize-none rounded-lg border-none bg-cedar/5 p-3 text-sm ring-1 ring-cedar/10 focus:outline-none focus:ring-cedar/50"
-                placeholder="Tell us a bit about your business and what you are looking for..."
+                placeholder="Tell us about your business, family, or organization, what feels unclear, and what kind of support you are looking for..."
                 required
               />
             </label>

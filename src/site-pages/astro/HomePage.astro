@@ -3,20 +3,31 @@ import PageShell from '../../components/astro/PageShell.astro'
 
 const serviceCards = [
   [
-    'Tax Strategy',
-    'Thoughtful planning that respects your obligations while protecting your hard-earned resources.',
+    'Accounting & Bookkeeping',
+    'Clean monthly books, organized records, and practical reporting that make the business easier to lead.',
     'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 0 0 2.25 2.25h.75m-3.75-2.25h3.75m-3.75-2.25h3.75m-3.75-2.25h3.75',
   ],
   [
-    'Full Bookkeeping',
-    'Weekly oversight of your ledgers so you can focus on the work you were called to do.',
+    'Tax Planning & Preparation',
+    'Year-round tax clarity for individuals, families, and business owners who want fewer surprises.',
     'M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
   ],
   [
-    'Fractional CFO',
-    'Deep-dive advisory sessions to help you scale with wisdom and maintain financial health.',
+    'Advisory & CFO Support',
+    'Forward-looking guidance for cash flow, hiring, pricing, systems, expansion, and major decisions.',
     'M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941',
   ],
+]
+
+const proofPoints = [
+  ['Plain-English guidance', 'We translate financial complexity into clear next steps you can act on.'],
+  ['Year-round support', 'Accounting, tax, payroll, advisory, and systems work better when they stay connected.'],
+  ['Values-led service', 'Our counsel is shaped by integrity, stewardship, wisdom, excellence, and respect.'],
+]
+
+const beforeAfter = [
+  ['Before Lydia', 'Books feel behind, tax season brings pressure, and decisions are made from incomplete numbers.'],
+  ['After Lydia', 'Records are organized, deadlines are visible, and you have a calm financial partner beside you.'],
 ]
 ---
 
@@ -25,18 +36,18 @@ const serviceCards = [
     <div class="mx-auto max-w-5xl px-6">
       <div class="max-w-3xl space-y-8">
         <h1 class="max-w-[16ch] text-balance font-serif text-5xl leading-none tracking-tight text-cedar sm:text-7xl">
-          Peace of mind, one spreadsheet at a time.
+          Financial clarity and Kingdom focus for your calling.
         </h1>
         <p class="max-w-[56ch] text-pretty text-base leading-relaxed text-cedar/75 sm:text-lg">
-          At Lydia, we provide peace of mind through expert accounting and business services, guided by Christian values. We help modern entrepreneurs build sustainable, purposeful organizations, delivering clarity, trust, and convicted confidence to every financial decision.
+          At Lydia, we provide trustworthy accounting, tax, and advisory services for Christian values-driven small businesses, families, founders, and professionals. Let us handle the complexity behind your finances so you can lead with confidence, purpose, and peace of mind.
         </p>
         <div class="flex flex-wrap gap-4">
-          <a href="/contact" class="rounded-full bg-cedar px-6 py-2.5 text-sm font-medium text-sand ring-1 ring-cedar transition-transform active:scale-95">Book a consultation</a>
-          <a href="/services" class="rounded-full bg-cedar/5 px-6 py-2.5 text-sm font-medium text-cedar/80 ring-1 ring-cedar/10 transition-colors hover:bg-cedar/10">View our services</a>
+          <a href="/contact" class="rounded-full bg-cedar px-6 py-2.5 text-sm font-medium text-sand ring-1 ring-cedar transition-transform active:scale-95">Schedule a Consultation</a>
+          <a href="/services" class="rounded-full bg-cedar/5 px-6 py-2.5 text-sm font-medium text-cedar/80 ring-1 ring-cedar/10 transition-colors hover:bg-cedar/10">Explore Our Services</a>
         </div>
         <div class="hidden rounded-xl bg-sand p-6 ring-1 ring-cedar/10 sm:block">
           <p class="font-serif text-xl italic text-cedar">
-            “Inspired by Lydia of Thyatira, the first-century businesswoman who balanced enterprise with a generous spirit.”
+            “Inspired by Lydia of Thyatira, the first-century businesswoman who balanced enterprise, faith, leadership, and generous hospitality.”
           </p>
         </div>
       </div>
@@ -53,8 +64,39 @@ const serviceCards = [
 
   <section class="py-24 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
+      <div class="grid gap-12 sm:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <h2 class="max-w-[18ch] font-serif text-3xl leading-tight text-cedar sm:text-4xl">A true financial partner should make leadership feel lighter.</h2>
+          <p class="mt-6 text-pretty text-base leading-relaxed text-cedar/75">
+            At Lydia, we integrate directly with your team to carry the financial weight. Whether you need precise monthly bookkeeping, comprehensive tax strategy, managed technology workflows, or the high-level foresight of an executive CFO, we provide a modern, reliable infrastructure built around your goals.
+          </p>
+        </div>
+        <div class="grid gap-5">
+          <figure class="overflow-hidden rounded-2xl bg-sand ring-1 ring-cedar/10">
+            <img
+              src="/images/lydia-vintage-advisor.webp"
+              alt="Vintage-style illustration of a trusted financial advisor reviewing organized business records"
+              class="aspect-[16/9] h-full w-full object-cover"
+              width="1400"
+              height="758"
+              loading="lazy"
+            />
+          </figure>
+          {beforeAfter.map(([title, description]) => (
+            <article class="rounded-xl bg-sand p-6 ring-1 ring-cedar/10">
+              <h3 class="font-serif text-2xl text-cedar">{title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-cedar/75">{description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
+    <div class="mx-auto max-w-5xl px-6">
       <div class="mb-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <h2 class="max-w-[20ch] text-balance font-serif text-3xl leading-tight text-cedar sm:text-4xl">Financial care for every season.</h2>
+        <h2 class="max-w-[20ch] text-balance font-serif text-3xl leading-tight text-cedar sm:text-4xl">Financial care for the people building what matters.</h2>
         <a href="/services" class="text-sm font-medium text-cedar underline underline-offset-4">See all services</a>
       </div>
       <div class="grid gap-8 sm:grid-cols-3">
@@ -74,25 +116,24 @@ const serviceCards = [
   </section>
 
   <section class="py-24 sm:py-32">
-    <div class="mx-auto max-w-3xl px-6 text-center">
-      <blockquote class="space-y-6">
-        <p class="text-pretty font-serif text-2xl italic leading-relaxed text-cedar sm:text-3xl">
-          “Lydia did not just organize my books; they understood the vision I have for my family and my community. It is rare to find an accountant who shares your pulse.”
-        </p>
-        <footer class="flex items-center justify-center gap-4">
-          <div class="h-px w-8 bg-cedar"></div>
-          <cite class="text-sm font-medium not-italic text-cedar/80">Marcus Thorne, Thorne Woodworking</cite>
-          <div class="h-px w-8 bg-cedar"></div>
-        </footer>
-      </blockquote>
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="mb-12 max-w-[22ch] font-serif text-3xl leading-tight text-cedar sm:text-4xl">What clients should feel when they work with Lydia.</h2>
+      <div class="grid gap-8 sm:grid-cols-3">
+        {proofPoints.map(([title, description]) => (
+          <article class="space-y-3">
+            <h3 class="font-medium text-cedar">{title}</h3>
+            <p class="text-sm leading-relaxed text-cedar/75">{description}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
-  <section class="py-24 sm:py-32">
+  <section class="border-t border-cedar/10 py-24 sm:py-32">
     <div class="mx-auto max-w-3xl px-6 text-center">
-      <h2 class="mb-6 font-serif text-4xl leading-tight text-cedar">Ready to find your footing?</h2>
-      <p class="mb-10 text-cedar/75">We are currently accepting new clients for the upcoming tax season. Let's discuss your business goals.</p>
-      <a href="/contact" class="inline-block rounded-full bg-cedar px-8 py-3 text-sm font-medium text-sand ring-1 ring-cedar transition-transform active:scale-95">Get in touch</a>
+      <h2 class="mb-6 font-serif text-4xl leading-tight text-cedar">Ready to experience the relief of a true financial partner?</h2>
+      <p class="mb-10 text-cedar/75">Let’s discuss how Lydia can support your small business, organization, family, or next season of growth.</p>
+      <a href="/contact" class="inline-block rounded-full bg-cedar px-8 py-3 text-sm font-medium text-sand ring-1 ring-cedar transition-transform active:scale-95">Schedule a Consultation</a>
     </div>
   </section>
 </PageShell>
