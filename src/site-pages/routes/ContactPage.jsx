@@ -6,9 +6,7 @@ const serviceOptions = [
   'Tax preparation & strategy',
   'Bookkeeping & accounting',
   'Fractional CFO / advisory',
-  'Managed IT services',
   'Payroll support',
-  'Digital marketing services',
   'M&A advisory',
 ]
 
@@ -138,7 +136,7 @@ export default function ContactPage() {
             </div>
             <div className="space-y-3">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-moss">Availability</span>
-              <p className="text-base text-cedar/85">We are accepting select new clients for bookkeeping, tax, advisory, payroll, and managed IT engagements. Discovery calls help us confirm fit, timing, and scope before any commitment.</p>
+              <p className="text-base text-cedar/85">We are accepting select new clients for bookkeeping, tax, advisory, payroll, and systems support engagements. Discovery calls help us confirm fit, timing, and scope before any commitment.</p>
             </div>
           </div>
         </div>

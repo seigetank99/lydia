@@ -59,7 +59,7 @@ function FAQSection() {
   const faqs = [
     {
       q: 'What does Lydia Financial actually do?',
-      a: 'Lydia Financial provides accounting, bookkeeping, tax support, payroll coordination, advisory, U.S. expansion support, and managed IT services for growing businesses and individuals.',
+      a: 'Lydia Financial provides accounting, bookkeeping, tax support, payroll coordination, advisory, U.S. expansion support, and M&A advisory for growing businesses and individuals.',
     },
     {
       q: 'Who is Lydia Financial best for?',

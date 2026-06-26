@@ -64,6 +64,53 @@ canvas {
   animation-play-state: paused;
 }
 
+.health-check-page > nav {
+  border-color: rgba(42, 26, 22, 0.42);
+  background: rgba(217, 189, 143, 0.88);
+}
+
+.health-check-page > nav a,
+.health-check-page > nav summary span {
+  color: #2a1a16;
+  font-family: "kandal", "Lora", Times, "Times New Roman", serif;
+}
+
+.health-check-page > nav > div > a:first-child {
+  color: #2a1a16;
+  font-family: "poynter-oldstyle-display-con", "Cormorant Garamond", "Lora", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.health-check-page > nav a[href="/contact"] {
+  border-radius: 3px;
+  background: transparent;
+  color: #2a1a16;
+  box-shadow: inset 0 0 0 1px #2a1a16, inset 0 -1px 0 #2a1a16;
+}
+
+.health-check-page footer {
+  border-color: rgba(42, 26, 22, 0.42);
+}
+
+.health-check-page footer span {
+  color: #2a1a16;
+  font-family: "poynter-oldstyle-display-con", "Cormorant Garamond", "Lora", Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.health-check-page footer h4,
+.health-check-page footer a,
+.health-check-page footer p {
+  color: rgba(42, 26, 22, 0.84);
+  font-family: "kandal", "Lora", Times, "Times New Roman", serif;
+}
+
+.health-check-page footer div[class*="border-t"] {
+  border-color: rgba(42, 26, 22, 0.42);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

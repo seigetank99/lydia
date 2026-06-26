@@ -6,9 +6,9 @@ function Footer() {
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 sm:col-span-2">
-            <span className="font-serif text-xl text-cedar">Lydia</span>
+            <span className="font-serif text-3xl text-cedar">Lydia Financial</span>
             <p className="max-w-[30ch] text-sm text-cedar/55">
-              Financial advisory rooted in principle. Serving the dreamers and doers of the small business community.
+              Accounting, tax, and financial advisory services rooted in Christian values. We advance God's kingdom with every client.
             </p>
           </div>
 

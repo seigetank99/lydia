@@ -117,32 +117,6 @@ export const services = [
     ],
   },
   {
-    title: 'Managed IT Services',
-    slug: 'managed-it-services',
-    description: 'Reliable technology workflows for businesses that need secure, organized operations.',
-    image: '/images/service-managed-it-services.png',
-    intro:
-        'Managed IT support helps protect the systems behind your accounting, payroll, documents, users, devices, and daily operations so technology becomes less of a distraction.',
-    outcomes: [
-      'User, device, and access-control workflows',
-      'Cybersecurity basics, backup planning, and vendor coordination',
-      'Help desk, onboarding, offboarding, and systems support',
-    ],
-  },
-  {
-    title: 'Digital Marketing Services',
-    slug: 'digital-marketing-services',
-    description: 'Practical marketing systems for owners who need a clearer message, cleaner follow-up, and measurable growth activity.',
-    image: '/images/industry-marketing.png',
-    intro:
-        'Digital marketing support helps business owners connect their message, website, campaigns, client follow-up, and reporting into a more disciplined growth system.',
-    outcomes: [
-      'Clearer service messaging and campaign priorities',
-      'Lead capture, email, content, and reporting workflow support',
-      'Marketing activity reviewed through a business and ROI lens',
-    ],
-  },
-  {
     title: 'M&A Advisory',
     slug: 'm-and-a-advisory',
     description: 'Financial organization and advisory support for owners preparing to buy, sell, merge, or transition.',

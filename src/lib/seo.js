@@ -26,19 +26,19 @@ export function getPageMeta(path) {
   const defaultMeta = {
     title: 'Lydia — Christian Values Financial Advisory',
     description:
-      'Lydia provides accounting, tax, advisory, payroll, managed IT, and business services for values-driven small businesses, families, and founders.',
+      'Lydia provides accounting, tax, advisory, payroll, systems support, and business services for values-driven small businesses, families, and founders.',
   }
 
   const exact = {
     '/404': {
       title: 'Page Not Found | Lydia Financial',
       description:
-        'The page you requested could not be found. Return to Lydia Financial to explore accounting, tax, advisory, payroll, and managed IT support.',
+        'The page you requested could not be found. Return to Lydia Financial to explore accounting, tax, advisory, payroll, and systems support.',
     },
     '/careers': {
       title: 'Careers | Lydia Financial',
       description:
-        'Explore future opportunities with Lydia Financial across accounting, tax, payroll, advisory, operations, systems, and managed IT support.',
+        'Explore future opportunities with Lydia Financial across accounting, tax, payroll, advisory, operations, and systems support.',
     },
     '/case-studies': {
       title: 'Client Scenarios | Lydia Financial',
@@ -48,7 +48,7 @@ export function getPageMeta(path) {
     '/faq': {
       title: 'FAQ | Lydia Financial',
       description:
-        'Answers to common questions about working with Lydia Financial for accounting, bookkeeping, tax, payroll, advisory, U.S. expansion, and managed IT support.',
+        'Answers to common questions about working with Lydia Financial for accounting, bookkeeping, tax, payroll, advisory, U.S. expansion, and systems support.',
     },
     '/industries': {
       title: 'Industries | Lydia Financial',
@@ -118,7 +118,7 @@ export function getPageMeta(path) {
     '/client-document-checklist': {
       title: 'Client Document Checklist | Lydia Financial',
       description:
-        'A practical checklist of records to prepare before working with Lydia Financial on bookkeeping, tax, payroll, advisory, or managed IT.',
+        'A practical checklist of records to prepare before working with Lydia Financial on bookkeeping, tax, payroll, advisory, or systems support.',
     },
     '/compliance-language': {
       title: 'Compliance Language Checklist | Lydia Financial',
@@ -133,7 +133,7 @@ export function getPageMeta(path) {
     '/business-health-check': {
       title: 'Business Health Check | Lydia Financial',
       description:
-        'A quick self-assessment for small business owners covering bookkeeping, cash flow, payroll, taxes, controls, and managed IT readiness.',
+        'A quick self-assessment for small business owners covering bookkeeping, cash flow, payroll, taxes, controls, and systems readiness.',
     },
     '/tax-calendar': {
       title: 'Tax Calendar | Lydia Financial',
@@ -148,12 +148,12 @@ export function getPageMeta(path) {
     '/start': {
       title: 'Start Here | Lydia Financial',
       description:
-        'Choose the Lydia Financial path that best matches your needs, from messy books and payroll to U.S. expansion and managed IT support.',
+        'Choose the Lydia Financial path that best matches your needs, from messy books and payroll to U.S. expansion and systems support.',
     },
     '/': {
       title: 'Lydia — Christian Values Financial Advisory for Small Business',
       description:
-        'Lydia provides peace of mind through expert accounting, tax, advisory, payroll, managed IT, and business services, guided by Christian values.',
+        'Lydia provides peace of mind through expert accounting, tax, advisory, payroll, systems support, and business services, guided by Christian values.',
     },
     '/about': {
       title: 'About — Lydia Financial Advisory',
@@ -168,7 +168,7 @@ export function getPageMeta(path) {
     '/services': {
       title: 'Services — Lydia Financial Advisory',
       description:
-        'Lydia provides accounting, tax strategy, bookkeeping, CFO advisory, managed IT, digital marketing, and M&A advisory services for small business owners guided by Christian values.',
+        'Lydia provides accounting, tax preparation, bookkeeping, CFO advisory, and M&A advisory services for small business owners guided by Christian values.',
     },
     '/sectors': {
       title: 'Sectors We Support | Lydia Financial',
@@ -178,7 +178,7 @@ export function getPageMeta(path) {
     '/resources': {
       title: 'Resources | Lydia Financial',
       description:
-        'Plain-English guides for bookkeeping, tax readiness, payroll, managed IT, CFO support, and better business operations.',
+        'Plain-English guides for bookkeeping, tax readiness, payroll, CFO support, systems, and better business operations.',
     },
     '/tools': {
       title: 'Tools & Checklists | Lydia Financial',
@@ -203,7 +203,7 @@ export function getPageMeta(path) {
     '/technology': {
       title: 'Technology Systems | Lydia Financial',
       description:
-        'Technology support for accounting systems, payroll systems, document management, dashboards, cybersecurity basics, and managed IT.',
+        'Technology support for accounting systems, payroll systems, document management, dashboards, cybersecurity basics, and systems workflows.',
     },
   }
 

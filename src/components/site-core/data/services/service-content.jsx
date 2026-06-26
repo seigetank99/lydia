@@ -247,67 +247,6 @@ export const serviceContent = {
       'Insurance product sales unless separately disclosed',
     ],
   },
-  'managed-it-services': {
-    whoFor: [
-      'Remote, hybrid, and professional teams handling sensitive client or financial records',
-      'Regulated or compliance-conscious businesses that need stronger access and backup workflows',
-      'Owners who want accounting, payroll, and document systems protected by better technology habits',
-    ],
-    problems: [
-      'Weak access controls, passwords, and offboarding processes expose sensitive systems',
-      'Employees lose time waiting on preventable technical issues',
-      'Backups, devices, vendors, and support requests are scattered or undocumented',
-    ],
-    included: [
-      'User, access, onboarding, and offboarding workflow review',
-      'Device management and help desk coordination',
-      'Cybersecurity basics, malware protection coordination, and backup planning',
-      'Vendor, cloud system, and support workflow organization',
-      'Practical technology support for the systems connected to accounting, payroll, documents, and operations',
-    ],
-    notIncluded: [
-      'Guaranteed prevention of cybersecurity incidents',
-      '24/7 enterprise SOC unless separately engaged',
-      'Legal cybersecurity certification or compliance opinion',
-      'Custom software development, website builds, or physical office wiring',
-    ],
-    onboarding: [
-      'We audit current users, devices, software, vendors, backups, and access risks.',
-      'We secure priority systems and define onboarding, offboarding, and support workflows.',
-      'We verify backup and recovery expectations for critical business data.',
-      'We activate the agreed support rhythm for monitoring, help desk requests, and vendor coordination.',
-    ],
-  },
-  'digital-marketing-services': {
-    whoFor: [
-      'Small businesses that need a clearer online presence and more consistent follow-up',
-      'Founders who want marketing activity tied to measurable business goals',
-      'Professional services, local operators, and growing teams that need practical campaign support',
-    ],
-    problems: [
-      'The website, email list, social content, and client follow-up are disconnected',
-      'Marketing spend is happening without clear reporting or owner-level visibility',
-      'Messaging feels generic and does not explain the value of the business clearly',
-    ],
-    included: [
-      'Messaging and service-page guidance',
-      'Campaign planning, content priorities, and lead-capture workflow support',
-      'Email, CRM, reporting, and follow-up process coordination',
-      'Review of marketing activity through a practical ROI and business health lens',
-    ],
-    notIncluded: [
-      'Guaranteed leads, rankings, revenue, or advertising performance',
-      'Public relations, influencer management, or media buying unless separately scoped',
-      'Custom software development or complex website engineering',
-      'Legal review of advertising claims, privacy compliance, or regulated disclosures',
-    ],
-    onboarding: [
-      'We review the current website, offers, audience, campaigns, reporting, and follow-up systems.',
-      'We define the practical marketing priorities that connect to business goals.',
-      'We organize the messaging, channels, tools, and reporting cadence needed for execution.',
-      'We move into an agreed support rhythm for campaign review, content planning, and lead follow-up.',
-    ],
-  },
   'm-and-a-advisory': {
     whoFor: [
       'Owners preparing to sell, merge, buy, or transition a business',

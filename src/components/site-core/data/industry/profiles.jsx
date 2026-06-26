@@ -27,7 +27,7 @@ export const industryProfiles = [
         'Support for home health aide and care businesses managing payroll, compliance deadlines, billing workflows, and growth.',
     priorities: ['Payroll and worker records', 'Billing and receivables visibility', 'Compliance calendar support', 'Cash flow and staffing analysis'],
     examples: ['Create cleaner payroll, contractor, and caregiver record workflows', 'Improve visibility into billing, receivables, and cash timing', 'Support reporting and systems for teams handling sensitive client information'],
-    recommendedServices: ['bookkeeping', 'tax', 'hr-payroll', 'cfo-services', 'managed-it-services'],
+    recommendedServices: ['bookkeeping', 'tax', 'hr-payroll', 'cfo-services'],
   },
   {
     title: 'Construction',
@@ -47,7 +47,7 @@ export const industryProfiles = [
         'Accounting, advisory, and systems support for IT service providers managing recurring revenue, vendors, support teams, and growth.',
     priorities: ['Recurring revenue visibility', 'Vendor and subscription spend tracking', 'Payroll and team support', 'Forecasting and margin review'],
     examples: ['Connect recurring revenue, support labor, vendor costs, and gross margin reporting', 'Review software subscriptions and vendor spend that quietly pressure profitability', 'Build dashboards for monthly recurring revenue, churn signals, and staffing decisions'],
-    recommendedServices: ['real-time-accounting', 'bookkeeping', 'spend-management', 'cfo-services', 'managed-it-services'],
+    recommendedServices: ['real-time-accounting', 'bookkeeping', 'spend-management', 'cfo-services'],
   },
   {
     title: 'Real Estate',

@@ -21,7 +21,7 @@ function Header({ active = 'home' }) {
             className="font-serif text-2xl font-medium tracking-normal text-cedar sm:text-3xl"
             aria-current={active === 'home' ? 'page' : undefined}
           >
-            Lydia
+            Lydia Financial
           </a>
 
           <div className="hidden items-center gap-8 sm:flex">
@@ -52,7 +52,7 @@ function Header({ active = 'home' }) {
 
           <details className="relative sm:hidden">
             <summary className="flex list-none items-center gap-2 rounded-full px-3 py-2 marker:content-none">
-              <span className="text-xs font-medium uppercase tracking-wider text-cedar/60">Menu</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-cedar/60">MENU</span>
             </summary>
 
             <div className="absolute right-0 top-full mt-3 w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-cedar/10 bg-sand p-4 shadow-xl">

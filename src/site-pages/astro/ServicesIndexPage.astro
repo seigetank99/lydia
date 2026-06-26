@@ -3,90 +3,46 @@ import PageShell from '../../components/astro/PageShell.astro'
 
 const services = [
   {
-    number: '01',
-    title: 'Bookkeeping Services',
+    title: 'Bookkeeping & Accounting',
     href: '/services/bookkeeping',
     description:
-      'Clean, accurate books are the foundation of every good business decision. We organize transactions, reconciliations, documents, and reporting so you can lead from numbers you trust.',
+      'Clean, accurate books are the foundation of every good business decision. We organize transactions, reconciliations, documents, and reporting, so that you can charge ahead with numbers you trust.',
     bullets: [
       'Monthly bookkeeping and reconciliation',
       'Financial statement preparation',
-      'Receipt and document organization',
-      'Tax-ready records and monthly close support',
+      'Tax-ready records',
     ],
-    note: 'Best for owners who want less chaos, cleaner records, and a reliable financial rhythm.',
+    note: 'As an owner who lives and breathes your company 24/7/365, you need clarity from the chaos...reliable records to make decisions which keep your engine humming.',
   },
   {
-    number: '02',
-    title: 'Tax Services',
+    title: 'Tax Preparation & Planning',
     href: '/services/tax',
-    description:
-      'Tax season should not be a panic. We help individuals, families, and business owners prepare earlier, understand deadlines, and make thoughtful planning decisions.',
-    bullets: [
-      'Individual and business tax preparation where scoped',
-      'Quarterly estimated tax planning',
-      'Entity and owner compensation coordination',
-      'Tax-readiness support connected to clean books',
-    ],
-    note: 'Best for clients who want proactive clarity, fewer surprises, and plain-English tax guidance.',
+    description: '',
+    bullets: ['Entity and individual', 'Entity selection'],
+    note: "You gotta file taxes...but you don't want surprises. You expect detailed planning without the fuss.",
     reverse: true,
   },
   {
-    number: '03',
-    title: 'CFO Advisory Services',
-    href: '/services/cfo-services',
-    description:
-      'Growing businesses need strategic financial guidance, but not always a full-time CFO. We step in as your financial partner, providing the insight you need at a scale that fits.',
-    bullets: [
-      'Cash flow forecasting and management',
-      'Budgeting and financial goal-setting',
-      'Growth strategy and expansion planning',
-      'Monthly or quarterly business review meetings',
-    ],
-    note: 'Best for owners making decisions around hiring, pricing, cash flow, debt, or expansion.',
-  },
-  {
-    number: '04',
-    title: 'Managed IT Services',
-    href: '/services/managed-it-services',
-    description:
-      'Modern businesses depend on secure, organized technology. We help protect the systems behind accounting, payroll, documents, users, devices, and daily operations.',
-    bullets: [
-      'User access and offboarding workflows',
-      'Device, backup, and vendor coordination',
-      'Cybersecurity basics and support processes',
-      'Technology systems connected to finance operations',
-    ],
-    note: 'Best for teams handling sensitive records, remote work, and client-facing systems.',
-    reverse: true,
-  },
-  {
-    number: '05',
-    title: 'Digital Marketing Services',
-    href: '/services/digital-marketing-services',
-    description:
-      'Marketing should be practical, measurable, and connected to the business. We help clarify your message, organize campaigns, and improve follow-up systems.',
-    bullets: [
-      'Messaging and service-page guidance',
-      'Lead-capture and follow-up workflows',
-      'Email, CRM, and reporting coordination',
-      'Campaign priorities reviewed through an ROI lens',
-    ],
-    note: 'Best for owners who want growth activity to feel disciplined instead of scattered.',
-  },
-  {
-    number: '06',
     title: 'M&A Advisory',
     href: '/services/m-and-a-advisory',
     description:
-      'Major transitions require clean records and calm guidance. We help owners prepare financial information for buying, selling, merging, or succession conversations.',
+      'The next big step is M&A. We help buyers and sellers through the entire transaction.',
     bullets: [
-      'Financial readiness and diligence support',
-      'Revenue, margin, and cash flow narrative review',
-      'Document-request and advisor coordination',
-      'Owner decision support around timing and risk',
+      'Preparing your books for due diligence',
+      'Quality of Earnings ("QoE") reports',
+      'Buyside & sellside',
+      'Full due diligence',
+      'Financial advisory through closing',
     ],
-    note: 'Best for owners preparing for a transaction, transition, or outside review.',
+    note: 'We are shoulder to shoulder with you until the M&A deal closes.',
+  },
+  {
+    title: 'CFO Advisory',
+    href: '/services/cfo-services',
+    description:
+      "Sometimes you need to bounce ideas off of a strategic advisor. It's what your growing company needs.",
+    bullets: ['Financial Planning & Analysis', 'Goal setting', 'Strategy'],
+    note: 'Your business is your baby. We bring strategic financial wisdom to help your baby thrive.',
     reverse: true,
   },
 ]
@@ -95,7 +51,7 @@ const steps = [
   ['01', 'Discovery', 'We start with a friendly conversation about your business, your goals, and where you need help.'],
   ['02', 'Plan', 'We create a tailored service plan that fits your needs and your budget: no upselling, no surprises.'],
   ['03', 'Execute', 'We handle the work with diligence and precision, keeping you informed every step of the way.'],
-  ['04', 'Grow', 'We meet regularly to review progress, adjust strategy, and ensure your finances support your vision.'],
+  ['04', 'Measure', 'We meet regularly to review progress, adjust strategy, and ensure your finances support your vision.'],
 ]
 ---
 
@@ -103,10 +59,10 @@ const steps = [
   <section class="py-20 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-        Accounting, tax, advisory, and systems support built with conviction.
+        Accounting, tax, and financial advisory support built with conviction.
       </h1>
       <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
-        From monthly bookkeeping to tax strategy, CFO guidance, managed IT, marketing systems, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
+        From monthly bookkeeping to tax preparation, CFO guidance, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
       </p>
     </div>
   </section>
@@ -116,9 +72,8 @@ const steps = [
       {services.map((service) => (
         <div class="grid items-start gap-12 sm:grid-cols-2">
           <div class={`space-y-6 ${service.reverse ? 'sm:order-2' : ''}`}>
-            <span class="text-[10px] font-semibold uppercase tracking-widest text-moss">{service.number}</span>
             <h2 class="font-serif text-3xl text-cedar">{service.title}</h2>
-            <p class="text-pretty text-base leading-relaxed text-cedar/75">{service.description}</p>
+            {service.description && <p class="text-pretty text-base leading-relaxed text-cedar/75">{service.description}</p>}
             <ul class="space-y-3 text-sm text-cedar/75">
               {service.bullets.map((item) => (
                 <li class="flex items-start gap-3">
@@ -129,9 +84,8 @@ const steps = [
             </ul>
             <a href={service.href} class="inline-flex text-sm font-medium text-cedar underline underline-offset-4">Learn more</a>
           </div>
-          <aside class={`rounded-2xl bg-sand p-8 ring-1 ring-cedar/10 ${service.reverse ? 'sm:order-1' : ''}`}>
+          <aside class={`pt-2 ${service.reverse ? 'sm:order-1' : ''}`}>
             <div class="space-y-4">
-              <p class="text-[10px] font-semibold uppercase tracking-widest text-moss">Client fit</p>
               <p class="font-serif text-xl italic text-cedar">{service.note}</p>
             </div>
           </aside>

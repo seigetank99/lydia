@@ -7,7 +7,7 @@ export function GET() {
 Primary site: ${siteConfig.domain}
 
 Summary:
-Lydia Financial publishes service pages, sector pages, industry-specific pages, tax resources, operational checklists, pricing information, onboarding guidance, and contact details for accounting, tax, advisory, payroll, U.S. expansion, and managed IT support.
+Lydia Financial publishes service pages, sector pages, industry-specific pages, tax resources, operational checklists, pricing information, onboarding guidance, and contact details for accounting, tax, advisory, payroll, U.S. expansion, and systems support.
 
 High-value sections:
 - /services
