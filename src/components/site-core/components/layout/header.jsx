@@ -1,8 +1,8 @@
 function Header({ active = 'home' }) {
   const links = [
-    ['about', 'About', '/about'],
-    ['values', 'Our Values', '/our-values'],
-    ['services', 'Services', '/services'],
+    ['about', 'ABOUT', '/about'],
+    ['values', 'OUR VALUES', '/our-values'],
+    ['services', 'SERVICES', '/services'],
   ]
 
   return (
@@ -46,7 +46,7 @@ function Header({ active = 'home' }) {
               <svg className="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
               </svg>
-              Work with us
+              WORK WITH US
             </a>
           </div>
 
@@ -57,10 +57,10 @@ function Header({ active = 'home' }) {
 
             <div className="absolute right-0 top-full mt-3 w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-cedar/10 bg-sand p-4 shadow-xl">
               <nav className="grid gap-3" aria-label="Mobile navigation">
-                <a href="/about" className="text-sm font-medium text-cedar/75">About</a>
-                <a href="/our-values" className="text-sm font-medium text-cedar/75">Our Values</a>
-                <a href="/services" className="text-sm font-medium text-cedar/75">Services</a>
-                <a href="/contact" className="mt-2 rounded-full bg-cedar px-4 py-2 text-center text-sm font-medium text-sand">Work with us</a>
+                <a href="/about" className="text-sm font-medium text-cedar/75">ABOUT</a>
+                <a href="/our-values" className="text-sm font-medium text-cedar/75">OUR VALUES</a>
+                <a href="/services" className="text-sm font-medium text-cedar/75">SERVICES</a>
+                <a href="/contact" className="mt-2 rounded-full bg-cedar px-4 py-2 text-center text-sm font-medium text-sand">WORK WITH US</a>
               </nav>
             </div>
           </details>

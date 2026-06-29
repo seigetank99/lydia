@@ -168,7 +168,7 @@ export function getPageMeta(path) {
     '/services': {
       title: 'Services — Lydia Financial Advisory',
       description:
-        'Lydia provides accounting, tax preparation, bookkeeping, CFO advisory, and M&A advisory services for small business owners guided by Christian values.',
+        'Lydia provides accounting, tax preparation, bookkeeping, outsourced CFO, and M&A advisory services for small business owners guided by Christian values.',
     },
     '/sectors': {
       title: 'Sectors We Support | Lydia Financial',

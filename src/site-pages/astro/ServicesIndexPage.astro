@@ -37,7 +37,7 @@ const services = [
     note: 'We are shoulder to shoulder with you until the M&A deal closes.',
   },
   {
-    title: 'CFO Advisory',
+    title: 'Outsourced CFO',
     href: '/services/cfo-services',
     description:
       "Sometimes you need to bounce ideas off of a strategic advisor. It's what your growing company needs.",
@@ -59,10 +59,10 @@ const steps = [
   <section class="py-20 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h1 class="max-w-[18ch] text-balance font-serif text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-        Accounting, tax, and financial advisory support built with conviction.
+        Accounting, Tax, M&A advisory, Outsourced CFO support built with conviction.
       </h1>
       <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
-        From monthly bookkeeping to tax preparation, CFO guidance, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
+        From monthly bookkeeping to tax preparation, outsourced CFO guidance, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
       </p>
     </div>
   </section>
@@ -86,7 +86,7 @@ const steps = [
           </div>
           <aside class={`pt-2 ${service.reverse ? 'sm:order-1' : ''}`}>
             <div class="space-y-4">
-              <p class="font-serif text-xl italic text-cedar">{service.note}</p>
+              <p class={`text-xl text-cedar ${service.title === 'Bookkeeping & Accounting' ? 'font-signature sm:text-2xl' : 'font-serif italic'}`}>{service.note}</p>
             </div>
           </aside>
         </div>

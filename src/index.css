@@ -64,6 +64,10 @@ canvas {
   animation-play-state: paused;
 }
 
+.font-signature {
+  font-family: "Brittany Signature Script", "Brittany Signature", "Caveat", cursive;
+}
+
 .health-check-page > nav {
   border-color: rgba(42, 26, 22, 0.42);
   background: rgba(217, 189, 143, 0.88);
