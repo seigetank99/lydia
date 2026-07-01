@@ -4,17 +4,18 @@ import PageShell from '../../components/astro/PageShell.astro'
 const serviceCards = [
   [
     'Accounting & Bookkeeping',
-    'Clean monthly books, organized records, and practical reporting that make the business easier to lead.',
     'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 0 0 2.25 2.25h.75m-3.75-2.25h3.75m-3.75-2.25h3.75m-3.75-2.25h3.75',
   ],
   [
     'Tax Planning & Preparation',
-    'Year-round tax clarity for individuals, families, and business owners who want fewer surprises.',
     'M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
   ],
   [
-    'Advisory & CFO Support',
-    'Forward-looking guidance for cash flow, hiring, pricing, systems, expansion, and major decisions.',
+    'M&A Advisory',
+    'M3.75 3.75h6v6h-6v-6Zm10.5 0h6v6h-6v-6Zm-10.5 10.5h6v6h-6v-6Zm10.5 0h6v6h-6v-6ZM9.75 6.75h4.5m-4.5 10.5h4.5m-7.5-7.5v4.5m10.5-4.5v4.5',
+  ],
+  [
+    'Fractional CFO',
     'M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941',
   ],
 ]
@@ -75,16 +76,6 @@ const beforeAfter = [
           </p>
         </div>
         <div class="grid gap-5">
-          <figure class="overflow-hidden rounded-2xl bg-sand ring-1 ring-cedar/10">
-            <img
-              src="/images/lydia-handshake.webp"
-              alt="Vintage-style illustration of a business handshake over financial documents"
-              class="aspect-[16/9] h-full w-full object-cover"
-              width="1400"
-              height="758"
-              loading="lazy"
-            />
-          </figure>
           {beforeAfter.map(([title, description]) => (
             <article class="rounded-xl bg-sand p-6 ring-1 ring-cedar/10">
               <h3 class="font-serif text-2xl text-cedar">{title}</h3>
@@ -99,19 +90,18 @@ const beforeAfter = [
   <section class="border-y border-cedar/10 bg-cedar/5 py-24 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <div class="mb-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <h2 class="max-w-[20ch] text-balance font-serif text-3xl leading-tight text-cedar sm:text-4xl">Financial care for the people building what matters.</h2>
+        <h2 class="max-w-[20ch] text-balance font-serif text-3xl leading-tight text-cedar sm:text-4xl">Financial care for builders, business owners, and you.</h2>
         <a href="/services" class="text-sm font-medium text-cedar underline underline-offset-4">See all services</a>
       </div>
-      <div class="grid gap-8 sm:grid-cols-3">
-        {serviceCards.map(([title, description, icon]) => (
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceCards.map(([title, icon]) => (
           <article class="group relative rounded-2xl bg-sand p-8 ring-1 ring-cedar/10 transition-transform hover:-translate-y-1">
             <div class="mb-6 flex size-10 items-center justify-center rounded-lg bg-moss/5 text-moss">
               <svg class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d={icon}></path>
               </svg>
             </div>
-            <h3 class="mb-3 font-medium text-cedar">{title}</h3>
-            <p class="text-pretty text-sm leading-relaxed text-cedar/75">{description}</p>
+            <h3 class="font-medium text-cedar">{title}</h3>
           </article>
         ))}
       </div>
