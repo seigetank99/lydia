@@ -24,7 +24,7 @@ export function getPageMeta(path) {
   const cleanPath = normalizeRoute(path)
 
   const defaultMeta = {
-    title: 'Lydia — Christian Values Financial Advisory',
+    title: 'Lydia Financial - Kingdom Driven Accounting, Tax, and Advisory',
     description:
       'Lydia provides accounting, tax, advisory, payroll, systems support, and business services for values-driven small businesses, families, and founders.',
   }
@@ -151,7 +151,7 @@ export function getPageMeta(path) {
         'Choose the Lydia Financial path that best matches your needs, from messy books and payroll to U.S. expansion and systems support.',
     },
     '/': {
-      title: 'Lydia — Christian Values Financial Advisory for Small Business',
+      title: 'Lydia Financial - Kingdom Driven Accounting, Tax, and Advisory',
       description:
         'Lydia provides peace of mind through expert accounting, tax, advisory, payroll, systems support, and business services, guided by Christian values.',
     },
