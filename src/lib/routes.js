@@ -37,6 +37,7 @@ import SectorsIndexPage from '../site-pages/astro/SectorsIndexPage.astro'
 import ServiceAreaDetailPage from '../site-pages/astro/ServiceAreaDetailPage.astro'
 import ServiceAreasPage from '../site-pages/astro/ServiceAreasPage.astro'
 import ServicePage from '../site-pages/astro/ServicePage.astro'
+import NJFilmCreditsPage from '../site-pages/astro/NJFilmCreditsPage.astro'
 import ServicesIndexPage from '../site-pages/astro/ServicesIndexPage.astro'
 import StartPage from '../site-pages/astro/StartPage.astro'
 import TaxAdvicePage from '../site-pages/routes/TaxAdvicePage.jsx'
@@ -68,6 +69,7 @@ const staticRouteEntries = [
   ['/technology', TechnologyPage],
   ['/faq', FAQPage],
   ['/services', ServicesIndexPage],
+  ['/services/nj-film-credits', NJFilmCreditsPage],
   ['/practice-areas', PracticeAreasPage],
   ['/sectors', SectorsIndexPage],
   ['/industries', IndustriesIndexPage],

@@ -165,6 +165,10 @@ export function getPageMeta(path) {
       description:
         'Discover the Lydia values that guide our work: Faith-Centered Purpose, Integrity, Wisdom, Stewardship, Excellence, and Compassion.',
     },
+    '/services/nj-film-credits': {
+      title: 'NJ Film Tax Credit Advisory | Lydia Financial FILM',
+      description: 'New Jersey film and digital media tax credit advisory, production bookkeeping, crew payroll, NJEDA application support, and independent CPA verification.',
+    },
     '/services': {
       title: 'Services — Lydia Financial Advisory',
       description:
