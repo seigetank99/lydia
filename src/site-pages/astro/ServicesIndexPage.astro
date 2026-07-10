@@ -12,14 +12,14 @@ const services = [
       'Financial statement preparation',
       'Tax-ready records',
     ],
-    note: 'As an owner who lives and breathes your company 24/7/365, you need clarity from the chaos...reliable records to make decisions which keep your engine humming.',
+    note: 'As an owner who lives and breathes your company 24/7/365, you need clarity from the chaos...reliable records to make decisions which keeps your engine humming.',
   },
   {
     title: 'Tax Preparation & Planning',
     href: '/services/tax',
     description: '',
     bullets: ['Entity and individual', 'Entity selection'],
-    note: "You gotta file taxes...but you don't want surprises. You expect detailed planning without the fuss.",
+    note: "You gotta file taxes...but you don't want surprises. You expect detailed planning without any fuss.",
     reverse: true,
   },
   {
@@ -59,7 +59,13 @@ const steps = [
   <section class="py-20 sm:py-32">
     <div class="mx-auto max-w-5xl px-6">
       <h1 class="font-bree max-w-[18ch] text-balance text-4xl leading-tight tracking-tight text-cedar sm:text-6xl">
-        Accounting, Tax, M&A Advisory, Fractional CFO Support.
+        Accounting,
+        <br />
+        Tax,
+        <br />
+        M&A Advisory,
+        <br />
+        Fractional CFO
       </h1>
       <p class="text-pretty mt-6 max-w-[56ch] text-base leading-relaxed text-cedar/75 sm:text-lg">
         From monthly bookkeeping to tax preparation, fractional CFO guidance, and transaction readiness, we provide the practical infrastructure small business owners need to thrive.
@@ -86,7 +92,7 @@ const steps = [
           </div>
           <aside class={`pt-2 ${service.reverse ? 'sm:order-1' : ''}`}>
             <div class="space-y-4">
-              <p class={`text-xl text-cedar ${service.title === 'Bookkeeping & Accounting' ? 'font-signature sm:text-2xl' : 'font-serif italic'}`}>{service.note}</p>
+              <p class="font-signature text-xl text-cedar sm:text-2xl">{service.note}</p>
             </div>
           </aside>
         </div>
