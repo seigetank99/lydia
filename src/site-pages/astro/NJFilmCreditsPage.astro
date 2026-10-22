@@ -1,54 +1,30 @@
 ---
-import PageShell from '../../components/astro/PageShell.astro'
+import ServicePage from './ServicePage.astro'
+
+const service = {
+  slug: 'nj-film-credits',
+  title: 'NJ Film Tax Credit',
+  intro: "Bringing a film to New Jersey is a brilliant financial move, but navigating state tax credits and union payroll can quickly become a massive headache. You didn't get into filmmaking to manage spreadsheets, track tax forms, or stress over state audits.",
+  image: '/images/nj-film-production.webp',
+  fullFrameImage: true,
+  description: 'We manage the numbers so you can focus on the frame.',
+  outcomes: [
+    'Indie-Friendly Bookkeeping & Financial Cleanups',
+    'Easy Crew Payroll & Loan-Out Protection',
+    'NJEDA Application Support & Incentive Advisory',
+    'Independent AUP Audits & CPA Verification',
+  ],
+}
 ---
 
-<PageShell active="services">
-  <section class="border-t border-cedar/10 bg-cedar/5 py-24 sm:py-32">
-    <div class="mx-auto max-w-5xl px-6">
-      <h1 class="font-bree max-w-[24ch] text-balance text-4xl leading-tight text-cedar sm:text-6xl">NJ Film Tax Credit</h1>
-      <img
-        src="/images/nj-film-production.webp"
-        alt="Cinema camera and film crew on a waterfront production set at golden hour."
-        width="1672"
-        height="941"
-        fetchpriority="high"
-        class="mt-10 aspect-video w-full rounded-xl object-cover ring-1 ring-cedar/10 sm:mt-12"
-      />
-      <div class="mt-12 grid items-start gap-12 sm:grid-cols-2">
-        <div class="space-y-6">
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">
-            Bringing a film to New Jersey is a brilliant financial move, but navigating state tax credits and union payroll can quickly become a massive headache. You didn't get into filmmaking to manage spreadsheets, track tax forms, or stress over state audits.
-          </p>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">
-            As a licensed New Jersey CPA specializing in entertainment accounting, I am here to take that entire financial burden off your plate. Consider me your dedicated financial safety net. I will give you the total peace of mind that your books are flawless and your tax credit is completely secure, leaving you entirely free to focus on the art, the cinema, and the creativity that drives your soul.
-          </p>
-          <ul class="space-y-3 text-sm text-cedar/75">
-            {[
-              'Indie-Friendly Bookkeeping & Financial Cleanups',
-              'Easy Crew Payroll & Loan-Out Protection',
-              'NJEDA Application Support & Incentive Advisory',
-              'Independent AUP Audits & CPA Verification',
-            ].map((item) => (
-              <li class="flex items-start gap-3">
-                <span class="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-cedar"></span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <aside class="space-y-6 pt-2">
-          <p class="font-signature text-xl text-cedar sm:text-2xl">We manage the numbers so you can focus on the frame.</p>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">Securing your 35%+ New Jersey film tax credit from day one.</p>
-          <p class="text-pretty text-base leading-relaxed text-cedar/75">Flawless production accounting to protect your budget and unlock your 35%+ rebate.</p>
-        </aside>
-      </div>
+<ServicePage service={service}>
+  <section class="border-t border-stone-200 px-8 py-14">
+    <div class="mx-auto max-w-6xl space-y-6">
+      <p class="max-w-3xl text-base leading-8 text-slate-700">
+        As a licensed New Jersey CPA specializing in entertainment accounting, I am here to take that entire financial burden off your plate. Consider me your dedicated financial safety net. I will give you the total peace of mind that your books are flawless and your tax credit is completely secure, leaving you entirely free to focus on the art, the cinema, and the creativity that drives your soul.
+      </p>
+      <p class="text-base leading-8 text-slate-700">Securing your 35%+ New Jersey film tax credit from day one.</p>
+      <p class="text-base leading-8 text-slate-700">Flawless production accounting to protect your budget and unlock your 35%+ rebate.</p>
     </div>
   </section>
-  <section class="py-20 sm:py-28">
-    <div class="mx-auto max-w-5xl px-6">
-      <h2 class="font-serif text-3xl text-cedar">Let's talk about your production.</h2>
-      <a href="/contact" class="mt-8 inline-flex rounded-md bg-cedar px-8 py-4 text-sm font-medium text-sand transition hover:bg-cedar/90">Book a consultation</a>
-      <a href="/services" class="ml-6 mt-8 inline-flex text-sm font-medium text-cedar underline underline-offset-4">Explore all services</a>
-    </div>
-  </section>
-</PageShell>
+</ServicePage>

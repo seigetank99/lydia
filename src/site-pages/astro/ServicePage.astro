@@ -41,13 +41,13 @@ const { service } = Astro.props
       </div>
     </div>
 
-    <div class="rounded-xl border border-stone-200 bg-white/70 p-10 text-center shadow-sm">
+    <div class:list={['rounded-xl border border-stone-200 bg-white/70 text-center shadow-sm', service.fullFrameImage ? 'overflow-hidden' : 'p-10']}>
       <img
         src={service.image}
         alt={service.title}
-        class="mx-auto h-40 w-40 object-contain mix-blend-multiply"
+        class={service.fullFrameImage ? 'aspect-video w-full object-cover' : 'mx-auto h-40 w-40 object-contain mix-blend-multiply'}
       />
-      <p class="mx-auto mt-6 max-w-sm text-sm leading-6 text-slate-700">
+      <p class:list={['mx-auto max-w-sm text-sm leading-6 text-slate-700', service.fullFrameImage ? 'p-6' : 'mt-6']}>
         {service.description}
       </p>
     </div>
@@ -74,6 +74,8 @@ const { service } = Astro.props
   </section>
 
   <ServiceDetailsSection service={service} />
+
+  <slot />
 
   <RelatedLinksSection
     title="Related Service Pages"
