@@ -24,7 +24,7 @@ export function getPageMeta(path) {
   const cleanPath = normalizeRoute(path)
 
   const defaultMeta = {
-    title: 'Lydia Financial - Kingdom Driven Accounting, Tax, and Advisory',
+    title: 'Lydia Financial - Kingdom Driven Finance, Accounting, Tax',
     description:
       'Lydia provides accounting, tax, advisory, payroll, systems support, and business services for values-driven small businesses, families, and founders.',
   }
@@ -151,7 +151,7 @@ export function getPageMeta(path) {
         'Choose the Lydia Financial path that best matches your needs, from messy books and payroll to U.S. expansion and systems support.',
     },
     '/': {
-      title: 'Lydia Financial - Kingdom Driven Accounting, Tax, and Advisory',
+      title: 'Lydia Financial - Kingdom Driven Finance, Accounting, Tax',
       description:
         'Lydia provides peace of mind through expert accounting, tax, advisory, payroll, systems support, and business services, guided by Christian values.',
     },
@@ -166,7 +166,7 @@ export function getPageMeta(path) {
         'Discover the Lydia values that guide our work: Faith-Centered Purpose, Integrity, Wisdom, Stewardship, Excellence, and Compassion.',
     },
     '/services/nj-film-credits': {
-      title: 'NJ Film Tax Credit Advisory | Lydia Financial FILM',
+      title: 'NJ Film Tax Credit | Lydia Financial',
       description: 'New Jersey film and digital media tax credit advisory, production bookkeeping, crew payroll, NJEDA application support, and independent CPA verification.',
     },
     '/services': {
